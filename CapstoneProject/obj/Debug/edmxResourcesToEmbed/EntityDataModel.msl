@@ -1,0 +1,279 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="CapstoneProjectModelStoreContainer" CdmEntityContainer="CapstoneProjectEntities">
+    <EntitySetMapping Name="Courses">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.Course">
+        <MappingFragment StoreEntitySet="Course">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Semester" ColumnName="Semester" />
+          <ScalarProperty Name="SubjectCode" ColumnName="SubjectCode" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Credentials">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.Credential">
+        <MappingFragment StoreEntitySet="Credentials">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="Fullname" ColumnName="Fullname" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Picture" ColumnName="Picture" />
+          <ScalarProperty Name="Role" ColumnName="Role" />
+          <ScalarProperty Name="StudentRollNumber" ColumnName="StudentRollNumber" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Credentials_Roles">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.Credentials_Roles">
+        <MappingFragment StoreEntitySet="Credentials_Roles">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="CredentialsId" ColumnName="CredentialsId" />
+          <ScalarProperty Name="RolesId" ColumnName="RolesId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Curricula">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.Curriculum">
+        <MappingFragment StoreEntitySet="Curriculum">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="ProgramId" ColumnName="ProgramId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="DocTypes">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.DocType">
+        <MappingFragment StoreEntitySet="DocType">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Documents">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.Document">
+        <MappingFragment StoreEntitySet="Document">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="DocTypeId" ColumnName="DocTypeId" />
+          <ScalarProperty Name="DocParentId" ColumnName="DocParentId" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Document_Student">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.Document_Student">
+        <MappingFragment StoreEntitySet="Document_Student">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="DocumentId" ColumnName="DocumentId" />
+          <ScalarProperty Name="StudentId" ColumnName="StudentId" />
+          <ScalarProperty Name="OldStudentId" ColumnName="OldStudentId" />
+          <ScalarProperty Name="CurriculumId" ColumnName="CurriculumId" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Dynamic_Menu">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.Dynamic_Menu">
+        <MappingFragment StoreEntitySet="Dynamic_Menu">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Role" ColumnName="Role" />
+          <ScalarProperty Name="FunctionGroup" ColumnName="FunctionGroup" />
+          <ScalarProperty Name="FunctionName" ColumnName="FunctionName" />
+          <ScalarProperty Name="GroupName" ColumnName="GroupName" />
+          <ScalarProperty Name="Link" ColumnName="Link" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MarkComponents">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.MarkComponent">
+        <MappingFragment StoreEntitySet="MarkComponent">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Marks">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.Mark">
+        <MappingFragment StoreEntitySet="Marks">
+          <ScalarProperty Name="Comment" ColumnName="Comment" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="SubjectMarkComponentId" ColumnName="SubjectMarkComponentId" />
+          <ScalarProperty Name="StudentId" ColumnName="StudentId" />
+          <ScalarProperty Name="SemesterId" ColumnName="SemesterId" />
+          <ScalarProperty Name="CourseId" ColumnName="CourseId" />
+          <ScalarProperty Name="AverageMark" ColumnName="AverageMark" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="IsActivated" ColumnName="IsActivated" />
+          <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="OldRollNumbers">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.OldRollNumber">
+        <MappingFragment StoreEntitySet="OldRollNumber">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="ProgramId" ColumnName="ProgramId" />
+          <ScalarProperty Name="StudentId" ColumnName="StudentId" />
+          <ScalarProperty Name="OldRollNumber1" ColumnName="OldRollNumber" />
+          <ScalarProperty Name="ChangedCurriculumDate" ColumnName="ChangedCurriculumDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Prequisites">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.Prequisite">
+        <MappingFragment StoreEntitySet="Prequisite">
+          <ScalarProperty Name="SubjectId" ColumnName="SubjectId" />
+          <ScalarProperty Name="PrequisiteSubs" ColumnName="PrequisiteSubs" />
+          <ScalarProperty Name="FailMark" ColumnName="FailMark" />
+          <ScalarProperty Name="EffectionSemester" ColumnName="EffectionSemester" />
+          <ScalarProperty Name="NewPrequisiteSubs" ColumnName="NewPrequisiteSubs" />
+          <ScalarProperty Name="NewFailMark" ColumnName="NewFailMark" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Programs">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.Program">
+        <MappingFragment StoreEntitySet="Program">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="FullName" ColumnName="FullName" />
+          <ScalarProperty Name="OJT" ColumnName="OJT" />
+          <ScalarProperty Name="Capstone" ColumnName="Capstone" />
+          <ScalarProperty Name="Graduate" ColumnName="Graduate" />
+          <ScalarProperty Name="GraduateCredits" ColumnName="GraduateCredits" />
+          <ScalarProperty Name="SpecializedCredits" ColumnName="SpecializedCredits" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RealSemesters">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.RealSemester">
+        <MappingFragment StoreEntitySet="RealSemester">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Semester" ColumnName="Semester" />
+          <ScalarProperty Name="IsActivated" ColumnName="IsActivated" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Roles">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.Role">
+        <MappingFragment StoreEntitySet="Roles">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RolesAuthorities">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.RolesAuthority">
+        <MappingFragment StoreEntitySet="RolesAuthority">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="RolesId" ColumnName="RolesId" />
+          <ScalarProperty Name="MenuId" ColumnName="MenuId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Students">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.Student">
+        <MappingFragment StoreEntitySet="Student">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="ProgramId" ColumnName="ProgramId" />
+          <ScalarProperty Name="RollNumber" ColumnName="RollNumber" />
+          <ScalarProperty Name="FullName" ColumnName="FullName" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+          <ScalarProperty Name="Gender" ColumnName="Gender" />
+          <ScalarProperty Name="Term" ColumnName="Term" />
+          <ScalarProperty Name="Shift" ColumnName="Shift" />
+          <ScalarProperty Name="PayRollClass" ColumnName="PayRollClass" />
+          <ScalarProperty Name="PassCredits" ColumnName="PassCredits" />
+          <ScalarProperty Name="PassFailCredits" ColumnName="PassFailCredits" />
+          <ScalarProperty Name="PassFailAverageMark" ColumnName="PassFailAverageMark" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Student_Status">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.Student_Status">
+        <MappingFragment StoreEntitySet="Student_Status">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="StudentId" ColumnName="StudentId" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Term" ColumnName="Term" />
+          <ScalarProperty Name="SemesterId" ColumnName="SemesterId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Subjects">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.Subject">
+        <MappingFragment StoreEntitySet="Subject">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Abbreviation" ColumnName="Abbreviation" />
+          <ScalarProperty Name="IsSpecialized" ColumnName="IsSpecialized" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Subject_Curriculum">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.Subject_Curriculum">
+        <MappingFragment StoreEntitySet="Subject_Curriculum">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="SubjectId" ColumnName="SubjectId" />
+          <ScalarProperty Name="CurriculumId" ColumnName="CurriculumId" />
+          <ScalarProperty Name="OrdinalNumber" ColumnName="OrdinalNumber" />
+          <ScalarProperty Name="TermNumber" ColumnName="TermNumber" />
+          <ScalarProperty Name="SubjectCredits" ColumnName="SubjectCredits" />
+          <ScalarProperty Name="Required" ColumnName="Required" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Subject_MarkComponent">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.Subject_MarkComponent">
+        <MappingFragment StoreEntitySet="Subject_MarkComponent">
+          <ScalarProperty Name="FinalComponent" ColumnName="FinalComponent" />
+          <ScalarProperty Name="OldMarkName" ColumnName="OldMarkName" />
+          <ScalarProperty Name="NumberOfTests" ColumnName="NumberOfTests" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="IsOngoing" ColumnName="IsOngoing" />
+          <ScalarProperty Name="SyllabusName" ColumnName="SyllabusName" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="SubjectId" ColumnName="SubjectId" />
+          <ScalarProperty Name="MarkComponentId" ColumnName="MarkComponentId" />
+          <ScalarProperty Name="PercentWeight" ColumnName="PercentWeight" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="sysdiagrams">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.sysdiagram">
+        <MappingFragment StoreEntitySet="sysdiagrams">
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+          <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+          <ScalarProperty Name="version" ColumnName="version" />
+          <ScalarProperty Name="definition" ColumnName="definition" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="Replacement_Subject" TypeName="CapstoneProjectModel.Replacement_Subject" StoreEntitySet="Replacement_Subject">
+      <EndProperty Name="Subject">
+        <ScalarProperty Name="Id" ColumnName="SubjectId" />
+      </EndProperty>
+      <EndProperty Name="Subject1">
+        <ScalarProperty Name="Id" ColumnName="ReplacementId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <EntitySetMapping Name="Attendances">
+      <EntityTypeMapping TypeName="CapstoneProjectModel.Attendance">
+        <MappingFragment StoreEntitySet="Attendance">
+          <ScalarProperty Name="NumberOfSlots" ColumnName="NumberOfSlots" />
+          <ScalarProperty Name="TakeAttendance" ColumnName="TakeAttendance" />
+          <ScalarProperty Name="RecordTime" ColumnName="RecordTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Taker" ColumnName="Taker" />
+          <ScalarProperty Name="CourseId" ColumnName="CourseId" />
+          <ScalarProperty Name="StudentId" ColumnName="StudentId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

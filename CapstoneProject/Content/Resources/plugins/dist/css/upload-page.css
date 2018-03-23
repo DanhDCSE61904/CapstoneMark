@@ -1,0 +1,29 @@
+.table {
+    width: 60%;
+    min-width: 60%;
+    margin-bottom: 7px;
+}
+
+@media only screen and (max-width: 768px) {
+    #table {
+        width: 100%;
+    }
+}
+
+.table tr td {
+    border-radius: 5px;
+}
+
+.table-row {
+    cursor: pointer;
+}
+
+.table-row:hover:not(.selectedRow) {
+    /*background-color: #f4f4f5;*/
+    background-color: #eef1f6;
+}
+
+.selectedRow {
+    background-color: #f4b745;
+    color: white;
+}

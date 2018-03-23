@@ -1,0 +1,100 @@
+.arrow-up {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+
+    border-bottom: 5px solid #00a65a;
+    position: absolute;
+    right: 70px;
+}
+
+.excel-modal {
+    width: 100%;
+    position: absolute;
+    z-index: 100;
+    right: 0;
+}
+
+.excel-modal .my-content-wrap {
+    padding-top: 4px;
+    position: relative;
+
+}
+
+.excel-modal {
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-2px);
+    transition: all 0.3s ease-in-out 0s, visibility 0.1s linear 0.3s, z-index 0s linear 0.01s;
+}
+
+.export-content:hover .excel-modal {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0%);
+    transition-delay: 0.3s;
+}
+
+.excel-modal .my-content-wrap .content {
+    min-height: 0px !important;
+    width: 150px;
+    padding: 10px;
+    float: right;
+    display: block;
+    border-radius: 5px;
+    border: 1px #00a65a solid;
+    background: white;
+
+}
+
+.excel-modal .my-content-wrap .content .item,
+.excel-modal .my-content-wrap .sub-item-wrapper .item {
+    width: 100%;
+    color: black;
+    text-align: left;
+    min-height: 30px;
+    vertical-align: middle;
+    line-height: 26px;
+    display: flex;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.excel-modal .my-content-wrap .content .item:hover,
+.excel-modal .my-content-wrap .sub-item-wrapper .item:hover {
+    color: #dc2929;
+}
+
+.excel-modal .my-content-wrap .content .item:hover > .sub-item-wrapper {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0.3s;
+}
+
+.excel-modal .my-content-wrap .content .item .fa {
+    display: flex;
+    font-size: 15px;
+    margin-right: 10px;
+    margin-top: 5px;
+}
+
+.excel-modal .my-content-wrap .sub-item-wrapper {
+    min-width: 75px;
+    position: absolute;
+    background: white;
+    border: 1px #00a65a solid;
+    padding: 5px 15px 5px 15px;
+    /*border-radius: 25px 0px; 3 cái*/
+    border-radius: 15px 0px;
+    right: 151px;
+
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.3s ease-in-out 0s, visibility 0.1s linear 0.3s, z-index 0s linear 0.01s;
+}
+
+.excel-modal .my-content-wrap .sub-item-wrapper .item {
+    text-align: center;
+    display: block;
+}

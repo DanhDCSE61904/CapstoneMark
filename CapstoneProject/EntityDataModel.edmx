@@ -1,0 +1,1820 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="CapstoneProjectModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Attendance">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StudentId" Type="int" />
+          <Property Name="CourseId" Type="int" />
+          <Property Name="Taker" Type="nvarchar" MaxLength="50" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="RecordTime" Type="datetime" />
+          <Property Name="TakeAttendance" Type="bit" />
+          <Property Name="NumberOfSlots" Type="int" />
+        </EntityType>
+        <EntityType Name="Course">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Semester" Type="nvarchar" MaxLength="50" />
+          <Property Name="SubjectCode" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Credentials">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="Fullname" Type="nvarchar(max)" />
+          <Property Name="Email" Type="nvarchar(max)" />
+          <Property Name="Picture" Type="nvarchar(max)" />
+          <Property Name="Role" Type="nvarchar" MaxLength="60" />
+          <Property Name="StudentRollNumber" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Credentials_Roles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="CredentialsId" Type="int" />
+          <Property Name="RolesId" Type="nvarchar" MaxLength="60" />
+        </EntityType>
+        <EntityType Name="Curriculum">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProgramId" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DocType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Document">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocTypeId" Type="int" Nullable="false" />
+          <Property Name="DocParentId" Type="int" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" />
+          <Property Name="Description" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Document_Student">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocumentId" Type="int" Nullable="false" />
+          <Property Name="StudentId" Type="int" />
+          <Property Name="OldStudentId" Type="int" />
+          <Property Name="CurriculumId" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Dynamic_Menu">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Role" Type="nvarchar(max)" />
+          <Property Name="FunctionGroup" Type="nvarchar(max)" />
+          <Property Name="FunctionName" Type="nvarchar(max)" />
+          <Property Name="GroupName" Type="nvarchar(max)" />
+          <Property Name="Link" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="MarkComponent">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Marks">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SubjectMarkComponentId" Type="int" />
+          <Property Name="StudentId" Type="int" />
+          <Property Name="SemesterId" Type="int" />
+          <Property Name="CourseId" Type="int" />
+          <Property Name="AverageMark" Type="float" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsActivated" Type="bit" />
+          <Property Name="IsEnabled" Type="bit" />
+          <Property Name="Comment" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="OldRollNumber">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProgramId" Type="int" />
+          <Property Name="StudentId" Type="int" />
+          <Property Name="OldRollNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="ChangedCurriculumDate" Type="date" />
+        </EntityType>
+        <EntityType Name="Prequisite">
+          <Key>
+            <PropertyRef Name="SubjectId" />
+          </Key>
+          <Property Name="SubjectId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PrequisiteSubs" Type="nvarchar(max)" />
+          <Property Name="FailMark" Type="int" />
+          <Property Name="EffectionSemester" Type="nvarchar" MaxLength="50" />
+          <Property Name="NewPrequisiteSubs" Type="nvarchar(max)" />
+          <Property Name="NewFailMark" Type="int" />
+        </EntityType>
+        <EntityType Name="Program">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="FullName" Type="nvarchar" MaxLength="50" />
+          <Property Name="OJT" Type="int" />
+          <Property Name="Capstone" Type="int" />
+          <Property Name="Graduate" Type="int" />
+          <Property Name="GraduateCredits" Type="int" />
+          <Property Name="SpecializedCredits" Type="int" />
+        </EntityType>
+        <EntityType Name="RealSemester">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Semester" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsActivated" Type="bit" />
+        </EntityType>
+        <EntityType Name="Replacement_Subject">
+          <Key>
+            <PropertyRef Name="SubjectId" />
+            <PropertyRef Name="ReplacementId" />
+          </Key>
+          <Property Name="SubjectId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ReplacementId" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Roles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="60" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RolesAuthority">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RolesId" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="MenuId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Student">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProgramId" Type="int" />
+          <Property Name="RollNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="FullName" Type="nvarchar" MaxLength="150" />
+          <Property Name="Email" Type="nvarchar" MaxLength="255" />
+          <Property Name="DateOfBirth" Type="datetime" />
+          <Property Name="Gender" Type="bit" />
+          <Property Name="Term" Type="int" />
+          <Property Name="Shift" Type="nvarchar" MaxLength="5" />
+          <Property Name="PayRollClass" Type="nvarchar" MaxLength="50" />
+          <Property Name="PassCredits" Type="int" />
+          <Property Name="PassFailCredits" Type="int" />
+          <Property Name="PassFailAverageMark" Type="float" />
+        </EntityType>
+        <EntityType Name="Student_Status">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StudentId" Type="int" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="Term" Type="varchar" MaxLength="10" />
+          <Property Name="SemesterId" Type="int" />
+        </EntityType>
+        <EntityType Name="Subject">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Abbreviation" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsSpecialized" Type="bit" />
+          <Property Name="Type" Type="int" />
+        </EntityType>
+        <EntityType Name="Subject_Curriculum">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SubjectId" Type="nvarchar" MaxLength="50" />
+          <Property Name="CurriculumId" Type="int" />
+          <Property Name="OrdinalNumber" Type="int" />
+          <Property Name="TermNumber" Type="int" />
+          <Property Name="SubjectCredits" Type="int" />
+          <Property Name="Required" Type="bit" />
+        </EntityType>
+        <EntityType Name="Subject_MarkComponent">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SubjectId" Type="nvarchar" MaxLength="50" />
+          <Property Name="MarkComponentId" Type="int" />
+          <Property Name="PercentWeight" Type="float" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="SyllabusName" Type="nvarchar(max)" />
+          <Property Name="IsOngoing" Type="bit" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="NumberOfTests" Type="int" />
+          <Property Name="OldMarkName" Type="nvarchar(max)" />
+          <Property Name="FinalComponent" Type="bit" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <Association Name="FK_Attendance_Course">
+          <End Role="Course" Type="Self.Course" Multiplicity="0..1" />
+          <End Role="Attendance" Type="Self.Attendance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Attendance">
+              <PropertyRef Name="CourseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Attendance_Student">
+          <End Role="Student" Type="Self.Student" Multiplicity="0..1" />
+          <End Role="Attendance" Type="Self.Attendance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Attendance">
+              <PropertyRef Name="StudentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Credentials_Roles_Credentials">
+          <End Role="Credentials" Type="Self.Credentials" Multiplicity="0..1" />
+          <End Role="Credentials_Roles" Type="Self.Credentials_Roles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Credentials">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Credentials_Roles">
+              <PropertyRef Name="CredentialsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Credentials_Roles_Roles">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
+          <End Role="Credentials_Roles" Type="Self.Credentials_Roles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Credentials_Roles">
+              <PropertyRef Name="RolesId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Curriculum_Program">
+          <End Role="Program" Type="Self.Program" Multiplicity="1" />
+          <End Role="Curriculum" Type="Self.Curriculum" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Program">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Curriculum">
+              <PropertyRef Name="ProgramId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_DocType">
+          <End Role="DocType" Type="Self.DocType" Multiplicity="1" />
+          <End Role="Document" Type="Self.Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DocType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Document">
+              <PropertyRef Name="DocTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_Document">
+          <End Role="Document" Type="Self.Document" Multiplicity="0..1" />
+          <End Role="Document1" Type="Self.Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Document1">
+              <PropertyRef Name="DocParentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_Student_Curriculum">
+          <End Role="Curriculum" Type="Self.Curriculum" Multiplicity="0..1" />
+          <End Role="Document_Student" Type="Self.Document_Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Curriculum">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Document_Student">
+              <PropertyRef Name="CurriculumId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_Student_Document">
+          <End Role="Document" Type="Self.Document" Multiplicity="1" />
+          <End Role="Document_Student" Type="Self.Document_Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Document_Student">
+              <PropertyRef Name="DocumentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_Student_OldRollNumber">
+          <End Role="OldRollNumber" Type="Self.OldRollNumber" Multiplicity="0..1" />
+          <End Role="Document_Student" Type="Self.Document_Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OldRollNumber">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Document_Student">
+              <PropertyRef Name="OldStudentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_Student_Student">
+          <End Role="Student" Type="Self.Student" Multiplicity="0..1" />
+          <End Role="Document_Student" Type="Self.Document_Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Document_Student">
+              <PropertyRef Name="StudentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Marks_Course1">
+          <End Role="Course" Type="Self.Course" Multiplicity="0..1" />
+          <End Role="Marks" Type="Self.Marks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Marks">
+              <PropertyRef Name="CourseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Marks_RealSemester">
+          <End Role="RealSemester" Type="Self.RealSemester" Multiplicity="0..1" />
+          <End Role="Marks" Type="Self.Marks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RealSemester">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Marks">
+              <PropertyRef Name="SemesterId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Marks_Student1">
+          <End Role="Student" Type="Self.Student" Multiplicity="0..1" />
+          <End Role="Marks" Type="Self.Marks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Marks">
+              <PropertyRef Name="StudentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Marks_Subject_MarkComponent">
+          <End Role="Subject_MarkComponent" Type="Self.Subject_MarkComponent" Multiplicity="0..1" />
+          <End Role="Marks" Type="Self.Marks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Subject_MarkComponent">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Marks">
+              <PropertyRef Name="SubjectMarkComponentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OldRollNumber_Program">
+          <End Role="Program" Type="Self.Program" Multiplicity="0..1" />
+          <End Role="OldRollNumber" Type="Self.OldRollNumber" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Program">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OldRollNumber">
+              <PropertyRef Name="ProgramId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OldRollNumber_Student">
+          <End Role="Student" Type="Self.Student" Multiplicity="0..1" />
+          <End Role="OldRollNumber" Type="Self.OldRollNumber" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OldRollNumber">
+              <PropertyRef Name="StudentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Prequisite_Subject">
+          <End Role="Subject" Type="Self.Subject" Multiplicity="1" />
+          <End Role="Prequisite" Type="Self.Prequisite" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Subject">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Prequisite">
+              <PropertyRef Name="SubjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Replacement_Subject_Subject">
+          <End Role="Subject" Type="Self.Subject" Multiplicity="1" />
+          <End Role="Replacement_Subject" Type="Self.Replacement_Subject" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Subject">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Replacement_Subject">
+              <PropertyRef Name="SubjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Replacement_Subject_Subject1">
+          <End Role="Subject" Type="Self.Subject" Multiplicity="1" />
+          <End Role="Replacement_Subject" Type="Self.Replacement_Subject" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Subject">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Replacement_Subject">
+              <PropertyRef Name="ReplacementId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RolesAuthority_Dynamic_Menu">
+          <End Role="Dynamic_Menu" Type="Self.Dynamic_Menu" Multiplicity="1" />
+          <End Role="RolesAuthority" Type="Self.RolesAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Dynamic_Menu">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RolesAuthority">
+              <PropertyRef Name="MenuId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RolesAuthority_Roles">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+          <End Role="RolesAuthority" Type="Self.RolesAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RolesAuthority">
+              <PropertyRef Name="RolesId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Student_Program">
+          <End Role="Program" Type="Self.Program" Multiplicity="0..1" />
+          <End Role="Student" Type="Self.Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Program">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Student">
+              <PropertyRef Name="ProgramId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Student_Status_RealSemester">
+          <End Role="RealSemester" Type="Self.RealSemester" Multiplicity="0..1" />
+          <End Role="Student_Status" Type="Self.Student_Status" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RealSemester">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Student_Status">
+              <PropertyRef Name="SemesterId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Student_Status_Student">
+          <End Role="Student" Type="Self.Student" Multiplicity="0..1" />
+          <End Role="Student_Status" Type="Self.Student_Status" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Student_Status">
+              <PropertyRef Name="StudentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Subject_Curriculum_Curriculum">
+          <End Role="Curriculum" Type="Self.Curriculum" Multiplicity="0..1" />
+          <End Role="Subject_Curriculum" Type="Self.Subject_Curriculum" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Curriculum">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Subject_Curriculum">
+              <PropertyRef Name="CurriculumId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Subject_Curriculum_Subject">
+          <End Role="Subject" Type="Self.Subject" Multiplicity="0..1" />
+          <End Role="Subject_Curriculum" Type="Self.Subject_Curriculum" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Subject">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Subject_Curriculum">
+              <PropertyRef Name="SubjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Subject_MarkComponent_MarkComponent">
+          <End Role="MarkComponent" Type="Self.MarkComponent" Multiplicity="0..1" />
+          <End Role="Subject_MarkComponent" Type="Self.Subject_MarkComponent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MarkComponent">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Subject_MarkComponent">
+              <PropertyRef Name="MarkComponentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Subject_MarkComponent_Subject">
+          <End Role="Subject" Type="Self.Subject" Multiplicity="0..1" />
+          <End Role="Subject_MarkComponent" Type="Self.Subject_MarkComponent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Subject">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Subject_MarkComponent">
+              <PropertyRef Name="SubjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CapstoneProjectModelStoreContainer">
+          <EntitySet Name="Attendance" EntityType="Self.Attendance" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Course" EntityType="Self.Course" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Credentials" EntityType="Self.Credentials" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Credentials_Roles" EntityType="Self.Credentials_Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Curriculum" EntityType="Self.Curriculum" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DocType" EntityType="Self.DocType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Document" EntityType="Self.Document" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Document_Student" EntityType="Self.Document_Student" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Dynamic_Menu" EntityType="Self.Dynamic_Menu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MarkComponent" EntityType="Self.MarkComponent" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Marks" EntityType="Self.Marks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OldRollNumber" EntityType="Self.OldRollNumber" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Prequisite" EntityType="Self.Prequisite" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Program" EntityType="Self.Program" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RealSemester" EntityType="Self.RealSemester" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Replacement_Subject" EntityType="Self.Replacement_Subject" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RolesAuthority" EntityType="Self.RolesAuthority" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Student" EntityType="Self.Student" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Student_Status" EntityType="Self.Student_Status" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Subject" EntityType="Self.Subject" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Subject_Curriculum" EntityType="Self.Subject_Curriculum" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Subject_MarkComponent" EntityType="Self.Subject_MarkComponent" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Attendance_Course" Association="Self.FK_Attendance_Course">
+            <End Role="Course" EntitySet="Course" />
+            <End Role="Attendance" EntitySet="Attendance" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Attendance_Student" Association="Self.FK_Attendance_Student">
+            <End Role="Student" EntitySet="Student" />
+            <End Role="Attendance" EntitySet="Attendance" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Credentials_Roles_Credentials" Association="Self.FK_Credentials_Roles_Credentials">
+            <End Role="Credentials" EntitySet="Credentials" />
+            <End Role="Credentials_Roles" EntitySet="Credentials_Roles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Credentials_Roles_Roles" Association="Self.FK_Credentials_Roles_Roles">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Credentials_Roles" EntitySet="Credentials_Roles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Curriculum_Program" Association="Self.FK_Curriculum_Program">
+            <End Role="Program" EntitySet="Program" />
+            <End Role="Curriculum" EntitySet="Curriculum" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_DocType" Association="Self.FK_Document_DocType">
+            <End Role="DocType" EntitySet="DocType" />
+            <End Role="Document" EntitySet="Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Document" Association="Self.FK_Document_Document">
+            <End Role="Document" EntitySet="Document" />
+            <End Role="Document1" EntitySet="Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Student_Curriculum" Association="Self.FK_Document_Student_Curriculum">
+            <End Role="Curriculum" EntitySet="Curriculum" />
+            <End Role="Document_Student" EntitySet="Document_Student" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Student_Document" Association="Self.FK_Document_Student_Document">
+            <End Role="Document" EntitySet="Document" />
+            <End Role="Document_Student" EntitySet="Document_Student" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Student_OldRollNumber" Association="Self.FK_Document_Student_OldRollNumber">
+            <End Role="OldRollNumber" EntitySet="OldRollNumber" />
+            <End Role="Document_Student" EntitySet="Document_Student" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Student_Student" Association="Self.FK_Document_Student_Student">
+            <End Role="Student" EntitySet="Student" />
+            <End Role="Document_Student" EntitySet="Document_Student" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Marks_Course1" Association="Self.FK_Marks_Course1">
+            <End Role="Course" EntitySet="Course" />
+            <End Role="Marks" EntitySet="Marks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Marks_RealSemester" Association="Self.FK_Marks_RealSemester">
+            <End Role="RealSemester" EntitySet="RealSemester" />
+            <End Role="Marks" EntitySet="Marks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Marks_Student1" Association="Self.FK_Marks_Student1">
+            <End Role="Student" EntitySet="Student" />
+            <End Role="Marks" EntitySet="Marks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Marks_Subject_MarkComponent" Association="Self.FK_Marks_Subject_MarkComponent">
+            <End Role="Subject_MarkComponent" EntitySet="Subject_MarkComponent" />
+            <End Role="Marks" EntitySet="Marks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OldRollNumber_Program" Association="Self.FK_OldRollNumber_Program">
+            <End Role="Program" EntitySet="Program" />
+            <End Role="OldRollNumber" EntitySet="OldRollNumber" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OldRollNumber_Student" Association="Self.FK_OldRollNumber_Student">
+            <End Role="Student" EntitySet="Student" />
+            <End Role="OldRollNumber" EntitySet="OldRollNumber" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Prequisite_Subject" Association="Self.FK_Prequisite_Subject">
+            <End Role="Subject" EntitySet="Subject" />
+            <End Role="Prequisite" EntitySet="Prequisite" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Replacement_Subject_Subject" Association="Self.FK_Replacement_Subject_Subject">
+            <End Role="Subject" EntitySet="Subject" />
+            <End Role="Replacement_Subject" EntitySet="Replacement_Subject" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Replacement_Subject_Subject1" Association="Self.FK_Replacement_Subject_Subject1">
+            <End Role="Subject" EntitySet="Subject" />
+            <End Role="Replacement_Subject" EntitySet="Replacement_Subject" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RolesAuthority_Dynamic_Menu" Association="Self.FK_RolesAuthority_Dynamic_Menu">
+            <End Role="Dynamic_Menu" EntitySet="Dynamic_Menu" />
+            <End Role="RolesAuthority" EntitySet="RolesAuthority" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RolesAuthority_Roles" Association="Self.FK_RolesAuthority_Roles">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="RolesAuthority" EntitySet="RolesAuthority" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Student_Program" Association="Self.FK_Student_Program">
+            <End Role="Program" EntitySet="Program" />
+            <End Role="Student" EntitySet="Student" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Student_Status_RealSemester" Association="Self.FK_Student_Status_RealSemester">
+            <End Role="RealSemester" EntitySet="RealSemester" />
+            <End Role="Student_Status" EntitySet="Student_Status" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Student_Status_Student" Association="Self.FK_Student_Status_Student">
+            <End Role="Student" EntitySet="Student" />
+            <End Role="Student_Status" EntitySet="Student_Status" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Subject_Curriculum_Curriculum" Association="Self.FK_Subject_Curriculum_Curriculum">
+            <End Role="Curriculum" EntitySet="Curriculum" />
+            <End Role="Subject_Curriculum" EntitySet="Subject_Curriculum" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Subject_Curriculum_Subject" Association="Self.FK_Subject_Curriculum_Subject">
+            <End Role="Subject" EntitySet="Subject" />
+            <End Role="Subject_Curriculum" EntitySet="Subject_Curriculum" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Subject_MarkComponent_MarkComponent" Association="Self.FK_Subject_MarkComponent_MarkComponent">
+            <End Role="MarkComponent" EntitySet="MarkComponent" />
+            <End Role="Subject_MarkComponent" EntitySet="Subject_MarkComponent" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Subject_MarkComponent_Subject" Association="Self.FK_Subject_MarkComponent_Subject">
+            <End Role="Subject" EntitySet="Subject" />
+            <End Role="Subject_MarkComponent" EntitySet="Subject_MarkComponent" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CapstoneProjectModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Course">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Semester" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SubjectCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Marks" Relationship="Self.FK_Marks_Course1" FromRole="Course" ToRole="Marks" />
+          <NavigationProperty Name="Attendances" Relationship="CapstoneProjectModel.FK_Attendance_Course" FromRole="Course" ToRole="Attendance" />
+        </EntityType>
+        <EntityType Name="Credential">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" MaxLength="60" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="60" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Fullname" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Picture" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Role" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="StudentRollNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Credentials_Roles" Relationship="Self.FK_Credentials_Roles_Credentials" FromRole="Credentials" ToRole="Credentials_Roles" />
+        </EntityType>
+        <EntityType Name="Credentials_Roles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="CredentialsId" Type="Int32" />
+          <Property Name="RolesId" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Credential" Relationship="Self.FK_Credentials_Roles_Credentials" FromRole="Credentials_Roles" ToRole="Credentials" />
+          <NavigationProperty Name="Role" Relationship="Self.FK_Credentials_Roles_Roles" FromRole="Credentials_Roles" ToRole="Roles" />
+        </EntityType>
+        <EntityType Name="Curriculum">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProgramId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Program" Relationship="Self.FK_Curriculum_Program" FromRole="Curriculum" ToRole="Program" />
+          <NavigationProperty Name="Document_Student" Relationship="Self.FK_Document_Student_Curriculum" FromRole="Curriculum" ToRole="Document_Student" />
+          <NavigationProperty Name="Subject_Curriculum" Relationship="Self.FK_Subject_Curriculum_Curriculum" FromRole="Curriculum" ToRole="Subject_Curriculum" />
+        </EntityType>
+        <EntityType Name="DocType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Documents" Relationship="Self.FK_Document_DocType" FromRole="DocType" ToRole="Document" />
+        </EntityType>
+        <EntityType Name="Document">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocTypeId" Type="Int32" Nullable="false" />
+          <Property Name="DocParentId" Type="Int32" />
+          <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="DocType" Relationship="Self.FK_Document_DocType" FromRole="Document" ToRole="DocType" />
+          <NavigationProperty Name="Document1" Relationship="Self.FK_Document_Document" FromRole="Document" ToRole="Document1" />
+          <NavigationProperty Name="Document2" Relationship="Self.FK_Document_Document" FromRole="Document1" ToRole="Document" />
+          <NavigationProperty Name="Document_Student" Relationship="Self.FK_Document_Student_Document" FromRole="Document" ToRole="Document_Student" />
+        </EntityType>
+        <EntityType Name="Document_Student">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocumentId" Type="Int32" Nullable="false" />
+          <Property Name="StudentId" Type="Int32" />
+          <Property Name="OldStudentId" Type="Int32" />
+          <Property Name="CurriculumId" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Curriculum" Relationship="Self.FK_Document_Student_Curriculum" FromRole="Document_Student" ToRole="Curriculum" />
+          <NavigationProperty Name="Document" Relationship="Self.FK_Document_Student_Document" FromRole="Document_Student" ToRole="Document" />
+          <NavigationProperty Name="OldRollNumber" Relationship="Self.FK_Document_Student_OldRollNumber" FromRole="Document_Student" ToRole="OldRollNumber" />
+          <NavigationProperty Name="Student" Relationship="Self.FK_Document_Student_Student" FromRole="Document_Student" ToRole="Student" />
+        </EntityType>
+        <EntityType Name="Dynamic_Menu">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Role" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FunctionGroup" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FunctionName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="GroupName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Link" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="RolesAuthorities" Relationship="Self.FK_RolesAuthority_Dynamic_Menu" FromRole="Dynamic_Menu" ToRole="RolesAuthority" />
+        </EntityType>
+        <EntityType Name="MarkComponent">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Subject_MarkComponent" Relationship="Self.FK_Subject_MarkComponent_MarkComponent" FromRole="MarkComponent" ToRole="Subject_MarkComponent" />
+        </EntityType>
+        <EntityType Name="Mark">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SubjectMarkComponentId" Type="Int32" />
+          <Property Name="StudentId" Type="Int32" />
+          <Property Name="SemesterId" Type="Int32" />
+          <Property Name="CourseId" Type="Int32" />
+          <Property Name="AverageMark" Type="Double" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsActivated" Type="Boolean" />
+          <Property Name="IsEnabled" Type="Boolean" />
+          <NavigationProperty Name="Course" Relationship="Self.FK_Marks_Course1" FromRole="Marks" ToRole="Course" />
+          <NavigationProperty Name="RealSemester" Relationship="Self.FK_Marks_RealSemester" FromRole="Marks" ToRole="RealSemester" />
+          <NavigationProperty Name="Student" Relationship="Self.FK_Marks_Student1" FromRole="Marks" ToRole="Student" />
+          <NavigationProperty Name="Subject_MarkComponent" Relationship="Self.FK_Marks_Subject_MarkComponent" FromRole="Marks" ToRole="Subject_MarkComponent" />
+          <Property Name="Comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="OldRollNumber">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProgramId" Type="Int32" />
+          <Property Name="StudentId" Type="Int32" />
+          <Property Name="OldRollNumber1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ChangedCurriculumDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Document_Student" Relationship="Self.FK_Document_Student_OldRollNumber" FromRole="OldRollNumber" ToRole="Document_Student" />
+          <NavigationProperty Name="Program" Relationship="Self.FK_OldRollNumber_Program" FromRole="OldRollNumber" ToRole="Program" />
+          <NavigationProperty Name="Student" Relationship="Self.FK_OldRollNumber_Student" FromRole="OldRollNumber" ToRole="Student" />
+        </EntityType>
+        <EntityType Name="Prequisite">
+          <Key>
+            <PropertyRef Name="SubjectId" />
+          </Key>
+          <Property Name="SubjectId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PrequisiteSubs" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FailMark" Type="Int32" />
+          <Property Name="EffectionSemester" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NewPrequisiteSubs" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="NewFailMark" Type="Int32" />
+          <NavigationProperty Name="Subject" Relationship="Self.FK_Prequisite_Subject" FromRole="Prequisite" ToRole="Subject" />
+        </EntityType>
+        <EntityType Name="Program">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FullName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OJT" Type="Int32" />
+          <Property Name="Capstone" Type="Int32" />
+          <Property Name="Graduate" Type="Int32" />
+          <Property Name="GraduateCredits" Type="Int32" />
+          <Property Name="SpecializedCredits" Type="Int32" />
+          <NavigationProperty Name="Curricula" Relationship="Self.FK_Curriculum_Program" FromRole="Program" ToRole="Curriculum" />
+          <NavigationProperty Name="OldRollNumbers" Relationship="Self.FK_OldRollNumber_Program" FromRole="Program" ToRole="OldRollNumber" />
+          <NavigationProperty Name="Students" Relationship="Self.FK_Student_Program" FromRole="Program" ToRole="Student" />
+        </EntityType>
+        <EntityType Name="RealSemester">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Semester" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsActivated" Type="Boolean" />
+          <NavigationProperty Name="Marks" Relationship="Self.FK_Marks_RealSemester" FromRole="RealSemester" ToRole="Marks" />
+          <NavigationProperty Name="Student_Status" Relationship="Self.FK_Student_Status_RealSemester" FromRole="RealSemester" ToRole="Student_Status" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" MaxLength="60" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Credentials_Roles" Relationship="Self.FK_Credentials_Roles_Roles" FromRole="Roles" ToRole="Credentials_Roles" />
+          <NavigationProperty Name="RolesAuthorities" Relationship="Self.FK_RolesAuthority_Roles" FromRole="Roles" ToRole="RolesAuthority" />
+        </EntityType>
+        <EntityType Name="RolesAuthority">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RolesId" Type="String" MaxLength="60" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MenuId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Dynamic_Menu" Relationship="Self.FK_RolesAuthority_Dynamic_Menu" FromRole="RolesAuthority" ToRole="Dynamic_Menu" />
+          <NavigationProperty Name="Role" Relationship="Self.FK_RolesAuthority_Roles" FromRole="RolesAuthority" ToRole="Roles" />
+        </EntityType>
+        <EntityType Name="Student">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProgramId" Type="Int32" />
+          <Property Name="RollNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FullName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DateOfBirth" Type="DateTime" Precision="3" />
+          <Property Name="Gender" Type="Boolean" />
+          <Property Name="Term" Type="Int32" />
+          <Property Name="Shift" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="PayRollClass" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PassCredits" Type="Int32" />
+          <Property Name="PassFailCredits" Type="Int32" />
+          <Property Name="PassFailAverageMark" Type="Double" />
+          <NavigationProperty Name="Document_Student" Relationship="Self.FK_Document_Student_Student" FromRole="Student" ToRole="Document_Student" />
+          <NavigationProperty Name="Marks" Relationship="Self.FK_Marks_Student1" FromRole="Student" ToRole="Marks" />
+          <NavigationProperty Name="OldRollNumbers" Relationship="Self.FK_OldRollNumber_Student" FromRole="Student" ToRole="OldRollNumber" />
+          <NavigationProperty Name="Program" Relationship="Self.FK_Student_Program" FromRole="Student" ToRole="Program" />
+          <NavigationProperty Name="Student_Status" Relationship="Self.FK_Student_Status_Student" FromRole="Student" ToRole="Student_Status" />
+          <NavigationProperty Name="Attendances" Relationship="CapstoneProjectModel.FK_Attendance_Student" FromRole="Student" ToRole="Attendance" />
+        </EntityType>
+        <EntityType Name="Student_Status">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StudentId" Type="Int32" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Term" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="SemesterId" Type="Int32" />
+          <NavigationProperty Name="RealSemester" Relationship="Self.FK_Student_Status_RealSemester" FromRole="Student_Status" ToRole="RealSemester" />
+          <NavigationProperty Name="Student" Relationship="Self.FK_Student_Status_Student" FromRole="Student_Status" ToRole="Student" />
+        </EntityType>
+        <EntityType Name="Subject">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Abbreviation" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsSpecialized" Type="Boolean" />
+          <Property Name="Type" Type="Int32" />
+          <NavigationProperty Name="Prequisite" Relationship="Self.FK_Prequisite_Subject" FromRole="Subject" ToRole="Prequisite" />
+          <NavigationProperty Name="Subject_Curriculum" Relationship="Self.FK_Subject_Curriculum_Subject" FromRole="Subject" ToRole="Subject_Curriculum" />
+          <NavigationProperty Name="Subject_MarkComponent" Relationship="Self.FK_Subject_MarkComponent_Subject" FromRole="Subject" ToRole="Subject_MarkComponent" />
+          <NavigationProperty Name="Subject1" Relationship="Self.Replacement_Subject" FromRole="Subject" ToRole="Subject1" />
+          <NavigationProperty Name="Subjects" Relationship="Self.Replacement_Subject" FromRole="Subject1" ToRole="Subject" />
+        </EntityType>
+        <EntityType Name="Subject_Curriculum">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SubjectId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CurriculumId" Type="Int32" />
+          <Property Name="OrdinalNumber" Type="Int32" />
+          <Property Name="TermNumber" Type="Int32" />
+          <Property Name="SubjectCredits" Type="Int32" />
+          <Property Name="Required" Type="Boolean" />
+          <NavigationProperty Name="Curriculum" Relationship="Self.FK_Subject_Curriculum_Curriculum" FromRole="Subject_Curriculum" ToRole="Curriculum" />
+          <NavigationProperty Name="Subject" Relationship="Self.FK_Subject_Curriculum_Subject" FromRole="Subject_Curriculum" ToRole="Subject" />
+        </EntityType>
+        <EntityType Name="Subject_MarkComponent">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SubjectId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MarkComponentId" Type="Int32" />
+          <Property Name="PercentWeight" Type="Double" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MarkComponent" Relationship="Self.FK_Subject_MarkComponent_MarkComponent" FromRole="Subject_MarkComponent" ToRole="MarkComponent" />
+          <NavigationProperty Name="Marks" Relationship="Self.FK_Marks_Subject_MarkComponent" FromRole="Subject_MarkComponent" ToRole="Marks" />
+          <NavigationProperty Name="Subject" Relationship="Self.FK_Subject_MarkComponent_Subject" FromRole="Subject_MarkComponent" ToRole="Subject" />
+          <Property Name="SyllabusName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsOngoing" Type="Boolean" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="NumberOfTests" Type="Int32" />
+          <Property Name="OldMarkName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FinalComponent" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <Association Name="FK_Marks_Course1">
+          <End Role="Course" Type="Self.Course" Multiplicity="0..1" />
+          <End Role="Marks" Type="Self.Mark" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Marks">
+              <PropertyRef Name="CourseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Credentials_Roles_Credentials">
+          <End Role="Credentials" Type="Self.Credential" Multiplicity="0..1" />
+          <End Role="Credentials_Roles" Type="Self.Credentials_Roles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Credentials">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Credentials_Roles">
+              <PropertyRef Name="CredentialsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Credentials_Roles_Roles">
+          <End Role="Roles" Type="Self.Role" Multiplicity="0..1" />
+          <End Role="Credentials_Roles" Type="Self.Credentials_Roles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Credentials_Roles">
+              <PropertyRef Name="RolesId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Curriculum_Program">
+          <End Role="Program" Type="Self.Program" Multiplicity="1" />
+          <End Role="Curriculum" Type="Self.Curriculum" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Program">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Curriculum">
+              <PropertyRef Name="ProgramId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_Student_Curriculum">
+          <End Role="Curriculum" Type="Self.Curriculum" Multiplicity="0..1" />
+          <End Role="Document_Student" Type="Self.Document_Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Curriculum">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Document_Student">
+              <PropertyRef Name="CurriculumId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Subject_Curriculum_Curriculum">
+          <End Role="Curriculum" Type="Self.Curriculum" Multiplicity="0..1" />
+          <End Role="Subject_Curriculum" Type="Self.Subject_Curriculum" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Curriculum">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Subject_Curriculum">
+              <PropertyRef Name="CurriculumId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_DocType">
+          <End Role="DocType" Type="Self.DocType" Multiplicity="1" />
+          <End Role="Document" Type="Self.Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DocType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Document">
+              <PropertyRef Name="DocTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_Document">
+          <End Role="Document" Type="Self.Document" Multiplicity="0..1" />
+          <End Role="Document1" Type="Self.Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Document1">
+              <PropertyRef Name="DocParentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_Student_Document">
+          <End Role="Document" Type="Self.Document" Multiplicity="1" />
+          <End Role="Document_Student" Type="Self.Document_Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Document_Student">
+              <PropertyRef Name="DocumentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_Student_OldRollNumber">
+          <End Role="OldRollNumber" Type="Self.OldRollNumber" Multiplicity="0..1" />
+          <End Role="Document_Student" Type="Self.Document_Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OldRollNumber">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Document_Student">
+              <PropertyRef Name="OldStudentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_Student_Student">
+          <End Role="Student" Type="Self.Student" Multiplicity="0..1" />
+          <End Role="Document_Student" Type="Self.Document_Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Document_Student">
+              <PropertyRef Name="StudentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RolesAuthority_Dynamic_Menu">
+          <End Role="Dynamic_Menu" Type="Self.Dynamic_Menu" Multiplicity="1" />
+          <End Role="RolesAuthority" Type="Self.RolesAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Dynamic_Menu">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RolesAuthority">
+              <PropertyRef Name="MenuId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Subject_MarkComponent_MarkComponent">
+          <End Role="MarkComponent" Type="Self.MarkComponent" Multiplicity="0..1" />
+          <End Role="Subject_MarkComponent" Type="Self.Subject_MarkComponent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MarkComponent">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Subject_MarkComponent">
+              <PropertyRef Name="MarkComponentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Marks_RealSemester">
+          <End Role="RealSemester" Type="Self.RealSemester" Multiplicity="0..1" />
+          <End Role="Marks" Type="Self.Mark" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RealSemester">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Marks">
+              <PropertyRef Name="SemesterId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Marks_Student1">
+          <End Role="Student" Type="Self.Student" Multiplicity="0..1" />
+          <End Role="Marks" Type="Self.Mark" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Marks">
+              <PropertyRef Name="StudentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Marks_Subject_MarkComponent">
+          <End Role="Subject_MarkComponent" Type="Self.Subject_MarkComponent" Multiplicity="0..1" />
+          <End Role="Marks" Type="Self.Mark" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Subject_MarkComponent">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Marks">
+              <PropertyRef Name="SubjectMarkComponentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OldRollNumber_Program">
+          <End Role="Program" Type="Self.Program" Multiplicity="0..1" />
+          <End Role="OldRollNumber" Type="Self.OldRollNumber" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Program">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OldRollNumber">
+              <PropertyRef Name="ProgramId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OldRollNumber_Student">
+          <End Role="Student" Type="Self.Student" Multiplicity="0..1" />
+          <End Role="OldRollNumber" Type="Self.OldRollNumber" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OldRollNumber">
+              <PropertyRef Name="StudentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Prequisite_Subject">
+          <End Role="Subject" Type="Self.Subject" Multiplicity="1" />
+          <End Role="Prequisite" Type="Self.Prequisite" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Subject">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Prequisite">
+              <PropertyRef Name="SubjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Student_Program">
+          <End Role="Program" Type="Self.Program" Multiplicity="0..1" />
+          <End Role="Student" Type="Self.Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Program">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Student">
+              <PropertyRef Name="ProgramId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Student_Status_RealSemester">
+          <End Role="RealSemester" Type="Self.RealSemester" Multiplicity="0..1" />
+          <End Role="Student_Status" Type="Self.Student_Status" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RealSemester">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Student_Status">
+              <PropertyRef Name="SemesterId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RolesAuthority_Roles">
+          <End Role="Roles" Type="Self.Role" Multiplicity="1" />
+          <End Role="RolesAuthority" Type="Self.RolesAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RolesAuthority">
+              <PropertyRef Name="RolesId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Student_Status_Student">
+          <End Role="Student" Type="Self.Student" Multiplicity="0..1" />
+          <End Role="Student_Status" Type="Self.Student_Status" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Student_Status">
+              <PropertyRef Name="StudentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Subject_Curriculum_Subject">
+          <End Role="Subject" Type="Self.Subject" Multiplicity="0..1" />
+          <End Role="Subject_Curriculum" Type="Self.Subject_Curriculum" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Subject">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Subject_Curriculum">
+              <PropertyRef Name="SubjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Subject_MarkComponent_Subject">
+          <End Role="Subject" Type="Self.Subject" Multiplicity="0..1" />
+          <End Role="Subject_MarkComponent" Type="Self.Subject_MarkComponent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Subject">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Subject_MarkComponent">
+              <PropertyRef Name="SubjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Replacement_Subject">
+          <End Role="Subject" Type="Self.Subject" Multiplicity="*" />
+          <End Role="Subject1" Type="Self.Subject" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="CapstoneProjectEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Courses" EntityType="Self.Course" />
+          <EntitySet Name="Credentials" EntityType="Self.Credential" />
+          <EntitySet Name="Credentials_Roles" EntityType="Self.Credentials_Roles" />
+          <EntitySet Name="Curricula" EntityType="Self.Curriculum" />
+          <EntitySet Name="DocTypes" EntityType="Self.DocType" />
+          <EntitySet Name="Documents" EntityType="Self.Document" />
+          <EntitySet Name="Document_Student" EntityType="Self.Document_Student" />
+          <EntitySet Name="Dynamic_Menu" EntityType="Self.Dynamic_Menu" />
+          <EntitySet Name="MarkComponents" EntityType="Self.MarkComponent" />
+          <EntitySet Name="Marks" EntityType="Self.Mark" />
+          <EntitySet Name="OldRollNumbers" EntityType="Self.OldRollNumber" />
+          <EntitySet Name="Prequisites" EntityType="Self.Prequisite" />
+          <EntitySet Name="Programs" EntityType="Self.Program" />
+          <EntitySet Name="RealSemesters" EntityType="Self.RealSemester" />
+          <EntitySet Name="Roles" EntityType="Self.Role" />
+          <EntitySet Name="RolesAuthorities" EntityType="Self.RolesAuthority" />
+          <EntitySet Name="Students" EntityType="Self.Student" />
+          <EntitySet Name="Student_Status" EntityType="Self.Student_Status" />
+          <EntitySet Name="Subjects" EntityType="Self.Subject" />
+          <EntitySet Name="Subject_Curriculum" EntityType="Self.Subject_Curriculum" />
+          <EntitySet Name="Subject_MarkComponent" EntityType="Self.Subject_MarkComponent" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <AssociationSet Name="FK_Marks_Course1" Association="Self.FK_Marks_Course1">
+            <End Role="Course" EntitySet="Courses" />
+            <End Role="Marks" EntitySet="Marks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Credentials_Roles_Credentials" Association="Self.FK_Credentials_Roles_Credentials">
+            <End Role="Credentials" EntitySet="Credentials" />
+            <End Role="Credentials_Roles" EntitySet="Credentials_Roles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Credentials_Roles_Roles" Association="Self.FK_Credentials_Roles_Roles">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Credentials_Roles" EntitySet="Credentials_Roles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Curriculum_Program" Association="Self.FK_Curriculum_Program">
+            <End Role="Program" EntitySet="Programs" />
+            <End Role="Curriculum" EntitySet="Curricula" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Student_Curriculum" Association="Self.FK_Document_Student_Curriculum">
+            <End Role="Curriculum" EntitySet="Curricula" />
+            <End Role="Document_Student" EntitySet="Document_Student" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Subject_Curriculum_Curriculum" Association="Self.FK_Subject_Curriculum_Curriculum">
+            <End Role="Curriculum" EntitySet="Curricula" />
+            <End Role="Subject_Curriculum" EntitySet="Subject_Curriculum" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_DocType" Association="Self.FK_Document_DocType">
+            <End Role="DocType" EntitySet="DocTypes" />
+            <End Role="Document" EntitySet="Documents" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Document" Association="Self.FK_Document_Document">
+            <End Role="Document" EntitySet="Documents" />
+            <End Role="Document1" EntitySet="Documents" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Student_Document" Association="Self.FK_Document_Student_Document">
+            <End Role="Document" EntitySet="Documents" />
+            <End Role="Document_Student" EntitySet="Document_Student" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Student_OldRollNumber" Association="Self.FK_Document_Student_OldRollNumber">
+            <End Role="OldRollNumber" EntitySet="OldRollNumbers" />
+            <End Role="Document_Student" EntitySet="Document_Student" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Student_Student" Association="Self.FK_Document_Student_Student">
+            <End Role="Student" EntitySet="Students" />
+            <End Role="Document_Student" EntitySet="Document_Student" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RolesAuthority_Dynamic_Menu" Association="Self.FK_RolesAuthority_Dynamic_Menu">
+            <End Role="Dynamic_Menu" EntitySet="Dynamic_Menu" />
+            <End Role="RolesAuthority" EntitySet="RolesAuthorities" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Subject_MarkComponent_MarkComponent" Association="Self.FK_Subject_MarkComponent_MarkComponent">
+            <End Role="MarkComponent" EntitySet="MarkComponents" />
+            <End Role="Subject_MarkComponent" EntitySet="Subject_MarkComponent" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Marks_RealSemester" Association="Self.FK_Marks_RealSemester">
+            <End Role="RealSemester" EntitySet="RealSemesters" />
+            <End Role="Marks" EntitySet="Marks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Marks_Student1" Association="Self.FK_Marks_Student1">
+            <End Role="Student" EntitySet="Students" />
+            <End Role="Marks" EntitySet="Marks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Marks_Subject_MarkComponent" Association="Self.FK_Marks_Subject_MarkComponent">
+            <End Role="Subject_MarkComponent" EntitySet="Subject_MarkComponent" />
+            <End Role="Marks" EntitySet="Marks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OldRollNumber_Program" Association="Self.FK_OldRollNumber_Program">
+            <End Role="Program" EntitySet="Programs" />
+            <End Role="OldRollNumber" EntitySet="OldRollNumbers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OldRollNumber_Student" Association="Self.FK_OldRollNumber_Student">
+            <End Role="Student" EntitySet="Students" />
+            <End Role="OldRollNumber" EntitySet="OldRollNumbers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Prequisite_Subject" Association="Self.FK_Prequisite_Subject">
+            <End Role="Subject" EntitySet="Subjects" />
+            <End Role="Prequisite" EntitySet="Prequisites" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Student_Program" Association="Self.FK_Student_Program">
+            <End Role="Program" EntitySet="Programs" />
+            <End Role="Student" EntitySet="Students" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Student_Status_RealSemester" Association="Self.FK_Student_Status_RealSemester">
+            <End Role="RealSemester" EntitySet="RealSemesters" />
+            <End Role="Student_Status" EntitySet="Student_Status" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RolesAuthority_Roles" Association="Self.FK_RolesAuthority_Roles">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="RolesAuthority" EntitySet="RolesAuthorities" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Student_Status_Student" Association="Self.FK_Student_Status_Student">
+            <End Role="Student" EntitySet="Students" />
+            <End Role="Student_Status" EntitySet="Student_Status" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Subject_Curriculum_Subject" Association="Self.FK_Subject_Curriculum_Subject">
+            <End Role="Subject" EntitySet="Subjects" />
+            <End Role="Subject_Curriculum" EntitySet="Subject_Curriculum" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Subject_MarkComponent_Subject" Association="Self.FK_Subject_MarkComponent_Subject">
+            <End Role="Subject" EntitySet="Subjects" />
+            <End Role="Subject_MarkComponent" EntitySet="Subject_MarkComponent" />
+          </AssociationSet>
+          <AssociationSet Name="Replacement_Subject" Association="Self.Replacement_Subject">
+            <End Role="Subject" EntitySet="Subjects" />
+            <End Role="Subject1" EntitySet="Subjects" />
+          </AssociationSet>
+          <EntitySet Name="Attendances" EntityType="CapstoneProjectModel.Attendance" />
+          <AssociationSet Name="FK_Attendance_Course" Association="CapstoneProjectModel.FK_Attendance_Course">
+            <End Role="Course" EntitySet="Courses" />
+            <End Role="Attendance" EntitySet="Attendances" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Attendance_Student" Association="CapstoneProjectModel.FK_Attendance_Student">
+            <End Role="Student" EntitySet="Students" />
+            <End Role="Attendance" EntitySet="Attendances" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Attendance">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StudentId" Type="Int32" />
+          <Property Name="CourseId" Type="Int32" />
+          <Property Name="Taker" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="RecordTime" Type="DateTime" Precision="3" />
+          <Property Name="TakeAttendance" Type="Boolean" />
+          <Property Name="NumberOfSlots" Type="Int32" />
+          <NavigationProperty Name="Course" Relationship="CapstoneProjectModel.FK_Attendance_Course" FromRole="Attendance" ToRole="Course" />
+          <NavigationProperty Name="Student" Relationship="CapstoneProjectModel.FK_Attendance_Student" FromRole="Attendance" ToRole="Student" />
+        </EntityType>
+        <Association Name="FK_Attendance_Course">
+          <End Type="CapstoneProjectModel.Course" Role="Course" Multiplicity="0..1" />
+          <End Type="CapstoneProjectModel.Attendance" Role="Attendance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Attendance">
+              <PropertyRef Name="CourseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Attendance_Student">
+          <End Type="CapstoneProjectModel.Student" Role="Student" Multiplicity="0..1" />
+          <End Type="CapstoneProjectModel.Attendance" Role="Attendance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Attendance">
+              <PropertyRef Name="StudentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CapstoneProjectModelStoreContainer" CdmEntityContainer="CapstoneProjectEntities">
+          <EntitySetMapping Name="Courses">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.Course">
+              <MappingFragment StoreEntitySet="Course">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Semester" ColumnName="Semester" />
+                <ScalarProperty Name="SubjectCode" ColumnName="SubjectCode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Credentials">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.Credential">
+              <MappingFragment StoreEntitySet="Credentials">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Fullname" ColumnName="Fullname" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Picture" ColumnName="Picture" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="StudentRollNumber" ColumnName="StudentRollNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Credentials_Roles">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.Credentials_Roles">
+              <MappingFragment StoreEntitySet="Credentials_Roles">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CredentialsId" ColumnName="CredentialsId" />
+                <ScalarProperty Name="RolesId" ColumnName="RolesId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Curricula">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.Curriculum">
+              <MappingFragment StoreEntitySet="Curriculum">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ProgramId" ColumnName="ProgramId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DocTypes">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.DocType">
+              <MappingFragment StoreEntitySet="DocType">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Documents">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.Document">
+              <MappingFragment StoreEntitySet="Document">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DocTypeId" ColumnName="DocTypeId" />
+                <ScalarProperty Name="DocParentId" ColumnName="DocParentId" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Document_Student">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.Document_Student">
+              <MappingFragment StoreEntitySet="Document_Student">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DocumentId" ColumnName="DocumentId" />
+                <ScalarProperty Name="StudentId" ColumnName="StudentId" />
+                <ScalarProperty Name="OldStudentId" ColumnName="OldStudentId" />
+                <ScalarProperty Name="CurriculumId" ColumnName="CurriculumId" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Dynamic_Menu">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.Dynamic_Menu">
+              <MappingFragment StoreEntitySet="Dynamic_Menu">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="FunctionGroup" ColumnName="FunctionGroup" />
+                <ScalarProperty Name="FunctionName" ColumnName="FunctionName" />
+                <ScalarProperty Name="GroupName" ColumnName="GroupName" />
+                <ScalarProperty Name="Link" ColumnName="Link" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MarkComponents">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.MarkComponent">
+              <MappingFragment StoreEntitySet="MarkComponent">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Marks">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.Mark">
+              <MappingFragment StoreEntitySet="Marks">
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="SubjectMarkComponentId" ColumnName="SubjectMarkComponentId" />
+                <ScalarProperty Name="StudentId" ColumnName="StudentId" />
+                <ScalarProperty Name="SemesterId" ColumnName="SemesterId" />
+                <ScalarProperty Name="CourseId" ColumnName="CourseId" />
+                <ScalarProperty Name="AverageMark" ColumnName="AverageMark" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="IsActivated" ColumnName="IsActivated" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OldRollNumbers">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.OldRollNumber">
+              <MappingFragment StoreEntitySet="OldRollNumber">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ProgramId" ColumnName="ProgramId" />
+                <ScalarProperty Name="StudentId" ColumnName="StudentId" />
+                <ScalarProperty Name="OldRollNumber1" ColumnName="OldRollNumber" />
+                <ScalarProperty Name="ChangedCurriculumDate" ColumnName="ChangedCurriculumDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Prequisites">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.Prequisite">
+              <MappingFragment StoreEntitySet="Prequisite">
+                <ScalarProperty Name="SubjectId" ColumnName="SubjectId" />
+                <ScalarProperty Name="PrequisiteSubs" ColumnName="PrequisiteSubs" />
+                <ScalarProperty Name="FailMark" ColumnName="FailMark" />
+                <ScalarProperty Name="EffectionSemester" ColumnName="EffectionSemester" />
+                <ScalarProperty Name="NewPrequisiteSubs" ColumnName="NewPrequisiteSubs" />
+                <ScalarProperty Name="NewFailMark" ColumnName="NewFailMark" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Programs">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.Program">
+              <MappingFragment StoreEntitySet="Program">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="OJT" ColumnName="OJT" />
+                <ScalarProperty Name="Capstone" ColumnName="Capstone" />
+                <ScalarProperty Name="Graduate" ColumnName="Graduate" />
+                <ScalarProperty Name="GraduateCredits" ColumnName="GraduateCredits" />
+                <ScalarProperty Name="SpecializedCredits" ColumnName="SpecializedCredits" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RealSemesters">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.RealSemester">
+              <MappingFragment StoreEntitySet="RealSemester">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Semester" ColumnName="Semester" />
+                <ScalarProperty Name="IsActivated" ColumnName="IsActivated" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.Role">
+              <MappingFragment StoreEntitySet="Roles">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RolesAuthorities">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.RolesAuthority">
+              <MappingFragment StoreEntitySet="RolesAuthority">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="RolesId" ColumnName="RolesId" />
+                <ScalarProperty Name="MenuId" ColumnName="MenuId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Students">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.Student">
+              <MappingFragment StoreEntitySet="Student">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ProgramId" ColumnName="ProgramId" />
+                <ScalarProperty Name="RollNumber" ColumnName="RollNumber" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Term" ColumnName="Term" />
+                <ScalarProperty Name="Shift" ColumnName="Shift" />
+                <ScalarProperty Name="PayRollClass" ColumnName="PayRollClass" />
+                <ScalarProperty Name="PassCredits" ColumnName="PassCredits" />
+                <ScalarProperty Name="PassFailCredits" ColumnName="PassFailCredits" />
+                <ScalarProperty Name="PassFailAverageMark" ColumnName="PassFailAverageMark" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Student_Status">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.Student_Status">
+              <MappingFragment StoreEntitySet="Student_Status">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="StudentId" ColumnName="StudentId" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Term" ColumnName="Term" />
+                <ScalarProperty Name="SemesterId" ColumnName="SemesterId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Subjects">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.Subject">
+              <MappingFragment StoreEntitySet="Subject">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Abbreviation" ColumnName="Abbreviation" />
+                <ScalarProperty Name="IsSpecialized" ColumnName="IsSpecialized" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Subject_Curriculum">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.Subject_Curriculum">
+              <MappingFragment StoreEntitySet="Subject_Curriculum">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="SubjectId" ColumnName="SubjectId" />
+                <ScalarProperty Name="CurriculumId" ColumnName="CurriculumId" />
+                <ScalarProperty Name="OrdinalNumber" ColumnName="OrdinalNumber" />
+                <ScalarProperty Name="TermNumber" ColumnName="TermNumber" />
+                <ScalarProperty Name="SubjectCredits" ColumnName="SubjectCredits" />
+                <ScalarProperty Name="Required" ColumnName="Required" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Subject_MarkComponent">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.Subject_MarkComponent">
+              <MappingFragment StoreEntitySet="Subject_MarkComponent">
+                <ScalarProperty Name="FinalComponent" ColumnName="FinalComponent" />
+                <ScalarProperty Name="OldMarkName" ColumnName="OldMarkName" />
+                <ScalarProperty Name="NumberOfTests" ColumnName="NumberOfTests" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsOngoing" ColumnName="IsOngoing" />
+                <ScalarProperty Name="SyllabusName" ColumnName="SyllabusName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="SubjectId" ColumnName="SubjectId" />
+                <ScalarProperty Name="MarkComponentId" ColumnName="MarkComponentId" />
+                <ScalarProperty Name="PercentWeight" ColumnName="PercentWeight" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="Replacement_Subject" TypeName="CapstoneProjectModel.Replacement_Subject" StoreEntitySet="Replacement_Subject">
+            <EndProperty Name="Subject">
+              <ScalarProperty Name="Id" ColumnName="SubjectId" />
+            </EndProperty>
+            <EndProperty Name="Subject1">
+              <ScalarProperty Name="Id" ColumnName="ReplacementId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="Attendances">
+            <EntityTypeMapping TypeName="CapstoneProjectModel.Attendance">
+              <MappingFragment StoreEntitySet="Attendance">
+                <ScalarProperty Name="NumberOfSlots" ColumnName="NumberOfSlots" />
+                <ScalarProperty Name="TakeAttendance" ColumnName="TakeAttendance" />
+                <ScalarProperty Name="RecordTime" ColumnName="RecordTime" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Taker" ColumnName="Taker" />
+                <ScalarProperty Name="CourseId" ColumnName="CourseId" />
+                <ScalarProperty Name="StudentId" ColumnName="StudentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

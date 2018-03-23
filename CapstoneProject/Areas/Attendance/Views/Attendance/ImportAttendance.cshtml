@@ -1,0 +1,125 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="/Resources/plugins/dist/css/upload-page.css">
+<section class="content">
+    <div class="box">
+        <div class="b-header">
+            <h1>Nhập danh sách có  mặt</h1>
+            <hr>
+        </div>
+
+        <div class="b-body">
+            <div class="row">
+                <div class="offset-8 col-md-4">
+                    <div class="pull-right">
+
+                        <button class="btn-primary btn" id="import-mark-btn">Chọn file</button>
+                        <button class="btn btn-primary hidden" id="submit-button">Import</button>
+                        <input id="upload-file" class="hidden" type="file" name="upload-file" />
+
+                        <div class="progress" style="display:none">
+                            <div id="upload-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                 aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                @*<select id="semester-selector"></select>*@
+            </div>
+           
+        </div>
+
+    </div>
+</section>
+<script>
+     $('#import-mark-btn').click(function () {
+        $('#upload-file').trigger("click");
+    });
+
+    $('#upload-file').on("change", function () {
+        var fileName = this.files[0].name;
+        $("#filename").html(fileName);
+
+        if (fileName != null) {
+            $('#import-mark-btn').addClass("hidden");
+            $('#submit-button').removeClass("hidden");
+            $('#cancel-file').removeClass("hidden");
+            $('#file-info').removeClass("hidden");
+            $('#file-info span').html(fileName);
+        } else {
+            $('#import-mark-btn').removeClass("hidden");
+            $('#submit-button').addClass("hidden");
+            $('#cancel-file').addClass("hidden");
+            $('#file-info').addClass("hidden");
+        }
+    });
+
+    $('#cancel-file').click(function () {
+        $('#import-mark-btn').removeClass("hidden");
+        $('#submit-button').addClass("hidden");
+        $('#cancel-file').addClass("hidden");
+        $('#file-info').addClass("hidden");
+    });
+
+    $('#submit-button').on("click", function () {
+        var file = $("#upload-file")[0].files[0];
+
+        //if (file.size > 20971520) {
+        //    toastr.error('Max upload size is 20MB!');
+        //}
+        //else{
+            var data = new FormData();
+            for (var i = 0; i < $("#upload-file")[0].files.length; i++) {
+                data.append("file" + i, $("#upload-file")[0].files[i]);
+            }
+            $(".progress").show();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("ImportFromFap")',
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    xhr: function() {
+                        var settingXhr = $.ajaxSettings.xhr();
+                        if (settingXhr.upload) {
+                            // For handling the progress of the upload
+                            settingXhr.upload.addEventListener('progress', function(e) {
+                                if (e.lengthComputable) {
+                                    $('#upload-progress-bar').removeClass('progress-bar-danger');
+                                    var percent = Math.ceil(e.loaded/e.total*100);
+                                    $('#upload-progress-bar').attr('aria-valuenow', percent).css('width',percent+'%');
+                                    $('#upload-progress-bar').attr('aria-valuemax', 100);
+                                    $('#upload-progress-bar').html(percent+"%");
+                                    if(percent==100){
+                                        $('#upload-progress-bar').html("Processing...");
+                                    }
+                                }
+                            } , false);
+                        }
+                        return settingXhr;
+                    },
+                    success: function (result) {
+                        if (result.success) {
+                            toastr.success(result.message);
+                            $('#upload-progress-bar').html("Completed!");
+                            window.location.reload();
+
+                        } else {
+                            toastr.error(result.message);
+                            $('#upload-progress-bar').html("Fail to upload!");
+                            $('#upload-progress-bar').addClass('progress-bar-danger');
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+                        var err = "Error " + " " + status + " " + p3 + " " + p4;
+                        toastr.error(err);
+                        $('#upload-progress-bar').html("Fail to upload!");
+                        $('#upload-progress-bar').addClass('progress-bar-danger');
+                    }
+                });
+            //}
+    });
+</script>

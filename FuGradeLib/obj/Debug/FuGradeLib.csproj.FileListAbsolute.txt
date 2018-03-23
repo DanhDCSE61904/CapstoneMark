@@ -1,0 +1,11 @@
+F:\FPT Finance Academic\FGReader\FuGradeLib\bin\Debug\FuGradeLib.dll
+F:\FPT Finance Academic\FGReader\FuGradeLib\bin\Debug\FuGradeLib.pdb
+F:\FPT Finance Academic\FGReader\FuGradeLib\obj\Debug\FuGradeLib.csproj.CoreCompileInputs.cache
+F:\FPT Finance Academic\FGReader\FuGradeLib\obj\Debug\FuGradeLib.dll
+F:\FPT Finance Academic\FGReader\FuGradeLib\obj\Debug\FuGradeLib.pdb
+F:\FPT Finance Academic\FGReader\FuGradeLib\obj\Debug\FuGradeLib.csprojResolveAssemblyReference.cache
+E:\Another CAPSTONE PROJECT\CapstoneProject\FuGradeLib\bin\Debug\FuGradeLib.dll
+E:\Another CAPSTONE PROJECT\CapstoneProject\FuGradeLib\bin\Debug\FuGradeLib.pdb
+E:\Another CAPSTONE PROJECT\CapstoneProject\FuGradeLib\obj\Debug\FuGradeLib.csprojResolveAssemblyReference.cache
+E:\Another CAPSTONE PROJECT\CapstoneProject\FuGradeLib\obj\Debug\FuGradeLib.dll
+E:\Another CAPSTONE PROJECT\CapstoneProject\FuGradeLib\obj\Debug\FuGradeLib.pdb
