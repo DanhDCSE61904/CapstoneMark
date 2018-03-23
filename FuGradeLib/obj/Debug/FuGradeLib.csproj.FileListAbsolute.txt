@@ -9,3 +9,8 @@ E:\Another CAPSTONE PROJECT\CapstoneProject\FuGradeLib\bin\Debug\FuGradeLib.pdb
 E:\Another CAPSTONE PROJECT\CapstoneProject\FuGradeLib\obj\Debug\FuGradeLib.csprojResolveAssemblyReference.cache
 E:\Another CAPSTONE PROJECT\CapstoneProject\FuGradeLib\obj\Debug\FuGradeLib.dll
 E:\Another CAPSTONE PROJECT\CapstoneProject\FuGradeLib\obj\Debug\FuGradeLib.pdb
+E:\CapstoneMark\FuGradeLib\bin\Debug\FuGradeLib.dll
+E:\CapstoneMark\FuGradeLib\bin\Debug\FuGradeLib.pdb
+E:\CapstoneMark\FuGradeLib\obj\Debug\FuGradeLib.csprojResolveAssemblyReference.cache
+E:\CapstoneMark\FuGradeLib\obj\Debug\FuGradeLib.dll
+E:\CapstoneMark\FuGradeLib\obj\Debug\FuGradeLib.pdb
