@@ -50,8 +50,8 @@
     });
     function LoadStudentSelect() {
         $.ajax({
-            type: "POST",
-            url: '@Url.Action("LoadStudentSelector")',
+            type: "GET",
+            url: '@Url.Action("LoadStudentSelectorCross")',
             success: function (result) {
                 for (var i = 0; i < result.data.length; i++) {
                     $('#student-selector').append("<option value='" + result.data[i].RollNumber + "'>" + result.data[i].RollNumber + " - " + result.data[i].FullName + "</option>");

@@ -153,7 +153,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
         }
         [HttpGet]
         [AllowCrossSite]
-        public JsonResult LoadStudentSelector()
+        public JsonResult LoadStudentSelectorCross()
         {
             using (var context = new CapstoneProjectEntities())
             {
@@ -165,6 +165,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
                 return Json(new { data=students  },JsonRequestBehavior.AllowGet);
             }
         }
+
 
         public ActionResult UploadMarkFiles()
         {
