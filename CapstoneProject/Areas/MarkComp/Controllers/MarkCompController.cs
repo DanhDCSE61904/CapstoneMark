@@ -131,12 +131,16 @@ namespace CapstoneProject.Areas.MarkComp.Controllers
                                     for (int i = firstRecordRow; i < totalRow; i++)
                                     {
                                         //Add MarkComponent
-                                        //    var markCompName = ws.Cells[i, 3].Text.ToUpper();
+                                        //    var markCompName = ws.Cells[i, 7].Text.ToUpper();
+                                        //    if (!ws.Cells[i, 7].Text.ToUpper().Contains("PHASE"))
+                                        //    {
+                                        //        markCompName = new String(ws.Cells[i, 7].Text.Where(c => (c < '0' || c > '9')).ToArray()).ToUpper();
+                                        //    }
                                         //    var markCompExist = context.MarkComponents.Where(q => q.Name.Equals(markCompName)).FirstOrDefault();
                                         //    if (markCompExist == null)
                                         //    {
                                         //        MarkComponent newMarkComp = new MarkComponent();
-                                        //        newMarkComp.Name = ws.Cells[i, 3].Text.ToUpper();
+                                        //        newMarkComp.Name = markCompName;
                                         //        context.MarkComponents.Add(newMarkComp);
                                         //        context.SaveChanges();
                                         //    }
@@ -149,12 +153,12 @@ namespace CapstoneProject.Areas.MarkComp.Controllers
                                         //Add Syllabus
                                         String tempOldMarkName = "";
 
-                                        if (!ws.Cells[i, 7].Text.ToUpper().Contains("PHASE"))
-                                        {
-                                            tempOldMarkName = new String(ws.Cells[i, 7].Text.Where(c => (c < '0' || c > '9')).ToArray());
-                                        }
-
-                                        String tempKey = ws.Cells[i, 1].Text.ToUpper() + "_" + ws.Cells[i, 2].Text.ToUpper() + "_" + ws.Cells[i, 3].Text.ToUpper() + "_" + tempOldMarkName;
+                                        //if (!ws.Cells[i, 7].Text.ToUpper().Contains("PHASE"))
+                                        //{
+                                        //    tempOldMarkName = new String(ws.Cells[i, 7].Text.Where(c => (c < '0' || c > '9')).ToArray());
+                                        //}
+                                        // 1: SubjectCode, 2: Syllabus Name, 3: MarkName
+                                        String tempKey = ws.Cells[i, 1].Text.ToUpper() + "_" + ws.Cells[i, 2].Text.ToUpper() + "_" + ws.Cells[i, 7].Text.ToUpper() + "_" + tempOldMarkName;
 
                                         //if (ws.Cells[i, 3].Text.ToUpper().Contains("FINAL")|| ws.Cells[i, 3].Text.ToUpper().Contains("MIDTERM") || ws.Cells[i, 3].Text.ToUpper().Contains("MT"))
                                         //{
@@ -163,7 +167,11 @@ namespace CapstoneProject.Areas.MarkComp.Controllers
 
                                         if (!dic.ContainsKey(tempKey))
                                         {
-                                            var markCompName = ws.Cells[i, 3].Text.ToUpper();
+                                            var markCompName = ws.Cells[i, 7].Text.ToUpper();
+                                            if (!ws.Cells[i, 7].Text.ToUpper().Contains("PHASE"))
+                                            {
+                                                markCompName = new String(ws.Cells[i, 7].Text.Where(c => (c < '0' || c > '9')).ToArray()).ToUpper();
+                                            }
                                             bool tempGoing = false;
                                             if (ws.Cells[i, 4].Text.Equals("1"))
                                             {
@@ -175,23 +183,22 @@ namespace CapstoneProject.Areas.MarkComp.Controllers
                                                 tempActive = true;
                                             }
                                             Subject_MarkComponent subMark = new Subject_MarkComponent();
-                                            var markCompExist = context.MarkComponents.Where(q => q.Name.Equals(markCompName)).FirstOrDefault();
+                                            var markCompExist = context.MarkComponents.Where(q => q.Name.ToUpper().Equals(markCompName)).FirstOrDefault();
+                                            if (markCompExist == null)
+                                            {
+                                                Console.WriteLine();
+                                            }
                                             subMark.MarkComponentId = markCompExist.Id;
                                             subMark.SyllabusName = ws.Cells[i, 2].Text;
                                             subMark.SubjectId = ws.Cells[i, 1].Text.ToUpper();
                                             subMark.NumberOfTests = int.Parse(ws.Cells[i, 5].Text.ToUpper());
-                                            subMark.PercentWeight = int.Parse(ws.Cells[i, 6].Text.ToUpper());
+                                            subMark.PercentWeight = double.Parse(ws.Cells[i, 8].Text.ToUpper());
                                             subMark.Name = ws.Cells[i, 1].Text.ToUpper() + "_" + markCompExist.Name.ToUpper();
                                             subMark.IsActive = tempActive;
                                             subMark.IsOngoing = tempGoing;
-                                            if (!ws.Cells[i, 7].Text.ToUpper().Contains("PHASE"))
-                                            {
-                                                subMark.OldMarkName = new String(ws.Cells[i, 7].Text.Where(c => (c < '0' || c > '9')).ToArray());
-                                            }
-                                            else
-                                            {
-                                                subMark.OldMarkName = ws.Cells[i, 7].Text;
-                                            }
+
+                                            subMark.MarkName = ws.Cells[i, 7].Text;
+
                                             dic.Add(tempKey, subMark);
                                         }
 

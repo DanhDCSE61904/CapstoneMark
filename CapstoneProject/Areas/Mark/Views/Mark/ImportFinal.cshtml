@@ -6,7 +6,7 @@
 <section class="content">
     <div class="box">
         <div class="b-header">
-            <h1>Nhập danh sách khóa học</h1>
+            <h1>Nhập điểm thi cuối kỳ</h1>
             <hr>
         </div>
 
@@ -14,11 +14,10 @@
             <div class="row">
                 <div class="offset-8 col-md-4">
                     <div class="pull-right">
-                        @*<button class="btn-success btn" id="download-template-btn"><i class="fa fa-download"></i> template</button>*@
-
-                        @*<button class="btn-primary btn" id="import-mark-btn">chọn file</button>
-                        <button class="btn btn-primary hidden" id="submit-button">import</button>
-                        <input id="upload-file" class="hidden" type="file" webkitdirectory directory name="upload-file" />*@
+                        @*<button class="btn-success btn" id="download-template-btn"><i class="fa fa-download"></i> Template</button>*@
+                        @*<button class="btn-primary btn" id="import-mark-btn">Chọn file</button>
+                            <button class="btn btn-primary hidden" id="submit-button">Import</button>
+                            <input id="upload-file" class="hidden" type="file" webkitdirectory directory name="upload-file" />*@
 
                         <button class="btn-primary btn" id="import-mark-btn">Chọn file</button>
                         <button class="btn btn-primary hidden" id="submit-button">Import</button>
@@ -34,8 +33,7 @@
                 </div>
             </div>
             <div>
-            <select id="semester-selector">
-            </select>
+                <select id="semester-selector"></select>
                 <button id="btn-export-allstudentmark" class="btn btn-success" title="Export all mark of student by semester">
                     <i class="fa fa-download"></i>Export Semester Excel
                 </button>
@@ -69,101 +67,6 @@
     });
 
     
-
-    function LoadSemester() {
-        $.ajax({
-            type: "POST",
-            url: '@Url.Action("LoadSemesterSelect")',
-            success: function (result) {
-                for (var i = 0; i < result.result.length; i++) {
-                    $('#semester-selector').append("<option value='" + result.result[i].SemesterId + "'>" + result.result[i].Semester + "</option>");
-                }
-                LoadTable();
-            }
-        });
-    }
-
-    $('#btn-export-allstudentmark').on("click", function () {
-        $('#form-export-allstudentmark input[name="semesterId"]').val($('#semester-selector').val());
-        $('#form-export-allstudentmark').submit();
-    });
-
-    $('#semester-selector').on('change', function () {
-        //$('#mark-table').DataTable()._fnpagechange(0);
-        $('#mark-table').DataTable().ajax.reload();
-    });
-
-    @*function LoadTable() {
-        //if (table != null) {
-        //    //     table._fnpagechange(0);
-        //    //     table._fnajaxupdate();
-        //    table.ajax.reload();
-        //}
-
-        $('#mark-table').DataTable({
-            searchDelay: 1000,
-            "bServerSide": true,
-            "bFilter": true,
-            "bRetrieve": true,
-            "sScrollX": "100%",
-            "bScrollCollapse": true,
-            "bDeferRender": true,
-            "bProcessing": true,
-            "bSort": false,
-            "sAjaxSource": '@Url.Action("LoadMarkTable")',
-            "fnServerParams": function (aoData) {
-                aoData.push({ "name": "semesterId", "value": $('#semester-selector').val() })
-            },
-            "oLanguage": {
-                "sSearchPlaceholder": "",
-                "sSearch": "Tìm kiếm:",
-                "sZeroRecords": "Không có dữ liệu phù hợp",
-                "sInfo": "Hiển thị từ _START_ đến _END_ trên tổng số _TOTAL_ dòng",
-                "sEmptyTable": "Không có dữ liệu",
-                "sInfoFiltered": " - lọc ra từ _MAX_ dòng",
-                "sLengthMenu": "Hiển thị _MENU_ dòng",
-                "sProcessing": "Đang xử lý...",
-                "oPaginate": {
-                    "sNext": "<i class='fa fa-chevron-right'></i>",
-                    "sPrevious": "<i class='fa fa-chevron-left'></i>"
-                }
-
-            },
-            "aoColumnDefs": [
-                {
-                    "aTargets": [1],
-                    "sClass": "min-width-150",
-                    "bSortable": false,
-                    "sWidth": "150px"
-                },
-                {
-                    "aTargets": [0, 1, 2, 3, 4],
-                    "bSortable": false,
-                },
-                {
-                    "aTargets": [0, 1, 2, 3, 4],
-                    "sClass": "text-center",
-                }
-            ],
-            "bAutoWidth": false,
-            //dom: 'Bfrtip',
-            lengthMenu: [[10, 25, 50], ['10 dòng', '25 dòng', '50 dòng', 'Tất cả']],
-            //buttons: [
-            //    {
-            //        extend: 'pageLength',
-            //        text: 'Hiển thị 10 dòng',
-            //    },
-            //    {
-            //        extend: 'excel',
-            //        text: 'Xuất Excel',
-            //    },
-            //    {
-            //        extend: 'pdf',
-            //        text: 'Xuất PDF',
-            //    },
-            //]
-        });
-    }*@
     $('#import-mark-btn').click(function () {
         $('#upload-file').trigger("click");
     });
@@ -208,7 +111,7 @@
             $(".progress").show();
                 $.ajax({
                     type: "POST",
-                    url: '@Url.Action("UploadMarkExcel")',
+                    url: '@Url.Action("UploadFinal")',
                     contentType: false,
                     processData: false,
                     data: data,

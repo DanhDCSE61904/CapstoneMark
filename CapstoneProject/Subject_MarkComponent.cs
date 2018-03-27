@@ -29,7 +29,7 @@ namespace CapstoneProject
         public Nullable<bool> IsOngoing { get; set; }
         public Nullable<bool> IsActive { get; set; }
         public Nullable<int> NumberOfTests { get; set; }
-        public string OldMarkName { get; set; }
+        public string MarkName { get; set; }
         public Nullable<bool> FinalComponent { get; set; }
     
         public virtual MarkComponent MarkComponent { get; set; }

@@ -17,11 +17,11 @@ namespace CapstoneProject
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Student()
         {
+            this.Attendances = new HashSet<Attendance>();
             this.Document_Student = new HashSet<Document_Student>();
             this.Marks = new HashSet<Mark>();
             this.OldRollNumbers = new HashSet<OldRollNumber>();
             this.Student_Status = new HashSet<Student_Status>();
-            this.Attendances = new HashSet<Attendance>();
         }
     
         public int Id { get; set; }
@@ -39,6 +39,8 @@ namespace CapstoneProject
         public Nullable<double> PassFailAverageMark { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Attendance> Attendances { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Document_Student> Document_Student { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Mark> Marks { get; set; }
@@ -47,7 +49,5 @@ namespace CapstoneProject
         public virtual Program Program { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Student_Status> Student_Status { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Attendance> Attendances { get; set; }
     }
 }

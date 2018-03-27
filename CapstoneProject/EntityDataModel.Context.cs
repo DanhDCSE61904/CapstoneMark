@@ -25,6 +25,7 @@ namespace CapstoneProject
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Attendance> Attendances { get; set; }
         public virtual DbSet<Course> Courses { get; set; }
         public virtual DbSet<Credential> Credentials { get; set; }
         public virtual DbSet<Credentials_Roles> Credentials_Roles { get; set; }
@@ -46,7 +47,5 @@ namespace CapstoneProject
         public virtual DbSet<Subject> Subjects { get; set; }
         public virtual DbSet<Subject_Curriculum> Subject_Curriculum { get; set; }
         public virtual DbSet<Subject_MarkComponent> Subject_MarkComponent { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
-        public virtual DbSet<Attendance> Attendances { get; set; }
     }
 }

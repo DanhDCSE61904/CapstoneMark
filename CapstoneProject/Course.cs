@@ -17,8 +17,8 @@ namespace CapstoneProject
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Course()
         {
-            this.Marks = new HashSet<Mark>();
             this.Attendances = new HashSet<Attendance>();
+            this.Marks = new HashSet<Mark>();
         }
     
         public int Id { get; set; }
@@ -26,8 +26,8 @@ namespace CapstoneProject
         public string SubjectCode { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Mark> Marks { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Attendance> Attendances { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Mark> Marks { get; set; }
     }
 }

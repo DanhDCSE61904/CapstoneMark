@@ -238,18 +238,8 @@
     <Property Name="IsOngoing" Type="bit" />
     <Property Name="IsActive" Type="bit" />
     <Property Name="NumberOfTests" Type="int" />
-    <Property Name="OldMarkName" Type="nvarchar(max)" />
+    <Property Name="MarkName" Type="nvarchar(max)" />
     <Property Name="FinalComponent" Type="bit" />
-  </EntityType>
-  <EntityType Name="sysdiagrams">
-    <Key>
-      <PropertyRef Name="diagram_id" />
-    </Key>
-    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
-    <Property Name="principal_id" Type="int" Nullable="false" />
-    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="version" Type="int" />
-    <Property Name="definition" Type="varbinary(max)" />
   </EntityType>
   <Association Name="FK_Attendance_Course">
     <End Role="Course" Type="Self.Course" Multiplicity="0..1" />
@@ -623,7 +613,6 @@
     <EntitySet Name="Subject" EntityType="Self.Subject" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Subject_Curriculum" EntityType="Self.Subject_Curriculum" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Subject_MarkComponent" EntityType="Self.Subject_MarkComponent" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
     <AssociationSet Name="FK_Attendance_Course" Association="Self.FK_Attendance_Course">
       <End Role="Course" EntitySet="Course" />
       <End Role="Attendance" EntitySet="Attendance" />
