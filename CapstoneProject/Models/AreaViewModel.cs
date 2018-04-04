@@ -7,6 +7,20 @@ namespace CapstoneProject.Models
 {
     public class AreaViewModel
     {
+        public class SelectorViewModel
+        {
+            public string Text { get; set; }
+            public string Value { get; set; }
+        }
+
+        public class MarkGroupModel
+        {
+            public string MarkGroupName { get; set; }
+            public double? Mark { get; set; }
+            public double? Weight { get; set; }
+            public int? NumberOfTest { get; set; }
+        }
+
         public class SemesterViewModel
         {
             public int SemesterId { get; set; }

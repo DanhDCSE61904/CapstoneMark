@@ -141,7 +141,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
             using (var context = new CapstoneProjectEntities())
             {
                 var result = context.Marks.Where(q => q.CourseId == courseId && q.Student.RollNumber.Equals(rollNumber) && q.Subject_MarkComponent.FinalComponent == null).AsEnumerable().Select(q => new IConvertible[] {
-                    q.Subject_MarkComponent.MarkComponent.Name,
+                    q.Subject_MarkComponent.MarkName,
                     q.AverageMark!=null?Math.Round(q.AverageMark.Value,1,MidpointRounding.ToEven).ToString():"-",
                     q.Subject_MarkComponent.PercentWeight,
                 }).ToList();
@@ -170,7 +170,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
         }
 
 
-        public ActionResult UploadMarkFiles()
+        public ActionResult UploadMarkFiles(int semesterId)
         {
             int a = Request.Files.Count;
             //FileStream fileStream = new FileStream(@"C:\Users\USER\Desktop\SO DIEM FALL 2017\SO DIEM FALL 2017\10T\FA17__10T_VanTTN.fg", FileMode.Open);
@@ -180,6 +180,9 @@ namespace CapstoneProject.Areas.Mark.Controllers
                 {
                     using (var context = new CapstoneProjectEntities())
                     {
+                        var semester = context.RealSemesters.Find(semesterId);
+                        var courseList = context.Courses.Where(q => q.Semester.Equals(semester.Semester.ToUpper())).ToList();
+                        var markListWithoutAverage = context.Marks.Where(q => !q.Subject_MarkComponent.MarkComponent.Name.Equals("AVERAGE")).ToList();
                         string extension = System.IO.Path.GetExtension(Request.Files[i].FileName);
                         if (extension.Equals(".fg"))
                         {
@@ -190,8 +193,18 @@ namespace CapstoneProject.Areas.Mark.Controllers
 
                             foreach (var mark in gradeFile.SubjectClassGrades)
                             {
-                                var semesterId = context.RealSemesters.Where(q => q.Semester.Equals(gradeFile.Semester.ToUpper())).FirstOrDefault().Id;
-                                var courseId = context.Courses.Where(q => q.SubjectCode.Equals(mark.Subject) && q.Semester.Equals(gradeFile.Semester.ToUpper())).FirstOrDefault().Id;
+                                //var semesterId = context.RealSemesters.Where(q => q.Semester.Equals(gradeFile.Semester.ToUpper())).FirstOrDefault().Id;
+                               
+                                var course = courseList.Where(q => q.SubjectCode.Equals(mark.Subject)).FirstOrDefault();
+                                if (course == null)
+                                {
+                                    Console.WriteLine();
+                                    Course newCourse = new Course();
+                                    newCourse.Semester = semester.Semester;
+                                    newCourse.SubjectCode = mark.Subject;
+                                    context.Courses.Add(newCourse);
+                                    context.SaveChanges();
+                                }
                                 foreach (var student in mark.Students)
                                 {
                                     try
@@ -242,7 +255,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
                                             newMark.IsEnabled = true;
                                             newMark.SemesterId = semesterId;
                                             newMark.StudentId = studentId;
-                                            newMark.CourseId = courseId;
+                                            newMark.CourseId = course.Id;
                                             //newMark.Comment = student.Comment;
                                             if (item.Value.Grade != null)
                                             {
@@ -253,11 +266,21 @@ namespace CapstoneProject.Areas.Mark.Controllers
                                                 newMark.AverageMark = 0;
                                             }
                                             //import FALL2017 mark (FA AND 17)
-                                            var subjectMarkComp = context.Subject_MarkComponent.Where(q => q.MarkName.Equals(item.Value.GradeComp) && q.SubjectId.Equals(mark.Subject) && q.SyllabusName.Contains("FA") && q.SyllabusName.Contains("17")).FirstOrDefault();
+                                            var containSem = semester.Semester.Substring(0, 2).ToUpper();
+                                            var containYear = "";
+                                            if (semester.Semester.Contains('_'))
+                                            {
+                                                containYear = semester.Semester.Substring(semester.Semester.Length - 4, 2).ToUpper();
+                                            }
+                                            else {
+                                                containYear = semester.Semester.Substring(semester.Semester.Length - 2, 2).ToUpper();
+                                            }
+                                           
+                                            var subjectMarkComp = context.Subject_MarkComponent.Where(q => q.MarkName.Equals(item.Value.GradeComp) && q.SubjectId.Equals(mark.Subject) && q.SyllabusName.Contains(containSem) && q.SyllabusName.Contains(containYear)).FirstOrDefault();
                                             if (subjectMarkComp != null)
                                             {
                                                 newMark.SubjectMarkComponentId = subjectMarkComp.Id;
-                                                if (context.Marks.Where(q => q.CourseId == courseId && q.StudentId == studentId && q.SubjectMarkComponentId == subjectMarkComp.Id).FirstOrDefault() == null)
+                                                if (markListWithoutAverage.Where(q => q.CourseId == course.Id && q.StudentId == studentId && q.SubjectMarkComponentId == subjectMarkComp.Id).FirstOrDefault() == null)
                                                 {
                                                     context.Marks.Add(newMark);
                                                 }
@@ -444,7 +467,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
             return null;
         }
 
-        public ActionResult UploadMarkExcel()
+        public ActionResult UploadMarkExcel(int semesterId)
         {
             try
             {
@@ -471,6 +494,11 @@ namespace CapstoneProject.Areas.Mark.Controllers
 
                                 using (var context = new CapstoneProjectEntities())
                                 {
+                                    var semester = context.RealSemesters.Find(semesterId);
+                                    var courseInSemester = context.Courses.AsNoTracking().Where(q => q.Semester.ToUpper().Equals(semester.Semester)).ToList();
+                                    var getAllStudents = context.Students.ToList();
+                                    var subMarkList = context.Subject_MarkComponent.Where(q=>!q.MarkComponent.Name.ToUpper().Equals("AVERAGE")).ToList();
+                                    var markList = context.Marks.Where(q => q.SemesterId == semesterId).ToList();
                                     context.Configuration.AutoDetectChangesEnabled = false;
                                     try
                                     {
@@ -478,26 +506,26 @@ namespace CapstoneProject.Areas.Mark.Controllers
                                         {
                                             reset++;
 
-                                            var semester = ws.Cells[i, 1].Text.ToUpper();
+                                            //var semester = ws.Cells[i, 1].Text.ToUpper();
                                             var subjectId = ws.Cells[i, 2].Text.ToUpper();
-                                            var course = context.Courses.AsNoTracking().Where(q => q.Semester.ToUpper().Equals(semester) && q.SubjectCode.ToUpper().Equals(subjectId)).FirstOrDefault();
+                                            var course = courseInSemester.Where(q => q.SubjectCode.ToUpper().Equals(subjectId)).FirstOrDefault();
                                             if (course == null)
                                             {
                                                 return null;
                                             }
                                             var studentCode = ws.Cells[i, 4].Text.ToUpper();
-                                            var student = context.Students.AsNoTracking().Where(q => q.RollNumber.ToUpper().Equals(studentCode)).FirstOrDefault();
+                                            var student = getAllStudents.Where(q => q.RollNumber.ToUpper().Equals(studentCode)).FirstOrDefault();
                                             if (student == null)
                                             {
                                                 return null;
                                             }
-                                            var markGroup = ws.Cells[i, 5].Text.ToUpper();
-                                            var subjectMarkComp = context.Subject_MarkComponent.AsNoTracking().Where(q => q.MarkName.ToUpper().Equals(markGroup) && q.SubjectId.ToUpper().Equals(subjectId)).FirstOrDefault();
+                                            var markGroup = ws.Cells[i, 5].Text.Trim().ToUpper();
+                                            var subjectMarkComp = subMarkList.Where(q => q.MarkName.ToUpper().Equals(markGroup) && q.SubjectId.ToUpper().Equals(subjectId)).FirstOrDefault();
                                             if (subjectMarkComp == null)
                                             {
                                                 Console.WriteLine();
                                             }
-                                            var oldMark = context.Marks.AsNoTracking().Where(q => q.SubjectMarkComponentId == subjectMarkComp.Id && q.StudentId == student.Id && q.CourseId == course.Id).FirstOrDefault();
+                                            var oldMark = markList.Where(q => q.SubjectMarkComponentId == subjectMarkComp.Id && q.StudentId == student.Id && q.CourseId == course.Id).FirstOrDefault();
                                             if (oldMark == null)
                                             {
                                                 try
@@ -510,7 +538,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
                                                     newMark.CourseId = course.Id;
                                                     newMark.IsActivated = false;
                                                     newMark.IsEnabled = false;
-                                                    newMark.SemesterId = context.RealSemesters.AsNoTracking().Where(q => q.Semester.ToUpper().Equals(semester)).FirstOrDefault().Id;
+                                                    newMark.SemesterId = semesterId;
                                                     newMark.StudentId = student.Id;
                                                     newMark.SubjectMarkComponentId = subjectMarkComp.Id;
 

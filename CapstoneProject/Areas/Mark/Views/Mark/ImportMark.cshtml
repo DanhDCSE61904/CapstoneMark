@@ -16,26 +16,27 @@
                     <div class="pull-right">
                         @*<button class="btn-success btn" id="download-template-btn"><i class="fa fa-download"></i> template</button>*@
 
-                        @*<button class="btn-primary btn" id="import-mark-btn">chọn file</button>
-                        <button class="btn btn-primary hidden" id="submit-button">import</button>
-                        <input id="upload-file" class="hidden" type="file" webkitdirectory directory name="upload-file" />*@
+                        <button class="btn-primary btn" id="import-mark-btn">Chọn folder</button>
+                            <button class="btn btn-primary hidden" id="submit-button">import</button>
+                            <input id="upload-file" class="hidden" type="file" webkitdirectory directory name="upload-file" />
 
-                        <button class="btn-primary btn" id="import-mark-btn">Chọn file</button>
+                        @*<button class="btn-primary btn" id="import-mark-btn">Chọn file</button>
                         <button class="btn btn-primary hidden" id="submit-button">Import</button>
-                        <input id="upload-file" class="hidden" type="file" name="upload-file" />
+                        <input id="upload-file" class="hidden" type="file" name="upload-file" />*@
 
                         <div class="progress" style="display:none">
                             <div id="upload-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
                                  aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:0%">
                             </div>
                         </div>
-
+                        <div class="col-md-3" style="padding:0; width: 200px;">
+                            <input type="text" id="date-string" readonly style="height:42px; cursor:auto">
+                        </div>
                     </div>
                 </div>
             </div>
             <div>
-            <select id="semester-selector">
-            </select>
+                <select id="semester-selector"></select>
                 <button id="btn-export-allstudentmark" class="btn btn-success" title="Export all mark of student by semester">
                     <i class="fa fa-download"></i>Export Semester Excel
                 </button>
@@ -44,19 +45,19 @@
                 </form>
             </div>
             @*<div>
-                <table id="mark-table" class="dataTable cell-border">
-                    <thead>
-                        <tr>
-                            <th>MSSV</th>
-                            <th>Tên sinh viên</th>
-                            <th>Môn</th>
-                            <th>Diem thanh phan</th>
-                            <th>Số diem</th>
-                            <th>Phan tram</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>*@
+                    <table id="mark-table" class="dataTable cell-border">
+                        <thead>
+                            <tr>
+                                <th>MSSV</th>
+                                <th>Tên sinh viên</th>
+                                <th>Môn</th>
+                                <th>Diem thanh phan</th>
+                                <th>Số diem</th>
+                                <th>Phan tram</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>*@
         </div>
 
     </div>
@@ -66,9 +67,12 @@
         LoadSemester();
         $('#form-export-allstudentmark input[name="semesterId"]').val($('#semester-selector').val());
         var table = null;
+        $('#date-string').daterangepicker({
+            singleDatePicker: true,
+        });
     });
 
-    
+
 
     function LoadSemester() {
         $.ajax({
@@ -201,55 +205,56 @@
         //    toastr.error('Max upload size is 20MB!');
         //}
         //else{
-            var data = new FormData();
-            for (var i = 0; i < $("#upload-file")[0].files.length; i++) {
-                data.append("file" + i, $("#upload-file")[0].files[i]);
-            }
-            $(".progress").show();
-                $.ajax({
-                    type: "POST",
-                    url: '@Url.Action("UploadMarkExcel")',
-                    contentType: false,
-                    processData: false,
-                    data: data,
-                    xhr: function() {
-                        var settingXhr = $.ajaxSettings.xhr();
-                        if (settingXhr.upload) {
-                            // For handling the progress of the upload
-                            settingXhr.upload.addEventListener('progress', function(e) {
-                                if (e.lengthComputable) {
-                                    $('#upload-progress-bar').removeClass('progress-bar-danger');
-                                    var percent = Math.ceil(e.loaded/e.total*100);
-                                    $('#upload-progress-bar').attr('aria-valuenow', percent).css('width',percent+'%');
-                                    $('#upload-progress-bar').attr('aria-valuemax', 100);
-                                    $('#upload-progress-bar').html(percent+"%");
-                                    if(percent==100){
-                                        $('#upload-progress-bar').html("Processing...");
-                                    }
-                                }
-                            } , false);
+        var data = new FormData();
+        for (var i = 0; i < $("#upload-file")[0].files.length; i++) {
+            data.append("file" + i, $("#upload-file")[0].files[i]);
+        }
+        data.append("semesterId", $('#semester-selector').val());
+        $(".progress").show();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("UploadMarkFiles")',
+            contentType: false,
+            processData: false,
+            data: data,
+            xhr: function () {
+                var settingXhr = $.ajaxSettings.xhr();
+                if (settingXhr.upload) {
+                    // For handling the progress of the upload
+                    settingXhr.upload.addEventListener('progress', function (e) {
+                        if (e.lengthComputable) {
+                            $('#upload-progress-bar').removeClass('progress-bar-danger');
+                            var percent = Math.ceil(e.loaded / e.total * 100);
+                            $('#upload-progress-bar').attr('aria-valuenow', percent).css('width', percent + '%');
+                            $('#upload-progress-bar').attr('aria-valuemax', 100);
+                            $('#upload-progress-bar').html(percent + "%");
+                            if (percent == 100) {
+                                $('#upload-progress-bar').html("Processing...");
+                            }
                         }
-                        return settingXhr;
-                    },
-                    success: function (result) {
-                        if (result.success) {
-                            toastr.success(result.message);
-                            $('#upload-progress-bar').html("Completed!");
-                            window.location.reload();
+                    }, false);
+                }
+                return settingXhr;
+            },
+            success: function (result) {
+                if (result.success) {
+                    toastr.success(result.message);
+                    $('#upload-progress-bar').html("Completed!");
+                    window.location.reload();
 
-                        } else {
-                            toastr.error(result.message);
-                            $('#upload-progress-bar').html("Fail to upload!");
-                            $('#upload-progress-bar').addClass('progress-bar-danger');
-                        }
-                    },
-                    error: function (xhr, status, p3, p4) {
-                        var err = "Error " + " " + status + " " + p3 + " " + p4;
-                        toastr.error(err);
-                        $('#upload-progress-bar').html("Fail to upload!");
-                        $('#upload-progress-bar').addClass('progress-bar-danger');
-                    }
-                });
-            //}
+                } else {
+                    toastr.error(result.message);
+                    $('#upload-progress-bar').html("Fail to upload!");
+                    $('#upload-progress-bar').addClass('progress-bar-danger');
+                }
+            },
+            error: function (xhr, status, p3, p4) {
+                var err = "Error " + " " + status + " " + p3 + " " + p4;
+                toastr.error(err);
+                $('#upload-progress-bar').html("Fail to upload!");
+                $('#upload-progress-bar').addClass('progress-bar-danger');
+            }
+        });
+        //}
     });
 </script>

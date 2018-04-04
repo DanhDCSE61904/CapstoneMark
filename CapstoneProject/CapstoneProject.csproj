@@ -2571,6 +2571,7 @@
     <Content Include="Areas\Attendance\Views\Attendance\ImportAttendance.cshtml" />
     <Content Include="Areas\Students\Views\web.config" />
     <Content Include="Areas\Mark\Views\Mark\ImportFinal.cshtml" />
+    <Content Include="Areas\Students\Views\Students\StudentForFinal.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -2629,7 +2630,6 @@
     <Folder Include="Areas\Mark\Views\Shared\" />
     <Folder Include="Areas\Students\Models\" />
     <Folder Include="Areas\Students\Views\Shared\" />
-    <Folder Include="Areas\Students\Views\Students\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

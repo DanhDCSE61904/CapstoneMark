@@ -32,6 +32,7 @@ namespace CapstoneProject.Areas.Attendance.Controllers
                 {
                     using (var context = new CapstoneProjectEntities())
                     {
+                        context.Configuration.AutoDetectChangesEnabled = false;
                         foreach (string file in Request.Files)
                         {
                             var fileContent = Request.Files[file];
@@ -49,14 +50,19 @@ namespace CapstoneProject.Areas.Attendance.Controllers
                                     var titleRow = 1;
                                     var firstRecordRow = 2;
                                     var savePoint = 0;
+                                    Dictionary<String, Student> wtf = new Dictionary<String, Student>();
+                                    var studentList = context.Students.AsNoTracking().ToList();
+                                    var courseList = context.Courses.AsNoTracking().Where(q => q.Semester.ToUpper().Equals("SPRING2018_1")).ToList();
+                                    var context2 = new CapstoneProjectEntities();
+                                    context2.Configuration.AutoDetectChangesEnabled = false;
 
-                                    for (int i = firstRecordRow; i < totalRow; i++)
+                                    for (int i = firstRecordRow; i <= totalRow; i++)
                                     {
                                         savePoint++;
+
                                         var cellStudentRoll = ws.Cells[i, 1].Text.ToUpper();
-                                        var student = context.Students.Where(q => q.RollNumber.ToUpper().Equals(cellStudentRoll)).FirstOrDefault();
                                         var cellSubject = ws.Cells[i, 3].Text.ToUpper();
-                                        var course = context.Courses.Where(q => q.Semester.ToUpper().Equals("FALL2017") && q.SubjectCode.ToUpper().Equals(cellSubject)).FirstOrDefault();
+                                        //var course = context.Courses.Where(q => q.Semester.ToUpper().Equals("FALL2017") && q.SubjectCode.ToUpper().Equals(cellSubject)).FirstOrDefault();
                                         bool status = false;
                                         if (ws.Cells[i, 2].Text.Equals("1"))
                                         {
@@ -76,8 +82,40 @@ namespace CapstoneProject.Areas.Attendance.Controllers
                                             return Json(new { error = ex.Message, message = "Errors in uploaded file. Please recheck" });
                                         }
 
-                                        if (context.Attendances.Where(q => q.CourseId == course.Id && q.StudentId == student.Id && q.RecordTime == recoredTime).FirstOrDefault() == null)
+
+                                        //savePoint++;
+                                        var student = studentList.Where(q => q.RollNumber.ToUpper().Equals(cellStudentRoll.ToUpper())).FirstOrDefault();
+                                        if (student == null)
                                         {
+
+                                            if (!wtf.ContainsKey(cellStudentRoll))
+                                            {
+                                                Student stu = new Student();
+                                                stu.RollNumber = cellStudentRoll;
+                                                wtf.Add(cellStudentRoll, stu);
+                                                context2.Students.Add(stu);
+                                                context2.SaveChanges();
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            var course = courseList.Where(q => q.SubjectCode.ToUpper().Equals(cellSubject)).FirstOrDefault();
+
+
+                                            //DELETE
+                                            //var listRemove = context.Attendances.Where(q => q.StudentId == student.Id && q.CourseId == course.Id && q.RecordTime == q.RecordTime).ToList();
+
+                                            //if (listRemove != null)
+                                            //{
+                                            //    foreach(var att in listRemove)
+                                            //    {
+                                            //        context.Attendances.Remove(att);
+                                            //        recordDel++;
+                                            //    }
+                                            //}
+
+                                            //ADD
                                             CapstoneProject.Attendance att = new CapstoneProject.Attendance();
                                             att.CourseId = course.Id;
                                             att.NumberOfSlots = numberOfSlots;
@@ -85,15 +123,24 @@ namespace CapstoneProject.Areas.Attendance.Controllers
                                             att.RecordTime = recoredTime;
                                             att.Status = status;
                                             att.Taker = taker;
-                                            context.Attendances.Add(att);
+                                            context2.Attendances.Add(att);
+
                                         }
                                         if (savePoint == 1000)
                                         {
-                                            context.SaveChanges();
+                                            context2.SaveChanges();
                                             savePoint = 0;
+                                            GC.Collect();
+                                            context2.Dispose();
+                                            context2 = new CapstoneProjectEntities();
+                                            context2.Configuration.AutoDetectChangesEnabled = false;
+                                        }
+                                        if (i == totalRow)
+                                        {
+                                            context2.SaveChanges();
                                         }
                                     }
-                                    context.SaveChanges();
+
 
                                 }
                             }
@@ -114,50 +161,20 @@ namespace CapstoneProject.Areas.Attendance.Controllers
             var dt = new DataTable();
             var conn = new SqlConnection();
             conn.ConnectionString =
-            "Data Source=116.193.67.20;" +
+            //"Data Source=116.193.67.20;" +
+            "Data Source=10.23.0.77;" +
             "Initial Catalog=AP_HCM;" +
-            "User Id=sa;" +
+            "User Id=aphcm;" +
             "Password=Kh@nhKT123456&;";
 
             SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = "SELECT a.ScheduleID, a.RollNumber, a.Status,sub.SubjectCode,a.Taker,c.NumberOfSlots,a.RecordTime"
+            cmd.CommandText = "SELECT a.RollNumber,a.Status,sub.SubjectCode,a.Taker,c.NumberOfSlots,a.RecordTime"
   + " FROM[AP_HCM].[dbo].[Attendances] a"
   + " Inner Join Schedules s on s.ScheduleID = a.ScheduleID"
   + " Inner Join Courses c on s.CourseID = c.CourseID"
   + " Inner Join Terms t on t.TermID = c.TermID"
   + " Inner Join Subjects sub on sub.SubjectID = c.SubjectID"
-  + " Where t.SemesterName = 'Fall2017'";
-
-
-            //  cmd.CommandText = "Select * FROM(SELECT a.RollNumber,sub.SubjectCode,a.RecordTime"
-            //+ " FROM[AP_HCM].[dbo].[Attendances] a"
-            //+ " Inner Join Schedules s on s.ScheduleID = a.ScheduleID"
-            //+ " Inner Join Courses c on s.CourseID = c.CourseID"
-            //+ " Inner Join Terms t on t.TermID = c.TermID"
-            //+ " Inner Join Subjects sub on sub.SubjectID = c.SubjectID"
-            //+ " Where t.SemesterName = 'Fall2017'"
-            //+ " ) tab"
-            //+ " Group By tab.RollNumber, tab.SubjectCode, tab.RecordTime"
-            //+ " HAVING COUNT(*) > 1";
-
-            //            cmd.CommandText = "Select att.RollNumber,att.Status,att.SubjectCode,att.RecordTime,att.NumberOfSlots,att.Taker From(SELECT a.RollNumber, a.Status, sub.SubjectCode, a.Taker, c.NumberOfSlots, a.RecordTime"
-            //+ " FROM[AP_HCM].[dbo].[Attendances] a"
-            //+ " Inner Join Schedules s on s.ScheduleID = a.ScheduleID"
-            //+ " Inner Join Courses c on s.CourseID = c.CourseID"
-            //+ " Inner Join Terms t on t.TermID = c.TermID"
-            //+ " Inner Join Subjects sub on sub.SubjectID = c.SubjectID"
-            //+ " Where t.SemesterName = 'Fall2017') att Inner Join"
-            //+ " (Select * FROM(SELECT a.RollNumber, sub.SubjectCode, a.RecordTime"
-            //+ " FROM[AP_HCM].[dbo].[Attendances] a"
-            //+ " Inner Join Schedules s on s.ScheduleID = a.ScheduleID"
-            //+ " Inner Join Courses c on s.CourseID = c.CourseID"
-            //+ " Inner Join Terms t on t.TermID = c.TermID"
-            //+ " Inner Join Subjects sub on sub.SubjectID = c.SubjectID"
-            //+ " Where t.SemesterName = 'Fall2017'"
-            //+ " ) tab"
-            //+ " Group By tab.RollNumber, tab.SubjectCode, tab.RecordTime"
-            //+ " HAVING COUNT(*) > 1) tab1"
-            //+ " on tab1.SubjectCode = att.SubjectCode and tab1.RollNumber = att.RollNumber and tab1.RecordTime = att.RecordTime";
+  + " Where t.SemesterName = 'Spring2018'";
             cmd.CommandType = CommandType.Text;
             cmd.Connection = conn;
             conn.Open();
@@ -176,58 +193,74 @@ namespace CapstoneProject.Areas.Attendance.Controllers
                 RecordTime = (DateTime)r["RecordTime"],
                 //TakeAttendance = (bool)r["TakeAttendance"],
             }).ToList();
+            conn.Close();
             var savePoint = 0;
             using (var context = new CapstoneProjectEntities())
             {
                 var studentList = context.Students.ToList();
                 var recordDel = 0;
-                var courseList = context.Courses.Where(q => q.Semester.ToUpper().Equals("FALL2017")).ToList();
+                var courseList = context.Courses.Where(q => q.Semester.ToUpper().Equals("SPRING2018_1")).ToList();
+                var last = list.Last();
+                Dictionary<String, Student> wtf = new Dictionary<String, Student>();
+
                 foreach (var item in list)
                 {
                     using (var context2 = new CapstoneProjectEntities())
                     {
                         savePoint++;
                         var student = studentList.Where(q => q.RollNumber.ToUpper().Equals(item.RollNumber.ToUpper())).FirstOrDefault();
-                        var course = courseList.Where(q => q.SubjectCode.ToUpper().Equals(item.SubjectCode)).FirstOrDefault();
-                        var status = item.Status;
-                        var recordTime = item.RecordTime;
-                        var taker = item.Taker;
-                        var numberOfSlots = item.NumberOfSlots;
-
-                        //DELETE
-                        //var listRemove = context.Attendances.Where(q => q.StudentId == student.Id && q.CourseId == course.Id && q.RecordTime == q.RecordTime).ToList();
-
-                        //if (listRemove != null)
-                        //{
-                        //    foreach(var att in listRemove)
-                        //    {
-                        //        context.Attendances.Remove(att);
-                        //        recordDel++;
-                        //    }
-                        //}
-
-                        //ADD
-                        CapstoneProject.Attendance att = new CapstoneProject.Attendance();
-                        att.CourseId = course.Id;
-                        att.NumberOfSlots = numberOfSlots;
-                        att.StudentId = student.Id;
-                        att.RecordTime = recordTime;
-                        att.Status = status;
-                        att.Taker = taker;
-                        context.Attendances.Add(att);
-
-                        if (savePoint == 5000)
+                        if (student == null)
                         {
 
-                            //context2.SaveChanges();
-                            context2.Dispose();
-                            savePoint = 0;
+                            if (!wtf.ContainsKey(item.RollNumber))
+                            {
+                                Student stu = new Student();
+                                stu.RollNumber = item.RollNumber;
+                                wtf.Add(item.RollNumber, stu);
+                                context2.Students.Add(stu);
+                                context2.SaveChanges();
+                            }
+
                         }
+                        else
+                        {
+                            var course = courseList.Where(q => q.SubjectCode.ToUpper().Equals(item.SubjectCode)).FirstOrDefault();
+                            var status = item.Status;
+                            var recordTime = item.RecordTime;
+                            var taker = item.Taker;
+                            var numberOfSlots = item.NumberOfSlots;
+
+                            //DELETE
+                            //var listRemove = context.Attendances.Where(q => q.StudentId == student.Id && q.CourseId == course.Id && q.RecordTime == q.RecordTime).ToList();
+
+                            //if (listRemove != null)
+                            //{
+                            //    foreach(var att in listRemove)
+                            //    {
+                            //        context.Attendances.Remove(att);
+                            //        recordDel++;
+                            //    }
+                            //}
+
+                            //ADD
+                            CapstoneProject.Attendance att = new CapstoneProject.Attendance();
+                            att.CourseId = course.Id;
+                            att.NumberOfSlots = numberOfSlots;
+                            att.StudentId = student.Id;
+                            att.RecordTime = recordTime;
+                            att.Status = status;
+                            att.Taker = taker;
+                            context2.Attendances.Add(att);
+
+                            context2.SaveChanges();
+                        }
+                        GC.Collect();
                     }
                 }
-                context.SaveChanges();
+
+
             }
-            conn.Close();
+
 
             return null;
         }

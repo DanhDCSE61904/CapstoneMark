@@ -1,0 +1,198 @@
+﻿
+@{
+    ViewBag.Title = "StudentForFinal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="/Resources/plugins/dist/css/upload-page.css">
+<section class="content">
+    <div class="box">
+        <div class="b-header">
+            <h1>Danh sách thi</h1>
+            <hr>
+        </div>
+
+        <div class="b-body">
+            <div class="row">
+                <div class="offset-8 col-md-4">
+                    <div class="pull-right">
+                        @*<button class="btn-success btn" id="download-template-btn"><i class="fa fa-download"></i> template</button>*@
+
+                        @*<button class="btn-primary btn" id="import-mark-btn">chọn file</button>
+                            <button class="btn btn-primary hidden" id="submit-button">import</button>
+                            <input id="upload-file" class="hidden" type="file" webkitdirectory directory name="upload-file" />*@
+
+                        @*<div class="progress" style="display:none">
+                            <div id="upload-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                 aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                            </div>
+                        </div>*@
+
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="offset-8 col-md-4">
+                    <select class="select2" id="semester-selector"></select>
+                    <br />
+                    <select class="select2" id="subject-selector"></select>
+                    <button id="search-btn">Tìm</button>
+                </div>
+                <button id="btn-export-final-list" class="btn btn-success" title="Export all mark of student by semester">
+                    <i class="fa fa-download"></i>Export Semester Excel
+                </button>
+                <form class="hidden" action="@Url.Action("DownloadExcelStudentForFinal")" id="form-export-final-list">
+                    <input id="" class="hidden" name="semesterId" value="">
+                </form>
+            </div>
+            <div>
+                    <table id="studentFinal-table" class="dataTable cell-border">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>MSSV</th>
+                                <th>Tên sinh viên</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+        </div>
+
+    </div>
+</section>
+<script>
+
+    $(document).ready(function () {
+        LoadSemesterSelect();
+        $('#form-export-allstudentmark input[name="semesterId"]').val($('#semester-selector').val());
+    });
+
+    $("#search-btn").on("click", function () {
+        if ($.fn.dataTable.isDataTable('#studentFinal-table')) {
+            $('#studentFinal-table').DataTable().ajax.reload();
+        }
+        else {
+            LoadStudentForFinalTable();
+        }
+    });
+
+    $('#btn-export-final-list').on("click", function () {
+        $('#form-export-final-list input[name="semesterId"]').val($('#semester-selector').val());
+        $('#form-export-final-list').submit();
+    });
+
+    function LoadSemesterSelect() {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("LoadSemesterSelect")',
+            success: function (result) {
+                debugger
+                for (var i = 0; i < result.result.length; i++) {
+                    $('#semester-selector').append("<option value='" + result.result[i].SemesterId + "'>" + result.result[i].Semester + "</option>");
+                }
+                $("#semester-selector").select2({
+                    placeholder: "Tìm kiếm ky",
+                    minimumInputLength: 2,
+                });
+                LoadSubjectSelect();
+            }
+        });
+
+    }
+
+    $('#semester-selector').on('change', function () {
+        LoadSubjectSelect();
+    });
+
+    function LoadSubjectSelect() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("LoadSubjectSelectBySemesters")',
+            data: {semesterId:$('#semester-selector').val()},
+            success: function (result) {
+                for (var i = 0; i < result.result.length; i++) {
+                    $('#subject-selector').append("<option value='" + result.result[i].Value + "'>" + result.result[i].Value + "</option>");
+                }
+                $("#subject-selector").select2({
+                    placeholder: "Tìm kiếm mon",
+                    minimumInputLength: 2,
+                });
+            }
+        });
+    }
+
+    function LoadStudentForFinalTable() {
+        $('#studentFinal-table').DataTable({
+            //searchDelay: 1000,
+            //"bServerSide": true,
+            "bFilter": true,
+            "bRetrieve": true,
+            "sScrollX": "100%",
+            "bScrollCollapse": true,
+            "bDeferRender": true,
+            "bProcessing": true,
+            "bSort": false,
+            "sAjaxSource": '@Url.Action("LoadStudentForFinal")',
+            "fnServerParams": function (aoData) {
+                aoData.push({ "name": "semesterId", "value": $('#semester-selector').val() }),
+                aoData.push({ "name": "subjectCode", "value": $('#subject-selector').val() })
+            },
+            "oLanguage": {
+                "sSearchPlaceholder": "",
+                "sSearch": "Tìm kiếm:",
+                "sZeroRecords": "Không có dữ liệu phù hợp",
+                "sInfo": "Hiển thị từ _START_ đến _END_ trên tổng số _TOTAL_ dòng",
+                "sEmptyTable": "Không có dữ liệu",
+                "sInfoFiltered": " - lọc ra từ _MAX_ dòng",
+                "sLengthMenu": "Hiển thị _MENU_ dòng",
+                "sProcessing": "Đang xử lý...",
+                "oPaginate": {
+                    "sNext": "<i class='fa fa-chevron-right'></i>",
+                    "sPrevious": "<i class='fa fa-chevron-left'></i>"
+                }
+
+            },
+            "aoColumnDefs": [
+                {
+                    "aTargets": [1],
+                    "sClass": "min-width-150",
+                    "bSortable": false,
+                    "sWidth": "150px"
+                },
+                {
+                    "aTargets": [0, 1,2],
+                    "bSortable": false,
+                },
+                {
+                    "aTargets": [0, 1,2],
+                    "sClass": "text-center",
+                },
+                //{
+                //    "aTargets": 2,
+                //    "data": "Detail",
+                //    "render": function (data, type, row, meta) {
+                //        var data = row[2];
+                //        return '<a href="StudentMarkDetail?courseId=' + data + '&rollNumber=' + $('#student-selector').val() + '">Details</a>';
+                //    }
+                //}
+            ],
+            "bAutoWidth": false,
+            //dom: 'Bfrtip',
+            //lengthMenu: [[10, 25, 50], ['10', '25', '50', 'Tất cả']],
+            //buttons: [
+            //    {
+            //        extend: 'pageLength',
+            //        text: 'Hiển thị 10 dòng',
+            //    },
+            //    {
+            //        extend: 'excel',
+            //        text: 'Xuất Excel',
+            //    },
+            //    {
+            //        extend: 'pdf',
+            //        text: 'Xuất PDF',
+            //    },
+            //]
+        });
+    }
+</script>
