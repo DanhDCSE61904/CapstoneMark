@@ -108,13 +108,18 @@ namespace CapstoneProject.Areas.Students.Controllers
                 var test = 0;
                 var semester = context.RealSemesters.Find(semesterId).Semester.ToUpper();
                 var course = context.Courses.Where(q => q.Semester.ToUpper().Equals(semester) && q.SubjectCode.Equals(subjectCode)).FirstOrDefault();
-                var studentList = context.Marks.Where(q => q.SemesterId == semesterId).GroupBy(q => q.Student).Select(q => q.FirstOrDefault().Student).ToList();
+                var studentList = context.Attendances.Where(q => q.CourseId ==course.Id).GroupBy(q => q.Student).Select(q=>q.Key).ToList();
+                var stur = studentList.Where(q => q.RollNumber.Equals("SE62849"));
                 var slots = context.Attendances.Where(q => q.CourseId == course.Id).FirstOrDefault().NumberOfSlots;
                 var studentResult = new List<Student>();
                 var attendanceList = context.Attendances.Where(q => q.CourseId == course.Id).ToList();
                 foreach (var student in studentList)
                 {
                     test++;
+                    if(student.RollNumber.Equals("SE62849"))
+                    {
+                        Console.WriteLine();
+                    }
                     var attendance = attendanceList.Where(q => q.StudentId == student.Id && q.Status == true).Count();
                     if (attendance != 0)
                     {
@@ -123,7 +128,8 @@ namespace CapstoneProject.Areas.Students.Controllers
                         //{
                         //    studentResult.Add(student);
                         //}
-                        if ((attendance / slots) >= 0.8)
+                        double rate = double.Parse(attendance.ToString()) / double.Parse(slots.Value.ToString());
+                        if (rate >= 0.8)
                         {
                             studentResult.Add(student);
                         }

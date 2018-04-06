@@ -178,137 +178,170 @@ namespace CapstoneProject.Areas.Mark.Controllers
             {
                 try
                 {
-                    using (var context = new CapstoneProjectEntities())
-                    {
-                        var semester = context.RealSemesters.Find(semesterId);
-                        var courseList = context.Courses.Where(q => q.Semester.Equals(semester.Semester.ToUpper())).ToList();
-                        var markListWithoutAverage = context.Marks.Where(q => !q.Subject_MarkComponent.MarkComponent.Name.Equals("AVERAGE")).ToList();
-                        string extension = System.IO.Path.GetExtension(Request.Files[i].FileName);
-                        if (extension.Equals(".fg"))
-                        {
-                            var gradeFile = (TeacherGrade)new BinaryFormatter
-                            {
-                                AssemblyFormat = FormatterAssemblyStyle.Simple
-                            }.Deserialize(Request.Files[i].InputStream);
+                    var context = new CapstoneProjectEntities();
 
-                            foreach (var mark in gradeFile.SubjectClassGrades)
+                    var semester = context.RealSemesters.Find(semesterId);
+                    var courseList = context.Courses.Where(q => q.Semester.Equals(semester.Semester.ToUpper())).ToList();
+                    var markListWithoutAverage = context.Marks.Where(q => !q.Subject_MarkComponent.MarkComponent.Name.Equals("AVERAGE")&&q.SemesterId==semesterId).ToList();
+                    string extension = System.IO.Path.GetExtension(Request.Files[i].FileName);
+                    if (extension.Equals(".fg"))
+                    {
+                        var gradeFile = (TeacherGrade)new BinaryFormatter
+                        {
+                            AssemblyFormat = FormatterAssemblyStyle.Simple
+                        }.Deserialize(Request.Files[i].InputStream);
+
+                        foreach (var mark in gradeFile.SubjectClassGrades)
+                        {
+                            //var semesterId = context.RealSemesters.Where(q => q.Semester.Equals(gradeFile.Semester.ToUpper())).FirstOrDefault().Id;
+
+                            var course = courseList.Where(q => q.SubjectCode.Equals(mark.Subject)).FirstOrDefault();
+                            if (course == null)
                             {
-                                //var semesterId = context.RealSemesters.Where(q => q.Semester.Equals(gradeFile.Semester.ToUpper())).FirstOrDefault().Id;
-                               
-                                var course = courseList.Where(q => q.SubjectCode.Equals(mark.Subject)).FirstOrDefault();
-                                if (course == null)
+                                Console.WriteLine();
+                                Course newCourse = new Course();
+                                newCourse.Semester = semester.Semester;
+                                newCourse.SubjectCode = mark.Subject;
+                                context.Courses.Add(newCourse);
+                                context.SaveChanges();
+                            }
+                            var subjectCompList = context.Subject_MarkComponent.Where(q => q.SubjectId.Equals(mark.Subject));
+                            foreach (var student in mark.Students)
+                            {
+                                var context2 = new CapstoneProjectEntities();
+                                try
                                 {
-                                    Console.WriteLine();
-                                    Course newCourse = new Course();
-                                    newCourse.Semester = semester.Semester;
-                                    newCourse.SubjectCode = mark.Subject;
-                                    context.Courses.Add(newCourse);
-                                    context.SaveChanges();
-                                }
-                                foreach (var student in mark.Students)
-                                {
-                                    try
+                                    var studentEntity = context2.Students.Where(q => q.RollNumber.ToUpper().Equals(student.Roll.ToUpper())).FirstOrDefault();
+                                    int studentId = 0;
+                                    if (studentEntity != null)
                                     {
-                                        var studentEntity = context.Students.Where(q => q.RollNumber.ToUpper().Equals(student.Roll.ToUpper())).FirstOrDefault();
-                                        int studentId = 0;
-                                        if (studentEntity != null)
+                                        studentId = studentEntity.Id;
+                                    }
+                                    else
+                                    {
+                                        Debug.WriteLine(student.Roll);
+                                        Student newStu = new Student();
+                                        newStu.FullName = student.Name;
+                                        newStu.RollNumber = student.Roll;
+                                        context2.Students.Add(newStu);
+                                        context2.SaveChanges();
+                                        studentEntity = context2.Students.Where(q => q.RollNumber.ToUpper().Equals(student.Roll.ToUpper())).FirstOrDefault();
+                                    }
+                                    Dictionary<String, GradeTimes> dic = new Dictionary<string, GradeTimes>();
+                                    foreach (var grade in student.Grades)
+                                    {
+                                        //string gradeComp = new String(grade.Component.Where(c => (c < '0' || c > '9')).ToArray());
+                                        string gradeComp = grade.Component;
+                                        if (!dic.ContainsKey(gradeComp))
                                         {
-                                            studentId = studentEntity.Id;
+                                            GradeTimes newGradeTime = new GradeTimes();
+                                            newGradeTime.Grade = grade.Grade;
+                                            //newGradeTime.GradeComp = new String(grade.Component.Where(c => (c < '0' || c > '9')).ToArray());
+                                            newGradeTime.GradeComp = grade.Component;
+                                            newGradeTime.Times = 1;
+                                            dic.Add(gradeComp, newGradeTime);
                                         }
                                         else
                                         {
-                                            Debug.WriteLine(student.Roll);
-                                            Student newStu = new Student();
-                                            newStu.FullName = student.Name;
-                                            newStu.RollNumber = student.Roll;
-                                            context.Students.Add(newStu);
-                                            context.SaveChanges();
-                                            studentEntity = context.Students.Where(q => q.RollNumber.ToUpper().Equals(student.Roll.ToUpper())).FirstOrDefault();
-                                        }
-                                        Dictionary<String, GradeTimes> dic = new Dictionary<string, GradeTimes>();
-                                        foreach (var grade in student.Grades)
-                                        {
-                                            //string gradeComp = new String(grade.Component.Where(c => (c < '0' || c > '9')).ToArray());
-                                            string gradeComp = grade.Component;
-                                            if (!dic.ContainsKey(gradeComp))
-                                            {
-                                                GradeTimes newGradeTime = new GradeTimes();
-                                                newGradeTime.Grade = grade.Grade;
-                                                newGradeTime.GradeComp = new String(grade.Component.Where(c => (c < '0' || c > '9')).ToArray());
-                                                newGradeTime.Times = 1;
-                                                dic.Add(gradeComp, newGradeTime);
-                                            }
-                                            else
-                                            {
-                                                dic[gradeComp].Grade += grade.Grade;
-                                                dic[gradeComp].Times += 1;
-                                            }
-                                        }
-                                        foreach (var item in dic)
-                                        {
-                                            if (item.Value.Times > 1)
-                                            {
-                                                item.Value.Grade = item.Value.Grade / item.Value.Times;
-                                            }
-                                            CapstoneProject.Mark newMark = new CapstoneProject.Mark();
-                                            newMark.IsActivated = true;
-                                            newMark.IsEnabled = true;
-                                            newMark.SemesterId = semesterId;
-                                            newMark.StudentId = studentId;
-                                            newMark.CourseId = course.Id;
-                                            //newMark.Comment = student.Comment;
-                                            if (item.Value.Grade != null)
-                                            {
-                                                newMark.AverageMark = item.Value.Grade;
-                                            }
-                                            else
-                                            {
-                                                newMark.AverageMark = 0;
-                                            }
-                                            //import FALL2017 mark (FA AND 17)
-                                            var containSem = semester.Semester.Substring(0, 2).ToUpper();
-                                            var containYear = "";
-                                            if (semester.Semester.Contains('_'))
-                                            {
-                                                containYear = semester.Semester.Substring(semester.Semester.Length - 4, 2).ToUpper();
-                                            }
-                                            else {
-                                                containYear = semester.Semester.Substring(semester.Semester.Length - 2, 2).ToUpper();
-                                            }
-                                           
-                                            var subjectMarkComp = context.Subject_MarkComponent.Where(q => q.MarkName.Equals(item.Value.GradeComp) && q.SubjectId.Equals(mark.Subject) && q.SyllabusName.Contains(containSem) && q.SyllabusName.Contains(containYear)).FirstOrDefault();
-                                            if (subjectMarkComp != null)
-                                            {
-                                                newMark.SubjectMarkComponentId = subjectMarkComp.Id;
-                                                if (markListWithoutAverage.Where(q => q.CourseId == course.Id && q.StudentId == studentId && q.SubjectMarkComponentId == subjectMarkComp.Id).FirstOrDefault() == null)
-                                                {
-                                                    context.Marks.Add(newMark);
-                                                }
-                                                else
-                                                {
-                                                    Console.WriteLine();
-                                                }
-                                            }
-                                            else
-                                            {
-                                                Debug.WriteLine("Sub_Comp:" + mark.Subject + "_" + item.Value.GradeComp);
-                                            }
-
+                                            dic[gradeComp].Grade += grade.Grade;
+                                            dic[gradeComp].Times += 1;
                                         }
                                     }
-                                    catch (Exception ex)
+                                    foreach (var item in dic)
                                     {
-                                        return Json(new { error = ex.Message, message = "Errors in uploaded file. Please recheck" });
+                                        if (item.Value.Times > 1)
+                                        {
+                                            item.Value.Grade = item.Value.Grade / item.Value.Times;
+                                        }
+                                        CapstoneProject.Mark newMark = new CapstoneProject.Mark();
+                                        newMark.IsActivated = true;
+                                        newMark.IsEnabled = true;
+                                        newMark.SemesterId = semesterId;
+                                        newMark.StudentId = studentId;
+                                        newMark.CourseId = course.Id;
+                                        //newMark.Comment = student.Comment;
+                                        if (item.Value.Grade != null)
+                                        {
+                                            newMark.AverageMark = item.Value.Grade;
+                                        }
+                                        else
+                                        {
+                                            newMark.AverageMark = 0;
+                                        }
+                                        //import FALL2017 mark (FA AND 17)
+                                        var containSem = semester.Semester.Substring(0, 2).ToUpper();
+                                        var containYear = "";
+                                        if (semester.Semester.Contains('_'))
+                                        {
+                                            containYear = semester.Semester.Substring(semester.Semester.Length - 4, 2).ToUpper();
+                                        }
+                                        else
+                                        {
+                                            containYear = semester.Semester.Substring(semester.Semester.Length - 2, 2).ToUpper();
+                                        }
+
+                                        var subjectMarkComp = subjectCompList.Where(q => q.MarkName.Equals(item.Value.GradeComp) && (q.SyllabusName.Contains(containSem) && q.SyllabusName.Contains(containYear))).FirstOrDefault();
+                                        if (subjectMarkComp == null)
+                                        {
+                                            if (containSem.Equals("SP")) {
+                                                var lastYear = (int.Parse(containYear)-1)+"";
+                                                subjectMarkComp = subjectCompList.Where(q => q.MarkName.Equals(item.Value.GradeComp) && (q.SyllabusName.Contains("FA") && q.SyllabusName.Contains(lastYear))).FirstOrDefault();
+                                            }
+                                            if (containSem.Equals("SU"))
+                                            {
+                                                subjectMarkComp = subjectCompList.Where(q => q.MarkName.Equals(item.Value.GradeComp) && (q.SyllabusName.Contains("SP") && q.SyllabusName.Contains(containYear))).FirstOrDefault();
+                                            }
+                                            if (containSem.Equals("FA"))
+                                            {
+                                                subjectMarkComp = subjectCompList.Where(q => q.MarkName.Equals(item.Value.GradeComp) && (q.SyllabusName.Contains("SU") && q.SyllabusName.Contains(containYear))).FirstOrDefault();
+                                            }
+                                        }
+                                        if (subjectMarkComp != null)
+                                        {
+                                            newMark.SubjectMarkComponentId = subjectMarkComp.Id;
+                                            if (markListWithoutAverage.Where(q => q.CourseId == course.Id && q.StudentId == studentId && q.SubjectMarkComponentId == subjectMarkComp.Id).FirstOrDefault() == null)
+                                            {
+                                                context2.Marks.Add(newMark);
+                                                context2.SaveChanges();
+                                                GC.Collect();
+                                                context2.Dispose();
+                                                context2 = new CapstoneProjectEntities();
+                                            }
+                                            else
+                                            {
+                                                var oldMark = markListWithoutAverage.Where(q => q.CourseId == course.Id && q.StudentId == studentId && q.SubjectMarkComponentId == subjectMarkComp.Id).FirstOrDefault();
+                                                Console.WriteLine();
+                                                oldMark.AverageMark = newMark.AverageMark;
+                                                context2.SaveChanges();
+                                                GC.Collect();
+                                                context2.Dispose();
+                                                context2 = new CapstoneProjectEntities();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Debug.WriteLine("Sub_Comp:" + mark.Subject + "_" + item.Value.GradeComp);
+                                        }
+
                                     }
                                 }
-
-                                context.SaveChanges();
-                                //context.Dispose();
+                                catch (Exception ex)
+                                {
+                                    return Json(new { error = ex.Message, message = "Errors in uploaded file. Please recheck" });
+                                }
                             }
 
 
+                            
+
+                            //context.Dispose();
                         }
+                        GC.Collect();
+                        context.SaveChanges();
+
+
                     }
+
                 }
                 catch (Exception ex)
                 {
@@ -316,9 +349,10 @@ namespace CapstoneProject.Areas.Mark.Controllers
                 }
 
             }
-            return null;
+            return Json(new { success = true, message = "Successful!" });
         }
 
+        //Not yet fixed
         public ActionResult UploadFinal()
         {
             try
@@ -344,7 +378,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
                                     var titleRow = 1;
                                     var firstRecordRow = 2;
 
-                                    for (int i = firstRecordRow; i < totalRow; i++)
+                                    for (int i = firstRecordRow; i <= totalRow; i++)
                                     {
 
                                         var semester = ws.Cells[i, 1].Text.ToUpper();
@@ -464,7 +498,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json(new { error = ex.Message, message = "Errors in uploaded file. Please recheck" });
             }
-            return null;
+            return Json(new { success = true, message = "Successful!" });
         }
 
         public ActionResult UploadMarkExcel(int semesterId)
@@ -497,7 +531,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
                                     var semester = context.RealSemesters.Find(semesterId);
                                     var courseInSemester = context.Courses.AsNoTracking().Where(q => q.Semester.ToUpper().Equals(semester.Semester)).ToList();
                                     var getAllStudents = context.Students.ToList();
-                                    var subMarkList = context.Subject_MarkComponent.Where(q=>!q.MarkComponent.Name.ToUpper().Equals("AVERAGE")).ToList();
+                                    var subMarkList = context.Subject_MarkComponent.Where(q => !q.MarkComponent.Name.ToUpper().Equals("AVERAGE")).ToList();
                                     var markList = context.Marks.Where(q => q.SemesterId == semesterId).ToList();
                                     context.Configuration.AutoDetectChangesEnabled = false;
                                     try
@@ -587,7 +621,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json(new { error = ex.Message, message = "Errors in uploaded file. Please recheck" });
             }
-            return null;
+            return Json(new { success = true, message = "Successful!" });
         }
 
         public ActionResult DownloadExcelMark(int semesterId)
