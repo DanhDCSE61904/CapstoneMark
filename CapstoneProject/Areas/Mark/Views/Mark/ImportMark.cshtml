@@ -15,7 +15,7 @@
                 <div class="offset-8 col-md-4">
                     <div class="pull-right">
                         @*<button class="btn-success btn" id="download-template-btn"><i class="fa fa-download"></i> template</button>*@
-
+                        <button class="btn-primary btn" id="calculate-btn">Calculate</button>
                         <button class="btn-primary btn" id="import-mark-btn">Chọn folder</button>
                             <button class="btn btn-primary hidden" id="submit-button">import</button>
                             <input id="upload-file" class="hidden" type="file" webkitdirectory directory name="upload-file" />
@@ -37,9 +37,9 @@
             </div>
             <div>
                 <select id="semester-selector"></select>
-                <button id="btn-export-allstudentmark" class="btn btn-success" title="Export all mark of student by semester">
+                @*<button id="btn-export-allstudentmark" class="btn btn-success" title="Export all mark of student by semester">
                     <i class="fa fa-download"></i>Export Semester Excel
-                </button>
+                </button>*@
                 <form class="hidden" action="@Url.Action("DownloadExcelMark")" id="form-export-allstudentmark">
                     <input id="" class="hidden" name="semesterId" value="">
                 </form>
@@ -72,7 +72,16 @@
         });
     });
 
-
+    $('#calculate-btn').on('click', function () {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CalculateAverageMark")',
+            data: { semesterId: $('#semester-selector').val() },
+            success: function (result) {
+               
+            }
+        });
+    });
 
     function LoadSemester() {
         $.ajax({

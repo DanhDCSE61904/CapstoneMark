@@ -222,7 +222,6 @@
     <Compile Include="Areas\Attendance\Controllers\AttendanceController.cs" />
     <Compile Include="Areas\MarkComp\Controllers\MarkCompController.cs" />
     <Compile Include="Areas\MarkComp\MarkCompAreaRegistration.cs" />
-    <Compile Include="Areas\Mark\Controllers\MarkAverageController.cs" />
     <Compile Include="Areas\Mark\Controllers\MarkController.cs" />
     <Compile Include="Areas\Mark\MarkAreaRegistration.cs" />
     <Compile Include="Areas\Students\Controllers\StudentsController.cs" />
@@ -2627,7 +2626,6 @@
     <Folder Include="Areas\MarkComp\Models\" />
     <Folder Include="Areas\MarkComp\Views\Shared\" />
     <Folder Include="Areas\Mark\Models\" />
-    <Folder Include="Areas\Mark\Views\MarkAverage\" />
     <Folder Include="Areas\Mark\Views\Shared\" />
     <Folder Include="Areas\Students\Models\" />
     <Folder Include="Areas\Students\Views\Shared\" />

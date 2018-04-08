@@ -182,7 +182,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
 
                     var semester = context.RealSemesters.Find(semesterId);
                     var courseList = context.Courses.Where(q => q.Semester.Equals(semester.Semester.ToUpper())).ToList();
-                    var markListWithoutAverage = context.Marks.Where(q => !q.Subject_MarkComponent.MarkComponent.Name.Equals("AVERAGE")&&q.SemesterId==semesterId).ToList();
+                    var markListWithoutAverage = context.Marks.Where(q => !q.Subject_MarkComponent.MarkComponent.Name.Equals("AVERAGE") && q.SemesterId == semesterId).ToList();
                     string extension = System.IO.Path.GetExtension(Request.Files[i].FileName);
                     if (extension.Equals(".fg"))
                     {
@@ -196,6 +196,60 @@ namespace CapstoneProject.Areas.Mark.Controllers
                             //var semesterId = context.RealSemesters.Where(q => q.Semester.Equals(gradeFile.Semester.ToUpper())).FirstOrDefault().Id;
 
                             var course = courseList.Where(q => q.SubjectCode.Equals(mark.Subject)).FirstOrDefault();
+                            //var subjectCompList = context.Subject_MarkComponent.Where(q => q.SubjectId.Equals(mark.Subject));
+                            var containSem = semester.Semester.Substring(0, 2).ToUpper();
+                            var containYear = "";
+                            if (semester.Semester.Contains('_'))
+                            {
+                                containYear = semester.Semester.Substring(semester.Semester.Length - 4, 2).ToUpper();
+                            }
+                            else
+                            {
+                                containYear = semester.Semester.Substring(semester.Semester.Length - 2, 2).ToUpper();
+                            }
+
+                            var subjectCompList = context.Subject_MarkComponent.Where(q => q.SubjectId ==course.SubjectCode && (q.SyllabusName.Contains(containSem) && q.SyllabusName.Contains(containYear))).ToList();
+                            List<Subject_MarkComponent> oldsubjectCompList = new List<Subject_MarkComponent>();
+                                if (containSem.Equals("SP"))
+                                {
+                                    var lastYear = (int.Parse(containYear) - 1) + "";
+                                    oldsubjectCompList = context.Subject_MarkComponent.Where(q => q.SubjectId == course.SubjectCode && (q.SyllabusName.Contains("FA") && q.SyllabusName.Contains(lastYear))).ToList();
+                                }
+                                if (containSem.Equals("SU"))
+                                {
+                                    oldsubjectCompList = context.Subject_MarkComponent.Where(q => q.SubjectId == course.SubjectCode && (q.SyllabusName.Contains("SP") && q.SyllabusName.Contains(containYear))).ToList();
+                                }
+                                if (containSem.Equals("FA"))
+                                {
+                                    oldsubjectCompList = context.Subject_MarkComponent.Where(q => q.SubjectId == course.SubjectCode && (q.SyllabusName.Contains("SU") && q.SyllabusName.Contains(containYear))).ToList();
+                                }
+                            if(subjectCompList==null && oldsubjectCompList == null)
+                            {
+                                continue;
+                            }
+                            var subCompDic = subjectCompList.ToDictionary(q => q.MarkName);
+                            var oldSubCompDic = subjectCompList.ToDictionary(q => q.MarkName);
+                            bool skip =false;
+                            foreach(var item in mark.Components)
+                            {
+                                if (!subCompDic.ContainsKey(item))
+                                {
+                                    if (!oldSubCompDic.ContainsKey(item))
+                                    {
+                                        skip = true;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        subCompDic = oldSubCompDic;
+                                    }
+                                }
+                            }
+                            if (skip == true)
+                            {
+                                continue;
+                            }
+                            
                             if (course == null)
                             {
                                 Console.WriteLine();
@@ -205,7 +259,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
                                 context.Courses.Add(newCourse);
                                 context.SaveChanges();
                             }
-                            var subjectCompList = context.Subject_MarkComponent.Where(q => q.SubjectId.Equals(mark.Subject));
+                            
                             foreach (var student in mark.Students)
                             {
                                 var context2 = new CapstoneProjectEntities();
@@ -269,33 +323,9 @@ namespace CapstoneProject.Areas.Mark.Controllers
                                             newMark.AverageMark = 0;
                                         }
                                         //import FALL2017 mark (FA AND 17)
-                                        var containSem = semester.Semester.Substring(0, 2).ToUpper();
-                                        var containYear = "";
-                                        if (semester.Semester.Contains('_'))
-                                        {
-                                            containYear = semester.Semester.Substring(semester.Semester.Length - 4, 2).ToUpper();
-                                        }
-                                        else
-                                        {
-                                            containYear = semester.Semester.Substring(semester.Semester.Length - 2, 2).ToUpper();
-                                        }
-
-                                        var subjectMarkComp = subjectCompList.Where(q => q.MarkName.Equals(item.Value.GradeComp) && (q.SyllabusName.Contains(containSem) && q.SyllabusName.Contains(containYear))).FirstOrDefault();
-                                        if (subjectMarkComp == null)
-                                        {
-                                            if (containSem.Equals("SP")) {
-                                                var lastYear = (int.Parse(containYear)-1)+"";
-                                                subjectMarkComp = subjectCompList.Where(q => q.MarkName.Equals(item.Value.GradeComp) && (q.SyllabusName.Contains("FA") && q.SyllabusName.Contains(lastYear))).FirstOrDefault();
-                                            }
-                                            if (containSem.Equals("SU"))
-                                            {
-                                                subjectMarkComp = subjectCompList.Where(q => q.MarkName.Equals(item.Value.GradeComp) && (q.SyllabusName.Contains("SP") && q.SyllabusName.Contains(containYear))).FirstOrDefault();
-                                            }
-                                            if (containSem.Equals("FA"))
-                                            {
-                                                subjectMarkComp = subjectCompList.Where(q => q.MarkName.Equals(item.Value.GradeComp) && (q.SyllabusName.Contains("SU") && q.SyllabusName.Contains(containYear))).FirstOrDefault();
-                                            }
-                                        }
+                                       
+                                        var subjectMarkComp = subjectCompList.Where(q => q.MarkName.Equals(item.Value.GradeComp)).FirstOrDefault();
+                                        
                                         if (subjectMarkComp != null)
                                         {
                                             newMark.SubjectMarkComponentId = subjectMarkComp.Id;
@@ -332,7 +362,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
                             }
 
 
-                            
+
 
                             //context.Dispose();
                         }
@@ -620,6 +650,111 @@ namespace CapstoneProject.Areas.Mark.Controllers
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json(new { error = ex.Message, message = "Errors in uploaded file. Please recheck" });
+            }
+            return Json(new { success = true, message = "Successful!" });
+        }
+
+        public ActionResult CalculateAverageMark(int semesterId)
+        {
+            using (var context = new CapstoneProjectEntities())
+            {
+                var markList = context.Marks.Where(q => q.SemesterId == semesterId && !q.Subject_MarkComponent.MarkComponent.Name.Equals("AVERAGE")).ToList();
+                var studentList = markList.GroupBy(q => q.Student).Select(q => q.Key).ToList();
+                var averageCompId = context.MarkComponents.Where(q => q.Name.ToUpper().Equals("AVERAGE")).FirstOrDefault().Id;
+                foreach (var student in studentList)
+                {
+                    var retake = false;
+                    var studentMarks = markList.Where(q => q.StudentId == student.Id).ToList();
+                    var courseList = studentMarks.GroupBy(q => q.Course).Select(q => q.Key).ToList();
+                    foreach (var course in courseList)
+                    {
+                        double? average = 0;
+                        Dictionary<String,String> finalList = new Dictionary<string, string>();
+                        using (var context2 = new CapstoneProjectEntities())
+                        {
+                            
+                            var groupMark = new Dictionary<String, MarkGroupModel>();
+                            var marks = studentMarks.Where(q => q.CourseId == course.Id ).ToList();
+                            foreach (var item in marks)
+                            {
+                                var markgroupComp = item.Subject_MarkComponent.MarkComponent;
+                                if (!groupMark.ContainsKey(markgroupComp.Name))
+                                {
+                                    MarkGroupModel mgm = new MarkGroupModel();
+                                    mgm.MarkGroupName = markgroupComp.Name;
+                                    mgm.Mark = item.AverageMark;
+                                    mgm.Weight = item.Subject_MarkComponent.PercentWeight;
+                                    mgm.NumberOfTest = item.Subject_MarkComponent.NumberOfTests;
+                                    groupMark.Add(markgroupComp.Name, mgm);
+                                }
+                                else
+                                {
+                                    groupMark[markgroupComp.Name].Weight += item.Subject_MarkComponent.PercentWeight;
+                                    if (item.AverageMark != null)
+                                    {
+                                        groupMark[markgroupComp.Name].Mark += item.AverageMark;
+                                    }
+                                }
+                            }
+                            foreach (var group in groupMark)
+                            {
+                                group.Value.Mark = group.Value.Mark / group.Value.NumberOfTest;               
+                            }
+                            var markGroup = groupMark.Values.ToDictionary(q=>q.MarkGroupName);
+                            foreach(var item in markGroup)
+                            {
+                                if (item.Key.ToUpper().Contains("RESIT"))
+                                {
+                                    finalList.Add(item.Key.ToUpper().Replace("RESIT",""), item.Key.ToUpper().Replace("RESIT", ""));
+                                    if (item.Value.Mark != null)
+                                    {
+                                        retake = true;
+                                    }
+                                }
+                            }
+                            if (retake != true)
+                            {
+                                foreach(var item in markGroup)
+                                {
+                                    if (!item.Key.ToUpper().Contains("RESIT"))
+                                    {
+                                        if (item.Value.Mark != null)
+                                        {
+                                            average += item.Value.Mark*item.Value.Weight;
+                                        }
+                                        else
+                                        {
+                                            average += 0;
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                foreach (var item in markGroup)
+                                {
+                                    if (!finalList.ContainsKey(item.Key.ToUpper()))
+                                    {
+                                        if (item.Value.Mark != null)
+                                        {
+                                            average += item.Value.Mark * item.Value.Weight;
+                                        }
+                                        else
+                                        {
+                                            average += 0;
+                                        }
+                                    }
+                                }
+                            }
+                            if (average == null)
+                            {
+                                average = 0;
+                            }
+                            var tempAverage = Math.Round(average.Value, 0,MidpointRounding.AwayFromZero) / 100;
+                            var result = Math.Round(tempAverage, 1, MidpointRounding.AwayFromZero);                
+                        }
+                    }
+                }
             }
             return Json(new { success = true, message = "Successful!" });
         }
