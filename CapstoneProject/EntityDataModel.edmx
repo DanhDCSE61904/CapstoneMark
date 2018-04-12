@@ -100,6 +100,7 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="IsFinal" Type="bit" />
         </EntityType>
         <EntityType Name="Marks">
           <Key>
@@ -991,6 +992,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Subject_MarkComponent" Relationship="CapstoneProjectModel.FK_Subject_MarkComponent_MarkComponent" FromRole="MarkComponent" ToRole="Subject_MarkComponent" />
+          <Property Name="IsFinal" Type="Boolean" />
         </EntityType>
         <EntityType Name="Mark">
           <Key>
@@ -1599,6 +1601,7 @@
           <EntitySetMapping Name="MarkComponents">
             <EntityTypeMapping TypeName="CapstoneProjectModel.MarkComponent">
               <MappingFragment StoreEntitySet="MarkComponent">
+                <ScalarProperty Name="IsFinal" ColumnName="IsFinal" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

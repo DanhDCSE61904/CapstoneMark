@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using static CapstoneProject.Models.AreaViewModel;
 
 namespace CapstoneProject.Areas.Attendance.Controllers
 {
@@ -24,7 +25,21 @@ namespace CapstoneProject.Areas.Attendance.Controllers
             return View();
         }
 
-        public ActionResult UploadAttendance()
+        public ActionResult LoadSemesterSelect()
+        {
+            using (var context = new CapstoneProjectEntities())
+            {
+                var semesters = context.RealSemesters.Select(q => new SemesterViewModel
+                {
+                    SemesterId = q.Id,
+                    Semester = q.Semester,
+                }).ToList();
+                return Json(new { result = semesters, });
+            }
+
+        }
+
+        public ActionResult UploadAttendance(int semesterId)
         {
             try
             {
@@ -52,7 +67,8 @@ namespace CapstoneProject.Areas.Attendance.Controllers
                                     var savePoint = 0;
                                     Dictionary<String, Student> wtf = new Dictionary<String, Student>();
                                     var studentList = context.Students.AsNoTracking().ToList();
-                                    var courseList = context.Courses.AsNoTracking().Where(q => q.Semester.ToUpper().Equals("SPRING2018_1")).ToList();
+                                    var semsesterName = context.RealSemesters.Find(semesterId).Semester.ToUpper();
+                                    var courseList = context.Courses.AsNoTracking().Where(q => q.Semester.ToUpper().Equals(semsesterName)).ToList();
                                     var context2 = new CapstoneProjectEntities();
                                     context2.Configuration.AutoDetectChangesEnabled = false;
 

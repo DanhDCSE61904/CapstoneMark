@@ -61,6 +61,7 @@
     <script src="~/Content/Resources/plugins/jQuery/jquery.hotkeys.js"></script>
     <script src="~/Content/Resources/plugins/ckeditor/ckeditor.js"></script>
     <script src="~/Content/Resources/plugins/ckeditor/adapters/jquery.js"></script>
+    <script src="~/Content/Resources/plugins/toastr/toastr.js"></script>
 
     <script src="~/Content/Resources/plugins/datatable-buttons/datatable-buttons-min.js"></script>
     <script src="~/Content/Resources/plugins/datatable-buttons/buttons-flash-min.js"></script>
@@ -163,12 +164,12 @@
                 </div>
 
                 <div class="sidebar-form">
-                    <div class="input-group">
+                    @*<div class="input-group">
                         <input id="menu-filter" type="text" class="form-control" placeholder="Search...">
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-flat"><i class="fa fa-search"></i></button>
                         </span>
-                    </div>
+                    </div>*@
                 </div>
 
                 <!-- Sidebar Menu -->
@@ -211,20 +212,108 @@
                     </c:forEach>*@
                     <li class="treeview">
                         <a href="#">
-                            <i class="glyphicon glyphicon-save"></i>
-                            <span>Mark</span>
+                            <i class="glyphicon glyphicon-user"></i>
+                            <span>Sinh viên</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <a href="~/Mark/Mark/StudentCourses">
+                                        <div class="menu-child-wrapper">
+                                            <div class="child-icon"><i class="fa fa-circle-o"></i></div>
+                                            <div class="child-content col-md-11">
+                                                <span class="name">Thông tin điểm sinh viên</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="~/Students/Students/StudentForFinal">
+                                        <div class="menu-child-wrapper">
+                                            <div class="child-icon"><i class="fa fa-circle-o"></i></div>
+                                            <div class="child-content col-md-11">
+                                                <span class="name">Danh sách sinh viên thi Final</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </a>
+                    </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-book"></i>
+                            <span>Điểm</span>
                             <i class="fa fa-angle-left pull-right"></i>
                             <ul class="treeview-menu">
                                         <li>
-                                            <a href="#">
+                                            <a href="~/Mark/Mark/ImportMark">
                                                 <div class="menu-child-wrapper">
                                                     <div class="child-icon"><i class="fa fa-circle-o"></i></div>
                                                     <div class="child-content col-md-11">
-                                                        <span class="name">Import Mark</span>
+                                                        <span class="name">Nhập điểm FG</span>
                                                     </div>
                                                 </div>
                                             </a>
                                         </li>
+                                <li>
+                                    <a href="~/Mark/Mark/ImportAverageVovinam">
+                                        <div class="menu-child-wrapper">
+                                            <div class="child-icon"><i class="fa fa-circle-o"></i></div>
+                                            <div class="child-content col-md-11">
+                                                <span class="name">Nhập điểm vovinam</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <div class="menu-child-wrapper">
+                                            <div class="child-icon"><i class="fa fa-circle-o"></i></div>
+                                            <div class="child-content col-md-11">
+                                                <span class="name">Nhập điểm final</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </a>
+                    </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-certificate"></i>
+                            <span>Syllabus</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <a href="~/MarkComp/MarkComp/ImportSyllabus">
+                                        <div class="menu-child-wrapper">
+                                            <div class="child-icon"><i class="fa fa-circle-o"></i></div>
+                                            <div class="child-content col-md-11">
+                                                <span class="name">Nhập syllabus</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </a>
+                    </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-check"></i>
+                            <span>Điểm danh</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <a href="~/Attendance/Attendance/ImportAttendance">
+                                        <div class="menu-child-wrapper">
+                                            <div class="child-icon"><i class="fa fa-circle-o"></i></div>
+                                            <div class="child-content col-md-11">
+                                                <span class="name">Nhập điểm danh</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
                             </ul>
                         </a>
                     </li>

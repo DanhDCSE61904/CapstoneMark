@@ -105,18 +105,24 @@
     });
 
     function LoadSubjectSelect() {
+        $("#subject-selector").select2({
+            placeholder: "Tìm kiếm mon",
+            minimumInputLength: 2,
+        });
         $.ajax({
             type: "POST",
             url: '@Url.Action("LoadSubjectSelectBySemesters")',
             data: {semesterId:$('#semester-selector').val()},
             success: function (result) {
-                for (var i = 0; i < result.result.length; i++) {
-                    $('#subject-selector').append("<option value='" + result.result[i].Value + "'>" + result.result[i].Value + "</option>");
-                }
+                $("#subject-selector").empty().trigger('change');
                 $("#subject-selector").select2({
                     placeholder: "Tìm kiếm mon",
                     minimumInputLength: 2,
                 });
+                for (var i = 0; i < result.result.length; i++) {
+                    $('#subject-selector').append("<option value='" + result.result[i].Value + "'>" + result.result[i].Value + "</option>");
+                }
+                
             }
         });
     }

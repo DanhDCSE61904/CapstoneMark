@@ -2464,6 +2464,7 @@
     <Content Include="Content\Resources\plugins\timepicker\bootstrap-timepicker.js" />
     <Content Include="Content\Resources\plugins\timepicker\bootstrap-timepicker.min.css" />
     <Content Include="Content\Resources\plugins\timepicker\bootstrap-timepicker.min.js" />
+    <Content Include="Content\Resources\plugins\toastr\toastr.js" />
     <Content Include="EntityDataModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>EntityDataModel.edmx</DependentUpon>
@@ -2572,6 +2573,9 @@
     <Content Include="Areas\Students\Views\web.config" />
     <Content Include="Areas\Mark\Views\Mark\ImportFinal.cshtml" />
     <Content Include="Areas\Students\Views\Students\StudentForFinal.cshtml" />
+    <Content Include="Areas\Mark\Views\Mark\ImportAverageVovinam.cshtml" />
+    <Content Include="Content\Resources\plugins\toastr\toastr.less" />
+    <Content Include="Content\Resources\plugins\toastr\toastr.scss" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -2618,6 +2622,9 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Template\AP_Syllabuses Lastest.xlsx" />
+    <Content Include="Template\Template Marks Without Details_VOV124_05,06,07.04.18_SP2018 FUMM 2.xlsx" />
+    <Content Include="Template\Spring2018AttendanceP2.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

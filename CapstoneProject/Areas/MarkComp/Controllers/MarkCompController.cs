@@ -97,6 +97,11 @@ namespace CapstoneProject.Areas.MarkComp.Controllers
             }
         }
 
+        public void ImportMarkName(int totalRow, int firstRecord)
+        {
+
+        }
+
 
         public ActionResult UploadExcel()
         {
@@ -123,33 +128,36 @@ namespace CapstoneProject.Areas.MarkComp.Controllers
                                     var totalRow = ws.Dimension.Rows;
                                     var studentCodeCol = 2;
                                     var titleRow = 1;
-                                    var firstRecordRow = 3;
+                                    var firstRecordRow = 2;
 
-                                    Dictionary<String, Subject_MarkComponent> dic = new Dictionary<string, Subject_MarkComponent>();
-
+                                    Dictionary<String, Subject_MarkComponent> dic2 = new Dictionary<string, Subject_MarkComponent>();
+                                    var dic = context.Subject_MarkComponent.Where(q => !q.MarkComponent.Name.Equals("AVERAGE")).ToDictionary(q => q.SubjectId.ToUpper() + "_" + q.SyllabusName.ToUpper() + "_" + q.MarkName.ToUpper());
                                     int tempNo = 0;
-                                    for (int i = firstRecordRow; i < totalRow; i++)
+                                    for (int i = firstRecordRow; i <= totalRow; i++)
                                     {
                                         //Add MarkComponent
-                                        //    var markCompName = ws.Cells[i, 7].Text.ToUpper();
-                                        //    if (!ws.Cells[i, 7].Text.ToUpper().Contains("PHASE"))
-                                        //    {
-                                        //        markCompName = new String(ws.Cells[i, 7].Text.Where(c => (c < '0' || c > '9')).ToArray()).ToUpper();
-                                        //    }
-                                        //    var markCompExist = context.MarkComponents.Where(q => q.Name.Equals(markCompName)).FirstOrDefault();
-                                        //    if (markCompExist == null)
-                                        //    {
-                                        //        MarkComponent newMarkComp = new MarkComponent();
-                                        //        newMarkComp.Name = markCompName;
-                                        //        context.MarkComponents.Add(newMarkComp);
-                                        //        context.SaveChanges();
-                                        //    }
-                                        //    else
-                                        //    {
-                                        //        Console.WriteLine();
-                                        //    }
-                                        //}
+                                            var markCompName = ws.Cells[i, 7].Text.ToUpper();
+                                        if (!ws.Cells[i, 7].Text.ToUpper().Contains("PHASE"))
+                                        {
+                                            markCompName = new String(ws.Cells[i, 7].Text.Where(c => (c < '0' || c > '9')).ToArray()).ToUpper();
+                                        }
+                                        var markCompExist = context.MarkComponents.Where(q => q.Name.Equals(markCompName)).FirstOrDefault();
+                                        if (markCompExist == null)
+                                        {
+                                            MarkComponent newMarkComp = new MarkComponent();
+                                            newMarkComp.Name = markCompName;
+                                            context.MarkComponents.Add(newMarkComp);
+                                            context.SaveChanges();
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine();
+                                        }
+                                    }
+                                
 
+                                    for (int i = firstRecordRow; i <= totalRow; i++)
+                                    {
                                         //Add Syllabus
                                         String tempOldMarkName = "";
 
@@ -158,7 +166,7 @@ namespace CapstoneProject.Areas.MarkComp.Controllers
                                         //    tempOldMarkName = new String(ws.Cells[i, 7].Text.Where(c => (c < '0' || c > '9')).ToArray());
                                         //}
                                         // 1: SubjectCode, 2: Syllabus Name, 3: MarkName
-                                        String tempKey = ws.Cells[i, 1].Text.ToUpper() + "_" + ws.Cells[i, 2].Text.ToUpper() + "_" + ws.Cells[i, 7].Text.ToUpper() + "_" + tempOldMarkName;
+                                        String tempKey = ws.Cells[i, 1].Text.ToUpper() + "_" + ws.Cells[i, 2].Text.ToUpper() + "_" + ws.Cells[i, 7].Text.ToUpper();
 
                                         //if (ws.Cells[i, 3].Text.ToUpper().Contains("FINAL")|| ws.Cells[i, 3].Text.ToUpper().Contains("MIDTERM") || ws.Cells[i, 3].Text.ToUpper().Contains("MT"))
                                         //{
@@ -183,7 +191,7 @@ namespace CapstoneProject.Areas.MarkComp.Controllers
                                                 tempActive = true;
                                             }
                                             Subject_MarkComponent subMark = new Subject_MarkComponent();
-                                            var markCompExist = context.MarkComponents.Where(q => q.Name.ToUpper().Equals(markCompName)).FirstOrDefault();
+                                            var markCompExist = context.MarkComponents.Where(q => q.Name.ToUpper().Trim().Equals(markCompName.Trim())).FirstOrDefault();
                                             if (markCompExist == null)
                                             {
                                                 Console.WriteLine();
@@ -200,10 +208,11 @@ namespace CapstoneProject.Areas.MarkComp.Controllers
                                             subMark.MarkName = ws.Cells[i, 7].Text;
 
                                             dic.Add(tempKey, subMark);
+                                            dic2.Add(tempKey, subMark);
                                         }
 
                                     }
-                                    foreach (var item in dic)
+                                    foreach (var item in dic2)
                                     {
                                         context.Subject_MarkComponent.Add(item.Value);
                                     }
@@ -227,5 +236,6 @@ namespace CapstoneProject.Areas.MarkComp.Controllers
 
             return Json(new { success = true, message = "File uploaded successfully", failRecordCount = failRecordCount });
         }
+
     }
 }
