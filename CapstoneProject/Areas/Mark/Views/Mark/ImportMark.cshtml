@@ -57,6 +57,18 @@
                         </thead>
                     </table>
                 </div>*@
+            <div>
+            <table id="error-table" class="dataTable cell-border">
+                <thead>
+                    <tr>
+                        <th>Giảng viên</th>
+                        <th>Lớp</th>
+                        <th>Môn</th>
+                        <th>Ghi chú</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
         </div>
 
     </div>
@@ -65,10 +77,10 @@
     $(document).ready(function () {
         LoadSemester();
         $('#form-export-allstudentmark input[name="semesterId"]').val($('#semester-selector').val());
-        var table = null;
-        $('#date-string').daterangepicker({
-            singleDatePicker: true,
-        });
+        //var table = $('#error-table').DataTable();
+        //$('#date-string').daterangepicker({
+        //    singleDatePicker: true,
+        //});
     });
 
     $('#calculate-btn').on('click', function () {
@@ -77,7 +89,7 @@
             url: '@Url.Action("CalculateAverageMark")',
             data: { semesterId: $('#semester-selector').val() },
             success: function (result) {
-               
+
             }
         });
     });
@@ -90,7 +102,7 @@
                 for (var i = 0; i < result.result.length; i++) {
                     $('#semester-selector').append("<option value='" + result.result[i].SemesterId + "'>" + result.result[i].Semester + "</option>");
                 }
-                LoadTable();
+                //LoadTable();
             }
         });
     }
@@ -100,10 +112,79 @@
         $('#form-export-allstudentmark').submit();
     });
 
-    $('#semester-selector').on('change', function () {
-        //$('#mark-table').DataTable()._fnpagechange(0);
-        $('#mark-table').DataTable().ajax.reload();
-    });
+    //$('#semester-selector').on('change', function () {
+    //    //$('#mark-table').DataTable()._fnpagechange(0);
+    //    $('#mark-table').DataTable().ajax.reload();
+    //});
+
+    function LoadErrorTable(data) {
+        debugger
+        //if (table != null) {
+        //    //     table._fnpagechange(0);
+        //    //     table._fnajaxupdate();
+        //    table.ajax.reload();
+        //}
+
+        $('#error-table').DataTable({
+            searchDelay: 1000,
+            //"bServerSide": true,
+            "bFilter": true,
+            "bRetrieve": true,
+            "sScrollX": "100%",
+            "bScrollCollapse": true,
+            "bDeferRender": true,
+            "bProcessing": true,
+            "bSort": false,
+            "aaData": data,
+            "oLanguage": {
+                "sSearchPlaceholder": "",
+                "sSearch": "Tìm kiếm:",
+                "sZeroRecords": "Không có dữ liệu phù hợp",
+                "sInfo": "Hiển thị từ _START_ đến _END_ trên tổng số _TOTAL_ dòng",
+                "sEmptyTable": "Không có dữ liệu",
+                "sInfoFiltered": " - lọc ra từ _MAX_ dòng",
+                "sLengthMenu": "Hiển thị _MENU_ dòng",
+                "sProcessing": "Đang xử lý...",
+                "oPaginate": {
+                    "sNext": "<i class='fa fa-chevron-right'></i>",
+                    "sPrevious": "<i class='fa fa-chevron-left'></i>"
+                }
+
+            },
+            "aoColumnDefs": [
+                {
+                    "aTargets": [1],
+                    "sClass": "min-width-150",
+                    "bSortable": false,
+                    "sWidth": "150px"
+                },
+                {
+                    "aTargets": [0, 1, 2, 3],
+                    "bSortable": false,
+                },
+                {
+                    "aTargets": [0, 1, 2, 3],
+                    "sClass": "text-center",
+                }
+            ],
+            "bAutoWidth": false,
+            //dom: 'Bfrtip',
+            //buttons: [
+            //    {
+            //        extend: 'pageLength',
+            //        text: 'Hiển thị 10 dòng',
+            //    },
+            //    {
+            //        extend: 'excel',
+            //        text: 'Xuất Excel',
+            //    },
+            //    {
+            //        extend: 'pdf',
+            //        text: 'Xuất PDF',
+            //    },
+            //]
+        });
+    }
 
     @*function LoadTable() {
         //if (table != null) {
@@ -207,7 +288,8 @@
     });
 
     $('#submit-button').on("click", function () {
-        $('#upload-progress-bar').removeClass('progress-bar-success');
+        $('#upload-progress-bar').removeClass('progress-bar-success');    
+            //$('#error-table').Datatable.destroy();
         var file = $("#upload-file")[0];
 
         //if (file.size > 20971520) {
@@ -252,6 +334,10 @@
                     $('#upload-progress-bar').html("Completed!");
                     $('#upload-progress-bar').addClass('progress-bar-success');
                     $('#cancel-file').click();
+                    if (result.errorList != null) {
+                        $('#upload-progress-bar').html(result.message);
+                        LoadErrorTable(result.errorList);
+                    }
                     //window.location.reload();
 
                 } else {

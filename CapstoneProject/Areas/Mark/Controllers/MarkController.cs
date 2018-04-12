@@ -179,6 +179,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
         {
             int a = Request.Files.Count;
             //FileStream fileStream = new FileStream(@"C:\Users\USER\Desktop\SO DIEM FALL 2017\SO DIEM FALL 2017\10T\FA17__10T_VanTTN.fg", FileMode.Open);
+            List<IConvertible[]> errorList = new List<IConvertible[]>();
             for (int i = 0; i < a; i++)
             {
                 try
@@ -189,6 +190,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
                     var courseList = context.Courses.Where(q => q.Semester.Equals(semester.Semester.ToUpper())).ToList();
                     var markListWithoutAverage = context.Marks.Where(q => !q.Subject_MarkComponent.MarkComponent.Name.Equals("AVERAGE") && q.SemesterId == semesterId).ToList();
                     string extension = System.IO.Path.GetExtension(Request.Files[i].FileName);
+                    
                     if (extension.Equals(".fg"))
                     {
                         var gradeFile = (TeacherGrade)new BinaryFormatter
@@ -223,27 +225,28 @@ namespace CapstoneProject.Areas.Mark.Controllers
                             }
 
                             var subjectCompList = compList.Where(q => (q.SyllabusName.Contains(containSem) && q.SyllabusName.Contains(containYear))).ToList();
-                            List<Subject_MarkComponent> oldsubjectCompList = new List<Subject_MarkComponent>();
-                            if (containSem.Equals("SP"))
-                            {
-                                var lastYear = (int.Parse(containYear) - 1) + "";
-                                oldsubjectCompList = compList.Where(q => (q.SyllabusName.Contains("FA") && q.SyllabusName.Contains(lastYear))).ToList();
-                            }
-                            if (containSem.Equals("SU"))
-                            {
-                                oldsubjectCompList = compList.Where(q => (q.SyllabusName.Contains("SP") && q.SyllabusName.Contains(containYear))).ToList();
-                            }
-                            if (containSem.Equals("FA"))
-                            {
-                                oldsubjectCompList = compList.Where(q => (q.SyllabusName.Contains("SU") && q.SyllabusName.Contains(containYear))).ToList();
-                            }
-                            if (subjectCompList == null && oldsubjectCompList == null)
+                            //List<Subject_MarkComponent> oldsubjectCompList = new List<Subject_MarkComponent>();
+                            //if (containSem.Equals("SP"))
+                            //{
+                            //    var lastYear = (int.Parse(containYear) - 1) + "";
+                            //    oldsubjectCompList = compList.Where(q => (q.SyllabusName.Contains("FA") && q.SyllabusName.Contains(lastYear))).ToList();
+                            //}
+                            //if (containSem.Equals("SU"))
+                            //{
+                            //    oldsubjectCompList = compList.Where(q => (q.SyllabusName.Contains("SP") && q.SyllabusName.Contains(containYear))).ToList();
+                            //}
+                            //if (containSem.Equals("FA"))
+                            //{
+                            //    oldsubjectCompList = compList.Where(q => (q.SyllabusName.Contains("SU") && q.SyllabusName.Contains(containYear))).ToList();
+                            //}
+                            if (subjectCompList == null )
+                                //&& oldsubjectCompList == null)
                             {
                                 continue;
                             }
                             var subCompDic = subjectCompList.ToDictionary(q => q.MarkName.Trim());
                             bool skip = false;
-                            var oldSubCompDic = oldsubjectCompList.ToDictionary(q => q.MarkName.Trim());
+                            //var oldSubCompDic = oldsubjectCompList.ToDictionary(q => q.MarkName.Trim());
 
                             foreach (var item in mark.Components)
                             {
@@ -251,26 +254,28 @@ namespace CapstoneProject.Areas.Mark.Controllers
                                 {
                                     if (!subCompDic.ContainsKey(item.Trim()))
                                     {
-                                        foreach (var item2 in mark.Components)
-                                        {
-                                            if (!oldSubCompDic.ContainsKey(item2.Trim()))
-                                            {
+                                        //foreach (var item2 in mark.Components)
+                                        //{
+                                        //    if (!oldSubCompDic.ContainsKey(item2.Trim()))
+                                        //    {
                                                 skip = true;
                                                 break;
-                                            }
+                                        //    }
 
-                                        }
-                                        if (skip == true)
-                                        {
-                                            break;
-                                        }
+                                        //}
+                                        //if (skip == true)
+                                        //{
+                                        //    break;
+                                        //}
                                         //subCompDic = oldSubCompDic;
-                                        subjectCompList = oldsubjectCompList;
+                                        //subjectCompList = oldsubjectCompList;
                                     }
                                 }
                             }
                             if (skip == true)
                             {
+                                IConvertible[] item = new IConvertible[] { gradeFile.Login, mark.Class, mark.Subject, "Sai syllabus, xin nhập bằng excel hoặc sửa lại file FG đúng syllabus. Các lớp khác nhập thành công." };
+                                errorList.Add(item);
                                 continue;
                             }
 
@@ -297,6 +302,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
                                         context2.SaveChanges();
                                         studentEntity = context2.Students.Where(q => q.RollNumber.ToUpper().Equals(student.Roll.ToUpper())).FirstOrDefault();
                                     }
+                                    //Hop thanh 1 Component. ex: Tinhh ra Quiz tu quiz 1 va quiz 2 
                                     //Dictionary<String, GradeTimes> dic = new Dictionary<string, GradeTimes>();
                                     //foreach (var grade in student.Grades)
                                     //{
@@ -398,7 +404,14 @@ namespace CapstoneProject.Areas.Mark.Controllers
                 }
 
             }
-            return Json(new { success = true, message = "Successful!" });
+            if (errorList.Count == 0)
+            {
+                return Json(new { success = true, message = "Successful!" });
+            }
+            else
+            {
+                return Json(new { success = true, message = "Some classes doesn't match the syllabus", errorList = errorList });
+            }
         }
 
         //Not yet fixed
