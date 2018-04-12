@@ -184,7 +184,8 @@ namespace CapstoneProject.Areas.Students.Controllers
                                     //{
                                     //    studentResult.Add(student);
                                     //}
-                                    if ((attendance / slots) >= 0.8)
+                                    double rate = double.Parse(attendance.ToString()) / double.Parse(slots.Value.ToString());
+                                    if (rate >= 0.8)
                                     {
                                         studentResult.Add(student);
                                     }
