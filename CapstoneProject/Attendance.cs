@@ -21,7 +21,6 @@ namespace CapstoneProject
         public Nullable<bool> Status { get; set; }
         public Nullable<System.DateTime> RecordTime { get; set; }
         public Nullable<bool> TakeAttendance { get; set; }
-        public Nullable<int> NumberOfSlots { get; set; }
     
         public virtual Course Course { get; set; }
         public virtual Student Student { get; set; }

@@ -108,18 +108,28 @@ namespace CapstoneProject.Areas.Students.Controllers
                 var test = 0;
                 var semester = context.RealSemesters.Find(semesterId).Semester.ToUpper();
                 var course = context.Courses.Where(q => q.Semester.ToUpper().Equals(semester) && q.SubjectCode.Equals(subjectCode)).FirstOrDefault();
-                var studentList = context.Attendances.Where(q => q.CourseId ==course.Id).GroupBy(q => q.Student).Select(q=>q.Key).ToList();
-                var stur = studentList.Where(q => q.RollNumber.Equals("SE62849"));
-                var slots = context.Attendances.Where(q => q.CourseId == course.Id).FirstOrDefault().NumberOfSlots;
+                var studentList = context.Attendances.Where(q => q.CourseId == course.Id).GroupBy(q => q.Student).Select(q => q.Key).ToList();
+                //var stur = studentList.Where(q => q.RollNumber.Equals("SE62849"));
+                var subjectSlots = context.Subjects.Where(q => q.Id.ToUpper().Equals(course.SubjectCode.ToUpper())).FirstOrDefault();
+                int? slots = 0;
+                if (subjectSlots!=null)
+                {
+                    slots = subjectSlots.NumberOfSlots;
+                }
+                else
+                {
+                    Console.WriteLine();
+                }
+                
                 var studentResult = new List<Student>();
                 var attendanceList = context.Attendances.Where(q => q.CourseId == course.Id).ToList();
+                var exemptList = context.Marks.Where(q => q.IsExempt == true&&q.CourseId == course.Id).GroupBy(q => q.Student).Select(q => q.Key).ToDictionary(q=>q.RollNumber);
+                foreach (var exemptStudent in exemptList)
+                {
+                    studentResult.Add(exemptStudent.Value);
+                }
                 foreach (var student in studentList)
                 {
-                    test++;
-                    if(student.RollNumber.Equals("SE62849"))
-                    {
-                        Console.WriteLine();
-                    }
                     var attendance = attendanceList.Where(q => q.StudentId == student.Id && q.Status == true).Count();
                     if (attendance != 0)
                     {
@@ -129,7 +139,7 @@ namespace CapstoneProject.Areas.Students.Controllers
                         //    studentResult.Add(student);
                         //}
                         double rate = double.Parse(attendance.ToString()) / double.Parse(slots.Value.ToString());
-                        if (rate >= 0.8)
+                        if (rate >= 0.8 && !exemptList.ContainsKey((student.RollNumber)))
                         {
                             studentResult.Add(student);
                         }
@@ -162,21 +172,41 @@ namespace CapstoneProject.Areas.Students.Controllers
                 var semester = context.RealSemesters.Find(semesterId);
                 var fileName = semester.Semester + " Final";
                 var courseList = context.Courses.Where(q => q.Semester.ToUpper().Equals(semester.Semester)).ToList();
-                var studentList = context.Marks.Where(q => q.SemesterId == semesterId).GroupBy(q => q.Student).Select(q => q.FirstOrDefault().Student).ToList();
+                var studentList = context.Attendances.Where(q => q.Course.Semester.ToUpper().Equals(semester.Semester.ToUpper())).GroupBy(q => q.Student).Select(q => q.FirstOrDefault().Student).ToList();
+                var attendanceList = context.Attendances.Where(q => q.Course.Semester.ToUpper().Equals(semester.Semester)).ToList();
+                var subjectList = context.Subjects.ToList();
+                var markList = context.Marks.Where(q => q.SemesterId == semesterId).ToList();
+                int clear = 0;
+                
                 using (ExcelPackage package = new ExcelPackage(ms))
                 {
                     #region Excel format
                     ExcelWorkbook wb = package.Workbook;
                     foreach (var course in courseList)
                     {
-                        if (context.Attendances.Where(q => q.CourseId == course.Id).FirstOrDefault() != null)
+                        clear++;
+                        var attendanceStudentList = attendanceList.Where(q => q.CourseId == course.Id).ToList();
+                        if (attendanceStudentList.Count != 0)
                         {
-                            var slots = context.Attendances.Where(q => q.CourseId == course.Id).FirstOrDefault().NumberOfSlots;
+                            var subjectSlots = subjectList.Where(q => q.Id.ToUpper().Equals(course.SubjectCode.ToUpper())).FirstOrDefault();
+                            int? slots = 0;
+                            if (subjectSlots != null)
+                            {
+                                slots = subjectSlots.NumberOfSlots;
+                            }
+                            else
+                            {
+                                Console.WriteLine();
+                            }
                             var studentResult = new List<Student>();
-                            var attendanceList = context.Attendances.Where(q => q.CourseId == course.Id).ToList();
+                            var exemptList = markList.Where(q => q.IsExempt == true && q.CourseId == course.Id).GroupBy(q => q.Student).Select(q => q.Key).ToDictionary(q => q.RollNumber);
+                            foreach (var exemptStudent in exemptList)
+                            {
+                                studentResult.Add(exemptStudent.Value);
+                            }
                             foreach (var student in studentList)
                             {
-                                var attendance = attendanceList.Where(q => q.StudentId == student.Id && q.Status == true).Count();
+                                var attendance = attendanceStudentList.Where(q => q.StudentId == student.Id && q.Status == true).Count();
                                 if (attendance != 0)
                                 {
 
@@ -185,7 +215,7 @@ namespace CapstoneProject.Areas.Students.Controllers
                                     //    studentResult.Add(student);
                                     //}
                                     double rate = double.Parse(attendance.ToString()) / double.Parse(slots.Value.ToString());
-                                    if (rate >= 0.8)
+                                    if (rate >= 0.8 && !exemptList.ContainsKey((student.RollNumber)))
                                     {
                                         studentResult.Add(student);
                                     }
@@ -227,12 +257,13 @@ namespace CapstoneProject.Areas.Students.Controllers
                                 var count = 1;
                                 foreach (var item in studentResult)
                                 {
-                                    if (studentCount != 20)
+                                    ws.Cells["" + (StartHeaderChar++) + (++StartHeaderNumber)].Value = count++;
+                                    ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item.RollNumber;
+                                    ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item.FullName;
+                                    if (studentCount != 19)
                                     {
                                         studentCount++;
-                                        ws.Cells["" + (StartHeaderChar++) + (++StartHeaderNumber)].Value = count++;
-                                        ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item.RollNumber;
-                                        ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item.FullName;
+                                        
                                         StartHeaderChar = 'A';
                                     }
                                     else
@@ -243,6 +274,23 @@ namespace CapstoneProject.Areas.Students.Controllers
                                         StartHeaderChar = 'A';
                                         StartHeaderNumber = 1;
                                         count = 1;
+                                        #region Headers
+                                        //ws.Cells[0, 0].Style.WrapText = true;
+                                        //Image img = CaptstoneProject.Properties.Resources.img_logo_fe;
+                                        //ExcelPicture pic = ws.Drawings.AddPicture("FPTLogo", img);
+                                        //pic.From.Column = 0;
+                                        //pic.From.Row = 0;
+                                        //pic.SetSize(320, 240);
+                                        ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "No";
+                                        ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "StudentRoll";
+                                        ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "StudentName";
+
+
+                                        EndHeaderChar = --StartHeaderChar;
+                                        EndHeaderNumber = StartHeaderNumber;
+                                        StartHeaderChar = 'A';
+                                        StartHeaderNumber = 1;
+                                        #endregion
                                     }
                                 }
 
@@ -258,7 +306,12 @@ namespace CapstoneProject.Areas.Students.Controllers
 
                             }
                         }
-                        
+                        if (clear == 10)
+                        {
+                            GC.Collect();
+                            clear = 0;
+                        }
+
                     }
                     fileName += ".xlsx";
                     package.SaveAs(ms);

@@ -24,6 +24,7 @@ namespace CapstoneProject
         public Nullable<bool> IsActivated { get; set; }
         public Nullable<bool> IsEnabled { get; set; }
         public string Comment { get; set; }
+        public Nullable<bool> IsExempt { get; set; }
     
         public virtual Course Course { get; set; }
         public virtual RealSemester RealSemester { get; set; }

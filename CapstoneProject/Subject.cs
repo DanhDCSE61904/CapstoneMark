@@ -28,6 +28,7 @@ namespace CapstoneProject
         public string Abbreviation { get; set; }
         public Nullable<bool> IsSpecialized { get; set; }
         public Nullable<int> Type { get; set; }
+        public Nullable<int> NumberOfSlots { get; set; }
     
         public virtual Prequisite Prequisite { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

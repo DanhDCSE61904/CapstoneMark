@@ -25,6 +25,11 @@ namespace CapstoneProject.Areas.Attendance.Controllers
             return View();
         }
 
+        public ActionResult ImportExemptAttendance()
+        {
+            return View();
+        }
+
         public ActionResult LoadSemesterSelect()
         {
             using (var context = new CapstoneProjectEntities())
@@ -114,39 +119,37 @@ namespace CapstoneProject.Areas.Attendance.Controllers
                                             }
 
                                         }
-                                        else
-                                        {
-                                            var course = courseList.Where(q => q.SubjectCode.ToUpper().Equals(cellSubject)).FirstOrDefault();
+
+                                        var course = courseList.Where(q => q.SubjectCode.ToUpper().Equals(cellSubject)).FirstOrDefault();
 
 
-                                            //DELETE
-                                            //var listRemove = context.Attendances.Where(q => q.StudentId == student.Id && q.CourseId == course.Id && q.RecordTime == q.RecordTime).ToList();
+                                        //DELETE
+                                        //var listRemove = context.Attendances.Where(q => q.StudentId == student.Id && q.CourseId == course.Id && q.RecordTime == q.RecordTime).ToList();
 
-                                            //if (listRemove != null)
-                                            //{
-                                            //    foreach(var att in listRemove)
-                                            //    {
-                                            //        context.Attendances.Remove(att);
-                                            //        recordDel++;
-                                            //    }
-                                            //}
+                                        //if (listRemove != null)
+                                        //{
+                                        //    foreach(var att in listRemove)
+                                        //    {
+                                        //        context.Attendances.Remove(att);
+                                        //        recordDel++;
+                                        //    }
+                                        //}
 
-                                            //ADD
-                                            CapstoneProject.Attendance att = new CapstoneProject.Attendance();
-                                            att.CourseId = course.Id;
-                                            att.NumberOfSlots = numberOfSlots;
-                                            att.StudentId = student.Id;
-                                            att.RecordTime = recoredTime;
-                                            att.Status = status;
-                                            att.Taker = taker;
-                                            context2.Attendances.Add(att);
+                                        //ADD
+                                        CapstoneProject.Attendance att = new CapstoneProject.Attendance();
+                                        att.CourseId = course.Id;
+                                        //att.NumberOfSlots = numberOfSlots;
+                                        att.StudentId = student.Id;
+                                        att.RecordTime = recoredTime;
+                                        att.Status = status;
+                                        att.Taker = taker;
+                                        context2.Attendances.Add(att);
 
-                                        }
+
                                         if (savePoint == 1000)
                                         {
                                             context2.SaveChanges();
                                             savePoint = 0;
-                                            GC.Collect();
                                             context2.Dispose();
                                             context2 = new CapstoneProjectEntities();
                                             context2.Configuration.AutoDetectChangesEnabled = false;
@@ -169,7 +172,7 @@ namespace CapstoneProject.Areas.Attendance.Controllers
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json(new { error = ex.Message, message = "Errors in uploaded file. Please recheck" });
             }
-            return null;
+            return Json(new { success = true, message = "Successful!" });
         }
 
         public ActionResult ImportFromFap()
@@ -238,39 +241,37 @@ namespace CapstoneProject.Areas.Attendance.Controllers
                             }
 
                         }
-                        else
-                        {
-                            var course = courseList.Where(q => q.SubjectCode.ToUpper().Equals(item.SubjectCode)).FirstOrDefault();
-                            var status = item.Status;
-                            var recordTime = item.RecordTime;
-                            var taker = item.Taker;
-                            var numberOfSlots = item.NumberOfSlots;
 
-                            //DELETE
-                            //var listRemove = context.Attendances.Where(q => q.StudentId == student.Id && q.CourseId == course.Id && q.RecordTime == q.RecordTime).ToList();
+                        var course = courseList.Where(q => q.SubjectCode.ToUpper().Equals(item.SubjectCode)).FirstOrDefault();
+                        var status = item.Status;
+                        var recordTime = item.RecordTime;
+                        var taker = item.Taker;
+                        var numberOfSlots = item.NumberOfSlots;
 
-                            //if (listRemove != null)
-                            //{
-                            //    foreach(var att in listRemove)
-                            //    {
-                            //        context.Attendances.Remove(att);
-                            //        recordDel++;
-                            //    }
-                            //}
+                        //DELETE
+                        //var listRemove = context.Attendances.Where(q => q.StudentId == student.Id && q.CourseId == course.Id && q.RecordTime == q.RecordTime).ToList();
 
-                            //ADD
-                            CapstoneProject.Attendance att = new CapstoneProject.Attendance();
-                            att.CourseId = course.Id;
-                            att.NumberOfSlots = numberOfSlots;
-                            att.StudentId = student.Id;
-                            att.RecordTime = recordTime;
-                            att.Status = status;
-                            att.Taker = taker;
-                            context2.Attendances.Add(att);
+                        //if (listRemove != null)
+                        //{
+                        //    foreach(var att in listRemove)
+                        //    {
+                        //        context.Attendances.Remove(att);
+                        //        recordDel++;
+                        //    }
+                        //}
 
-                            context2.SaveChanges();
-                        }
-                        GC.Collect();
+                        //ADD
+                        CapstoneProject.Attendance att = new CapstoneProject.Attendance();
+                        att.CourseId = course.Id;
+                        //att.NumberOfSlots = numberOfSlots;
+                        att.StudentId = student.Id;
+                        att.RecordTime = recordTime;
+                        att.Status = status;
+                        att.Taker = taker;
+                        context2.Attendances.Add(att);
+
+                        context2.SaveChanges();
+
                     }
                 }
 
@@ -278,7 +279,111 @@ namespace CapstoneProject.Areas.Attendance.Controllers
             }
 
 
-            return null;
+            return Json(new { success = true, message = "Successful!" });
+        }
+
+        public ActionResult UploadExempt(int semesterId)
+        {
+            try
+            {
+                if (Request.Files.Count > 0)
+                {
+                    using (var context = new CapstoneProjectEntities())
+                    {
+                        foreach (string file in Request.Files)
+                        {
+                            var fileContent = Request.Files[file];
+
+                            if (fileContent != null && fileContent.ContentLength > 0)
+                            {
+                                var stream = fileContent.InputStream;
+
+                                using (ExcelPackage package = new ExcelPackage(stream))
+                                {
+                                    var ws = package.Workbook.Worksheets.First();
+                                    var totalCol = ws.Dimension.Columns;
+                                    var totalRow = ws.Dimension.Rows;
+                                    var studentCodeCol = 1;
+                                    var titleRow = 1;
+                                    var firstRecordRow = 2;
+                                    var savePoint = 0;
+                                    var subjectCol = 2;
+                                    var isExemptCol = 3; // TakeAttentdance
+                                    Dictionary<String, Student> wtf = new Dictionary<String, Student>();
+                                    var studentList = context.Students.ToList();
+                                    var semsesterName = context.RealSemesters.Find(semesterId).Semester.ToUpper();
+                                    var courseList = context.Courses.Where(q => q.Semester.ToUpper().Equals(semsesterName)).ToList();
+
+                                    var markList = context.Marks.Where(q => q.SemesterId == semesterId).ToList();
+
+
+                                    for (int i = firstRecordRow; i <= totalRow; i++)
+                                    {
+                                        //savePoint++;
+
+                                        var cellStudentRoll = ws.Cells[i, studentCodeCol].Text.ToUpper();
+                                        var cellSubject = ws.Cells[i, subjectCol].Text.ToUpper();
+                                        var cellExempt = ws.Cells[i, isExemptCol].Text.ToUpper();
+                                        bool isExempt = false;
+                                        if (cellExempt.Equals("0"))
+                                        {
+                                            isExempt = true;
+                                        }
+                                        //var course = context.Courses.Where(q => q.Semester.ToUpper().Equals("FALL2017") && q.SubjectCode.ToUpper().Equals(cellSubject)).FirstOrDefault();
+
+
+                                        //savePoint++;
+                                        var student = studentList.Where(q => q.RollNumber.ToUpper().Equals(cellStudentRoll.ToUpper())).FirstOrDefault();
+                                        if (student == null)
+                                        {
+
+                                            if (!wtf.ContainsKey(cellStudentRoll))
+                                            {
+                                                Student stu = new Student();
+                                                stu.RollNumber = cellStudentRoll;
+                                                wtf.Add(cellStudentRoll, stu);
+                                                context.Students.Add(stu);
+                                                context.SaveChanges();
+                                            }
+
+                                        }
+
+                                        var course = courseList.Where(q => q.SubjectCode.ToUpper().Equals(cellSubject)).FirstOrDefault();
+
+                                        if (course == null)
+                                        {
+                                            Console.WriteLine();
+                                        }
+
+                                        var studentCourseMark = markList.Where(q => q.CourseId == course.Id && q.StudentId == student.Id).ToList();
+
+                                        if (studentCourseMark.Count()==0)
+                                        {
+                                            Console.WriteLine();
+                                        }
+                                        
+                                        foreach(var mark in studentCourseMark)
+                                        {
+                                            mark.IsExempt = isExempt;
+                                            
+                                        }
+                                        
+                                    }
+                                    context.SaveChanges();
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { error = ex.Message, message = "Errors in uploaded file. Please recheck" });
+            }
+            return Json(new { success = true, message = "Successful!" });
         }
     }
+
 }

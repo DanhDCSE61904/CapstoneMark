@@ -147,7 +147,6 @@
     <Property Name="Status" Type="Boolean" />
     <Property Name="RecordTime" Type="DateTime" Precision="3" />
     <Property Name="TakeAttendance" Type="Boolean" />
-    <Property Name="NumberOfSlots" Type="Int32" />
     <NavigationProperty Name="Course" Relationship="CapstoneProjectModel.FK_Attendance_Course" FromRole="Attendance" ToRole="Course" />
     <NavigationProperty Name="Student" Relationship="CapstoneProjectModel.FK_Attendance_Student" FromRole="Attendance" ToRole="Student" />
   </EntityType>
@@ -251,8 +250,8 @@
     </Key>
     <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <NavigationProperty Name="Subject_MarkComponent" Relationship="CapstoneProjectModel.FK_Subject_MarkComponent_MarkComponent" FromRole="MarkComponent" ToRole="Subject_MarkComponent" />
     <Property Name="IsFinal" Type="Boolean" />
+    <NavigationProperty Name="Subject_MarkComponent" Relationship="CapstoneProjectModel.FK_Subject_MarkComponent_MarkComponent" FromRole="MarkComponent" ToRole="Subject_MarkComponent" />
   </EntityType>
   <EntityType Name="Mark">
     <Key>
@@ -268,6 +267,7 @@
     <Property Name="IsActivated" Type="Boolean" />
     <Property Name="IsEnabled" Type="Boolean" />
     <Property Name="Comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IsExempt" Type="Boolean" />
     <NavigationProperty Name="Course" Relationship="CapstoneProjectModel.FK_Marks_Course1" FromRole="Mark" ToRole="Course" />
     <NavigationProperty Name="RealSemester" Relationship="CapstoneProjectModel.FK_Marks_RealSemester" FromRole="Mark" ToRole="RealSemester" />
     <NavigationProperty Name="Student" Relationship="CapstoneProjectModel.FK_Marks_Student1" FromRole="Mark" ToRole="Student" />
@@ -387,6 +387,7 @@
     <Property Name="Abbreviation" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
     <Property Name="IsSpecialized" Type="Boolean" />
     <Property Name="Type" Type="Int32" />
+    <Property Name="NumberOfSlots" Type="Int32" />
     <NavigationProperty Name="Prequisite" Relationship="CapstoneProjectModel.FK_Prequisite_Subject" FromRole="Subject" ToRole="Prequisite" />
     <NavigationProperty Name="Subject_Curriculum" Relationship="CapstoneProjectModel.FK_Subject_Curriculum_Subject" FromRole="Subject" ToRole="Subject_Curriculum" />
     <NavigationProperty Name="Subject_MarkComponent" Relationship="CapstoneProjectModel.FK_Subject_MarkComponent_Subject" FromRole="Subject" ToRole="Subject_MarkComponent" />

@@ -4,7 +4,6 @@
     <EntitySetMapping Name="Attendances">
       <EntityTypeMapping TypeName="CapstoneProjectModel.Attendance">
         <MappingFragment StoreEntitySet="Attendance">
-          <ScalarProperty Name="NumberOfSlots" ColumnName="NumberOfSlots" />
           <ScalarProperty Name="TakeAttendance" ColumnName="TakeAttendance" />
           <ScalarProperty Name="RecordTime" ColumnName="RecordTime" />
           <ScalarProperty Name="Status" ColumnName="Status" />
@@ -111,6 +110,7 @@
     <EntitySetMapping Name="Marks">
       <EntityTypeMapping TypeName="CapstoneProjectModel.Mark">
         <MappingFragment StoreEntitySet="Marks">
+          <ScalarProperty Name="IsExempt" ColumnName="IsExempt" />
           <ScalarProperty Name="Comment" ColumnName="Comment" />
           <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
           <ScalarProperty Name="IsActivated" ColumnName="IsActivated" />
@@ -219,6 +219,7 @@
     <EntitySetMapping Name="Subjects">
       <EntityTypeMapping TypeName="CapstoneProjectModel.Subject">
         <MappingFragment StoreEntitySet="Subject">
+          <ScalarProperty Name="NumberOfSlots" ColumnName="NumberOfSlots" />
           <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="IsSpecialized" ColumnName="IsSpecialized" />
           <ScalarProperty Name="Abbreviation" ColumnName="Abbreviation" />

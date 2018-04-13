@@ -2576,6 +2576,8 @@
     <Content Include="Areas\Mark\Views\Mark\ImportAverageVovinam.cshtml" />
     <Content Include="Content\Resources\plugins\toastr\toastr.less" />
     <Content Include="Content\Resources\plugins\toastr\toastr.scss" />
+    <Content Include="Areas\Attendance\Views\Attendance\ImportExemptAttendance.cshtml" />
+    <Content Include="Areas\Mark\Views\Mark\CalculateAverageMark.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -2625,6 +2627,7 @@
     <Content Include="Template\AP_Syllabuses Lastest.xlsx" />
     <Content Include="Template\Template Marks Without Details_VOV124_05,06,07.04.18_SP2018 FUMM 2.xlsx" />
     <Content Include="Template\Spring2018AttendanceP2.xlsx" />
+    <Content Include="Template\DanhSachMienDiemDanh.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
