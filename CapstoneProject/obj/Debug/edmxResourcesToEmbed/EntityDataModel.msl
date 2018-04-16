@@ -101,7 +101,6 @@
     <EntitySetMapping Name="MarkComponents">
       <EntityTypeMapping TypeName="CapstoneProjectModel.MarkComponent">
         <MappingFragment StoreEntitySet="MarkComponent">
-          <ScalarProperty Name="IsFinal" ColumnName="IsFinal" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>

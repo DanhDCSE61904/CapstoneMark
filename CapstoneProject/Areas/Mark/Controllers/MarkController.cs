@@ -1,6 +1,7 @@
 ﻿using FuGradeLib;
 using OfficeOpenXml;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -32,12 +33,27 @@ namespace CapstoneProject.Areas.Mark.Controllers
             return View();
         }
 
+        public ActionResult ImportFinal()
+        {
+            return View();
+        }
+
         public ActionResult StudentCourses()
         {
             return View();
         }
 
         public ActionResult ImportAverageVovinam()
+        {
+            return View();
+        }
+
+        public ActionResult CalculateAverageMark()
+        {
+            return View();
+        }
+
+        public ActionResult ExportAverageMark()
         {
             return View();
         }
@@ -70,6 +86,20 @@ namespace CapstoneProject.Areas.Mark.Controllers
                     Semester = q.Semester,
                 }).ToList();
                 return Json(new { result = semesters, });
+            }
+
+        }
+
+        public ActionResult LoadSubjectSelectBySemesters(int semesterId)
+        {
+            using (var context = new CapstoneProjectEntities())
+            {
+                var semester = context.RealSemesters.Find(semesterId).Semester;
+                var subjectList = context.Courses.Where(q => q.Semester.Equals(semester)).Select(q => new SelectorViewModel
+                {
+                    Value = q.SubjectCode,
+                }).ToList();
+                return Json(new { result = subjectList, });
             }
 
         }
@@ -190,7 +220,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
                     var courseList = context.Courses.Where(q => q.Semester.Equals(semester.Semester.ToUpper())).ToList();
                     var markListWithoutAverage = context.Marks.Where(q => !q.Subject_MarkComponent.MarkComponent.Name.Equals("AVERAGE") && q.SemesterId == semesterId).ToList();
                     string extension = System.IO.Path.GetExtension(Request.Files[i].FileName);
-                    
+
                     if (extension.Equals(".fg"))
                     {
                         var gradeFile = (TeacherGrade)new BinaryFormatter
@@ -225,24 +255,30 @@ namespace CapstoneProject.Areas.Mark.Controllers
                             }
 
                             var subjectCompList = compList.Where(q => (q.SyllabusName.Contains(containSem) && q.SyllabusName.Contains(containYear))).ToList();
-                            //List<Subject_MarkComponent> oldsubjectCompList = new List<Subject_MarkComponent>();
-                            //if (containSem.Equals("SP"))
-                            //{
-                            //    var lastYear = (int.Parse(containYear) - 1) + "";
-                            //    oldsubjectCompList = compList.Where(q => (q.SyllabusName.Contains("FA") && q.SyllabusName.Contains(lastYear))).ToList();
-                            //}
-                            //if (containSem.Equals("SU"))
-                            //{
-                            //    oldsubjectCompList = compList.Where(q => (q.SyllabusName.Contains("SP") && q.SyllabusName.Contains(containYear))).ToList();
-                            //}
-                            //if (containSem.Equals("FA"))
-                            //{
-                            //    oldsubjectCompList = compList.Where(q => (q.SyllabusName.Contains("SU") && q.SyllabusName.Contains(containYear))).ToList();
-                            //}
-                            if (subjectCompList == null )
-                                //&& oldsubjectCompList == null)
+                            List<Subject_MarkComponent> oldsubjectCompList = new List<Subject_MarkComponent>();
+                            if (containSem.Equals("SP"))
                             {
+                                var lastYear = (int.Parse(containYear) - 1) + "";
+                                oldsubjectCompList = compList.Where(q => (q.SyllabusName.Contains("FA") && q.SyllabusName.Contains(lastYear))).ToList();
+                            }
+                            if (containSem.Equals("SU"))
+                            {
+                                oldsubjectCompList = compList.Where(q => (q.SyllabusName.Contains("SP") && q.SyllabusName.Contains(containYear))).ToList();
+                            }
+                            if (containSem.Equals("FA"))
+                            {
+                                oldsubjectCompList = compList.Where(q => (q.SyllabusName.Contains("SU") && q.SyllabusName.Contains(containYear))).ToList();
+                            }
+                            if (subjectCompList == null
+                            && oldsubjectCompList == null)
+                            {
+                                IConvertible[] item = new IConvertible[] { gradeFile.Login, mark.Class, mark.Subject, "Sai syllabus, xin nhập bằng excel hoặc sửa lại file FG đúng syllabus. Các lớp khác nhập thành công." };
+                                errorList.Add(item);
                                 continue;
+                            }
+                            if (subjectCompList == null && oldsubjectCompList != null)
+                            {
+                                subjectCompList = oldsubjectCompList;
                             }
                             var subCompDic = subjectCompList.ToDictionary(q => q.MarkName.Trim());
                             bool skip = false;
@@ -258,10 +294,9 @@ namespace CapstoneProject.Areas.Mark.Controllers
                                         //{
                                         //    if (!oldSubCompDic.ContainsKey(item2.Trim()))
                                         //    {
-                                                skip = true;
-                                                break;
+                                        skip = true;
+                                        break;
                                         //    }
-
                                         //}
                                         //if (skip == true)
                                         //{
@@ -302,7 +337,8 @@ namespace CapstoneProject.Areas.Mark.Controllers
                                         context2.SaveChanges();
                                         studentEntity = context2.Students.Where(q => q.RollNumber.ToUpper().Equals(student.Roll.ToUpper())).FirstOrDefault();
                                     }
-                                    //Hop thanh 1 Component. ex: Tinhh ra Quiz tu quiz 1 va quiz 2 
+                                    //Hop thanh 1 Component. ex: Tinh ra Quiz tu quiz 1 va quiz 2 
+
                                     //Dictionary<String, GradeTimes> dic = new Dictionary<string, GradeTimes>();
                                     //foreach (var grade in student.Grades)
                                     //{
@@ -414,8 +450,8 @@ namespace CapstoneProject.Areas.Mark.Controllers
             }
         }
 
-        //Not yet fixed
-        public ActionResult UploadFinal()
+        
+        public ActionResult UploadFinal(int semesterId, int isResit)
         {
             try
             {
@@ -430,125 +466,192 @@ namespace CapstoneProject.Areas.Mark.Controllers
                             if (fileContent != null && fileContent.ContentLength > 0)
                             {
                                 var stream = fileContent.InputStream;
-
+                                var semester = context.RealSemesters.Find(semesterId);
+                                var subjectCode = fileContent.FileName.Substring(0, 6).ToUpper();
+                                var course = context.Courses.Where(q => q.Semester.ToUpper().Equals(semester.Semester.ToUpper()) && q.SubjectCode.ToUpper().Equals(subjectCode)).FirstOrDefault();
+                                var markList = context.Marks.Where(q => q.CourseId == course.Id).ToList();
+                                var studentList = markList.GroupBy(q => q.Student).Select(q => q.Key).ToList();
+                                Dictionary<String, Subject_MarkComponent> finalList = new Dictionary<string, Subject_MarkComponent>();
+                                Dictionary<int, Subject_MarkComponent> finalCols = new Dictionary<int, Subject_MarkComponent>();
+                                var markGroup = context.Marks.Where(q => q.CourseId == course.Id).GroupBy(q => q.Subject_MarkComponent).Select(q => q.Key).ToList();
+                                foreach (var item in markGroup)
+                                {
+                                    if (item.MarkName.ToUpper().Contains("RESIT"))
+                                    {
+                                        finalList.Add(item.MarkName.ToUpper().Replace(" RESIT", ""), markGroup.Where(q=>q.MarkName.ToUpper().Equals(item.MarkName.ToUpper().Replace(" RESIT", ""))).FirstOrDefault());
+                                    }
+                                }
                                 using (ExcelPackage package = new ExcelPackage(stream))
                                 {
                                     var ws = package.Workbook.Worksheets.First();
                                     var totalCol = ws.Dimension.Columns;
                                     var totalRow = ws.Dimension.Rows;
-                                    var studentCodeCol = 4;
+                                    var studentCodeCol = 2;
+                                    List<int> markCol = new List<int>();
+                                    for (int i = 3; i <= totalCol - 1; i++)
+                                    {
+                                        markCol.Add(i);
+                                    }
                                     var titleRow = 1;
                                     var firstRecordRow = 2;
-
-                                    for (int i = firstRecordRow; i <= totalRow; i++)
+                                    var skip = false;
+                                    if (markCol.Count() != finalList.Count())
                                     {
+                                        return Json(new { success = false, message = "Wrong syllabus. Please recheck" });
 
-                                        var semester = ws.Cells[i, 1].Text.ToUpper();
-                                        var subjectId = ws.Cells[i, 2].Text.ToUpper();
-                                        var course = context.Courses.Where(q => q.Semester.ToUpper().Equals(semester) && q.SubjectCode.ToUpper().Equals(subjectId)).FirstOrDefault();
-                                        if (course == null)
+                                    }
+                                    if (isResit == 0)
+                                    {
+                                        if (markCol.Count > 1)
                                         {
-                                            return null;
-                                        }
-                                        var studentCode = ws.Cells[i, 4].Text.ToUpper();
-                                        var student = context.Students.Where(q => q.RollNumber.ToUpper().Equals(studentCode)).FirstOrDefault();
-                                        if (student == null)
-                                        {
-                                            return null;
-                                        }
-                                        var markGroup = ws.Cells[i, 5].Text.ToUpper();
-                                        var subjectMarkComp = context.Subject_MarkComponent.Where(q => q.FinalComponent == null && q.MarkComponent.Name.ToUpper().Equals(markGroup) && q.SubjectId.ToUpper().Equals(subjectId)).FirstOrDefault();
-                                        if (subjectMarkComp == null)
-                                        {
-                                            Subject_MarkComponent newFinalComp = new Subject_MarkComponent();
-                                            newFinalComp.NumberOfTests = 1;
-                                            newFinalComp.Name = subjectId + "_" + markGroup;
-                                            newFinalComp.IsOngoing = false;
-                                            newFinalComp.IsActive = false;
-                                            newFinalComp.SyllabusName = subjectId + "_FA2017";          //Syllabus name
-                                            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
-                                            newFinalComp.MarkName = textInfo.ToTitleCase(markGroup);
-                                            var finalweight = context.Subject_MarkComponent.Where(q => q.FinalComponent == true && q.Name.ToUpper().Contains("FINAL")).FirstOrDefault();
-                                            if (finalweight == null)
+                                            foreach (var col in markCol)
                                             {
-                                                return null;
-                                            }
-                                            else
-                                            {
-                                                newFinalComp.PercentWeight = finalweight.PercentWeight;
-                                            }
-                                            newFinalComp.SubjectId = subjectId;
-                                            if (ws.Cells[i, 5].Text.ToUpper().Contains("RESIT"))
-                                            {
-                                                var checkGroup = context.MarkComponents.Where(q => q.Name.ToUpper().Equals(markGroup)).FirstOrDefault();
-                                                if (checkGroup == null)
+                                                if (!finalList.ContainsKey(ws.Cells[titleRow, col].Text.ToUpper()))
                                                 {
-                                                    newFinalComp.MarkComponentId = 195; //Final Exam Resit
+                                                    skip = true;
+                                                    break;
                                                 }
-                                                else
-                                                {
-                                                    newFinalComp.MarkComponentId = checkGroup.Id;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                var checkGroup = context.MarkComponents.Where(q => q.Name.ToUpper().Equals(markGroup)).FirstOrDefault();
-                                                if (checkGroup == null)
-                                                {
-                                                    newFinalComp.MarkComponentId = 194; //Final Exam
-                                                }
-                                                else
-                                                {
-                                                    newFinalComp.MarkComponentId = checkGroup.Id;
-                                                }
-                                            }
-
-                                            context.Subject_MarkComponent.Add(newFinalComp);
-                                            context.SaveChanges();
-
-                                            subjectMarkComp = context.Subject_MarkComponent.Where(q => q.FinalComponent == null && q.MarkComponent.Name.ToUpper().Equals(markGroup) && q.SubjectId.ToUpper().Equals(subjectId)).FirstOrDefault();
-                                        }
-                                        if (subjectMarkComp == null)
-                                        {
-                                            return null;
-                                        }
-
-                                        var oldMark = context.Marks.Where(q => q.Subject_MarkComponent.FinalComponent == false && q.SubjectMarkComponentId == subjectMarkComp.Id && q.StudentId == student.Id && q.CourseId == course.Id).FirstOrDefault();
-                                        if (oldMark == null)
-                                        {
-                                            try
-                                            {
-                                                CapstoneProject.Mark newMark = new CapstoneProject.Mark();
-                                                if (ws.Cells[i, 6].Text != null && !ws.Cells[i, 6].Text.ToUpper().Equals("NULL"))
-                                                {
-                                                    newMark.AverageMark = Double.Parse(ws.Cells[i, 6].Text);
-                                                }
-                                                newMark.CourseId = course.Id;
-                                                newMark.IsActivated = false;
-                                                newMark.IsEnabled = false;
-                                                newMark.SemesterId = context.RealSemesters.Where(q => q.Semester.ToUpper().Equals(semester)).FirstOrDefault().Id;
-                                                newMark.StudentId = student.Id;
-                                                newMark.SubjectMarkComponentId = subjectMarkComp.Id;
-
-                                                {
-                                                    context.Marks.Add(newMark);
-                                                }
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                return Json(new { success = false, error = ex.Message, message = "Errors in uploaded file. Please recheck" });
+                                                finalCols.Add(col, finalList[ws.Cells[titleRow, col].Text.ToUpper()]);
                                             }
                                         }
                                         else
                                         {
-                                            if (ws.Cells[i, 6].Text != null && !ws.Cells[i, 6].Text.ToUpper().Equals("NULL"))
+                                            finalCols.Add(3, finalList.FirstOrDefault().Value);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (markCol.Count > 1)
+                                        {
+                                            foreach (var col in markCol)
                                             {
-                                                oldMark.AverageMark = Double.Parse(ws.Cells[i, 6].Text);
+                                                if (!finalList.ContainsKey(ws.Cells[titleRow, col].Text.ToUpper().Replace(" RESIT", "")))
+                                                {
+                                                    skip = true;
+                                                    break;
+                                                }
+                                                finalCols.Add(col, finalList[ws.Cells[titleRow, col].Text.ToUpper().Replace(" RESIT", "")]);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            finalCols.Add(3, finalList.FirstOrDefault().Value);
+                                        }
+                                    }
+
+                                    if (skip == true)
+                                    {
+                                        return Json(new { success = false, message = "Wrong syllabus. Please recheck" });
+                                    }
+
+
+                                    for (int i = firstRecordRow; i <= totalRow; i++)
+                                    {
+                                        var student = studentList.Where(q => q.RollNumber.ToUpper().Equals(ws.Cells[i, studentCodeCol].Text.ToUpper().Trim())).FirstOrDefault();
+                                        if (student == null)
+                                        {
+                                            continue;
+                                        }
+                                        if (isResit == 0)
+                                        {
+                                            foreach (var finalCol in finalCols)
+                                            {
+                                                var oldFinalMark = markList.Where(q => q.StudentId == student.Id && q.SubjectMarkComponentId == finalCol.Value.Id).FirstOrDefault();
+                                                if (oldFinalMark == null)
+                                                {
+                                                    //CapstoneProject.Mark finalMark = new CapstoneProject.Mark();
+                                                    //var mark = ws.Cells[titleRow, finalCol.Key].Text;
+                                                    //if (mark == "" || mark == null)
+                                                    //{
+                                                    //    finalMark.AverageMark = 0;
+                                                    //}
+                                                    //else
+                                                    //{
+                                                    //    finalMark.AverageMark = Double.Parse(mark);
+                                                    //}
+                                                    //finalMark.CourseId = course.Id;
+                                                    //finalMark.SemesterId = semesterId;
+                                                    //finalMark.StudentId = student.Id;
+                                                    //finalMark.SubjectMarkComponentId = finalCol.Value.Id;
+                                                    //finalMark.IsActivated = true;
+                                                    //finalMark.IsEnabled = true;
+                                                    //context.Marks.Add(finalMark);
+                                                    //var resitMark = markList.Where(q => q.StudentId == student.Id && q.Subject_MarkComponent.MarkName.ToUpper().Trim().Equals((finalCol.Value.MarkName.Trim() + " RESIT").ToUpper())).FirstOrDefault();
+                                                    //if (resitMark != null)
+                                                    //{
+                                                    //    resitMark.AverageMark = null;
+                                                    //}
+                                                }
+                                                else
+                                                {
+                                                    if (i == 58)
+                                                    {
+                                                        Console.WriteLine();
+                                                    }
+                                                    var mark = ws.Cells[i, finalCol.Key].Text;
+                                                    if (mark == "" || mark == null ||mark.Equals("#REF!"))
+                                                    {
+                                                        oldFinalMark.AverageMark = 0;
+                                                    }
+                                                    else
+                                                    {
+                                                        oldFinalMark.AverageMark = Double.Parse(mark);
+                                                    }
+                                                    var resitMark = markList.Where(q => q.StudentId == student.Id && q.Subject_MarkComponent.MarkName.Trim().ToUpper().Equals((finalCol.Value.MarkName.Trim() + " RESIT").ToUpper())).FirstOrDefault();
+                                                    if (resitMark != null)
+                                                    {
+                                                        resitMark.AverageMark = null;
+                                                    }
+                                                }
                                             }
 
                                         }
+                                        else
+                                        {
+                                            foreach (var finalCol in finalCols)
+                                            {
+                                                var oldResitMark = markList.Where(q => q.StudentId == student.Id && q.Subject_MarkComponent.MarkName.ToUpper().Trim().Equals((finalCol.Value.MarkName.Trim() + " RESIT").ToUpper())).FirstOrDefault();
+                                                if (oldResitMark == null)
+                                                {
+                                                    //CapstoneProject.Mark finalMark = new CapstoneProject.Mark();
+                                                    //var mark = ws.Cells[titleRow, finalCol.Key].Text;
+                                                    //if (mark == "" || mark == null)
+                                                    //{
+                                                    //    finalMark.AverageMark = 0;
+                                                    //}
+                                                    //else
+                                                    //{
+                                                    //    finalMark.AverageMark = Double.Parse(mark);
+                                                    //}
+                                                    //finalMark.CourseId = course.Id;
+                                                    //finalMark.SemesterId = semesterId;
+                                                    //finalMark.StudentId = student.Id;
+                                                    //var resitSubjectMarkComp = markList.Where(q => q.CourseId == course.Id && q.Subject_MarkComponent.MarkName.ToUpper().Trim().Equals((finalCol.Value.MarkName.Trim() + " RESIT").ToUpper())).FirstOrDefault();
+                                                    //finalMark.SubjectMarkComponentId = resitSubjectMarkComp.SubjectMarkComponentId;
+                                                    //finalMark.IsActivated = true;
+                                                    //finalMark.IsEnabled = true;
+                                                    //context.Marks.Add(finalMark);
+
+                                                }
+                                                else
+                                                {
+                                                    var mark = ws.Cells[i, finalCol.Key].Text;
+                                                    if (mark == "" || mark == null)
+                                                    {
+                                                        oldResitMark.AverageMark = 0;
+                                                    }
+                                                    else
+                                                    {
+                                                        oldResitMark.AverageMark = Double.Parse(mark);
+                                                    }
+
+                                                }
+                                                
+                                            }
+                                           
+                                        }
+                                        context.SaveChanges();
                                     }
-                                    context.SaveChanges();
                                 }
                             }
                         }
@@ -816,7 +919,8 @@ namespace CapstoneProject.Areas.Mark.Controllers
             return Json(new { success = true, message = "Successful!" });
         }
 
-        public ActionResult CalculateAverageMark(int semesterId)
+        //Chua sua lai, DO NOT USE
+        public ActionResult CalculateAverageMarkBySemester(int semesterId)
         {
             using (var context = new CapstoneProjectEntities())
             {
@@ -1029,14 +1133,274 @@ namespace CapstoneProject.Areas.Mark.Controllers
             return Json(new { success = true, message = "Successful!" });
         }
 
-        public ActionResult DownloadExcelMark(int semesterId)
+        public ActionResult CalculateAverageMarkBySemesterAndSubject(int semesterId, string subjectCode)
+        {
+            using (var context = new CapstoneProjectEntities())
+            {
+                var semester = context.RealSemesters.Find(semesterId);
+                var course = context.Courses.Where(q => q.Semester.ToUpper().Equals(semester.Semester.ToUpper()) && q.SubjectCode.ToUpper().Equals(subjectCode.ToUpper())).FirstOrDefault();
+                var markList = context.Marks.Where(q => q.Course.Id == course.Id && !q.Subject_MarkComponent.MarkComponent.Name.Equals("AVERAGE")).ToList();
+                var studentList = markList.GroupBy(q => q.Student).Select(q => q.Key).ToList();
+                var subjectAverageComp = context.Subject_MarkComponent.Where(q => q.MarkComponent.Name.ToUpper().Equals("AVERAGE")).ToList();
+                var capstoneSubjects = context.Subjects.Where(q => q.Type == 2).ToDictionary(q => q.Id);
+                var averageList = context.Marks.Where(q => q.SemesterId == semesterId && q.Subject_MarkComponent.MarkComponent.Name.Equals("AVERAGE")).ToList();
+                foreach (var student in studentList)
+                {
+                    var retake = false;
+                    var studentMarks = markList.Where(q => q.StudentId == student.Id).ToList();
+                    var averageComp = subjectAverageComp.Where(q => q.SubjectId.ToUpper().Equals(course.SubjectCode.ToUpper())).FirstOrDefault();
+                    int averageCompId =0;
+                    if (averageComp == null)
+                    {
+                        Subject_MarkComponent smc = new Subject_MarkComponent();
+                        smc.MarkComponentId = context.MarkComponents.Where(q => q.Name.ToUpper().Equals("AVERAGE")).FirstOrDefault().Id;
+                        smc.SubjectId = subjectCode.ToUpper();
+                        smc.Name = subjectCode + "_AVERAGE";
+                        smc.PercentWeight = 0;
+                        context.Subject_MarkComponent.Add(smc);
+                        context.SaveChanges();
+                        subjectAverageComp = context.Subject_MarkComponent.Where(q => q.MarkComponent.Name.ToUpper().Equals("AVERAGE")).ToList();
+                        averageComp = subjectAverageComp.Where(q => q.SubjectId.ToUpper().Equals(course.SubjectCode.ToUpper())).FirstOrDefault();
+                        averageCompId = averageComp.Id;
+                    }
+                    else
+                    {
+                        averageCompId = averageComp.Id;
+                    }
+                    double? average = 0;
+                    Dictionary<String, String> finalList = new Dictionary<string, string>();
+                    var passFinalCondition = false;
+                    using (var context2 = new CapstoneProjectEntities())
+                    {
+
+                        var groupMark = new Dictionary<String, MarkGroupModel>();
+                        var marks = studentMarks.Where(q => q.CourseId == course.Id).ToList();
+
+                       
+                        foreach (var item in marks)
+                        {
+                            if (item.Subject_MarkComponent.MarkName.ToUpper().Contains("RESIT"))
+                            {
+                                finalList.Add(item.Subject_MarkComponent.MarkName.ToUpper().Replace("RESIT", "").Trim(), item.Subject_MarkComponent.MarkName.ToUpper().Replace("RESIT", "").Trim());
+                            }
+                        }
+                        //Tinh cac thanh phan diem (co the kiem tra >0)
+                        foreach (var item in marks)
+                        {
+                            var markgroupComp = item.Subject_MarkComponent.MarkComponent;
+                            if (!groupMark.ContainsKey(markgroupComp.Name))
+                            {
+                                MarkGroupModel mgm = new MarkGroupModel();
+                                mgm.MarkGroupName = markgroupComp.Name;
+                                mgm.Mark = item.AverageMark;
+                                mgm.Weight = item.Subject_MarkComponent.PercentWeight;
+                                mgm.NumberOfTest = item.Subject_MarkComponent.NumberOfTests;
+                                groupMark.Add(markgroupComp.Name, mgm);
+                            }
+                            else
+                            {
+                                groupMark[markgroupComp.Name].Weight += item.Subject_MarkComponent.PercentWeight;
+                                if (item.AverageMark != null)
+                                {
+                                    groupMark[markgroupComp.Name].Mark += item.AverageMark;
+                                }
+                            }
+                        }
+                        foreach (var group in groupMark)
+                        {
+                            if (!finalList.ContainsKey(group.Key))
+                            {
+                                group.Value.Mark = group.Value.Mark / group.Value.NumberOfTest;
+                            }
+                        }
+                        //Tinh xong cac thanh phan
+
+                        var markGroup = groupMark.Values.ToDictionary(q => q.MarkGroupName);
+                        foreach (var item in markGroup)
+                        {
+                            if (item.Key.ToUpper().Contains("RESIT"))
+                            {
+                                /*finalList.Add(item.Key.ToUpper().Replace("RESIT", "").Trim(), item.Key.ToUpper().Replace("RESIT", "").Trim());*/
+                                if (item.Value.Mark != null)
+                                {
+                                    retake = true;
+                                }
+                            }
+                        }
+                        if (retake != true)
+                        {
+                            foreach (var item in markGroup)
+                            {
+                                if (!item.Key.ToUpper().Contains("RESIT"))
+                                {
+                                    if (item.Value.Mark != null)
+                                    {
+                                        average += item.Value.Mark * item.Value.Weight;
+                                    }
+                                    else
+                                    {
+                                        average += 0;
+                                    }
+                                }
+                            }
+                            if (!capstoneSubjects.ContainsKey(course.SubjectCode)) //If not a capstone subject
+                            {
+                                if (finalList.Count == 0)
+                                {
+                                    passFinalCondition = true;
+                                }
+                                if (finalList.Count == 1)
+                                {
+                                    if (markGroup[finalList.Last().Key].Mark >= 4)
+                                    {
+                                        passFinalCondition = true;
+                                    }
+                                }
+                                if (finalList.Count > 1)
+                                {
+                                    if(student.Id== 68221)
+                                    {
+                                        Console.WriteLine();
+                                    }
+                                    double? averageFinal = 0;
+                                    double? finalWeight = 0;
+                                    foreach (var item in finalList)
+                                    {
+                                        averageFinal += markGroup[item.Key].Mark * markGroup[item.Key].Weight;
+                                        finalWeight += markGroup[item.Key].Weight;
+                                    }
+                                    if (averageFinal / finalWeight >= 4)
+                                    {
+                                        passFinalCondition = true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                foreach (var item in groupMark)
+                                {
+                                    if (item.Key.ToUpper().Contains("FINAL"))
+                                    {
+                                        if (item.Value.Mark >= 4)
+                                        {
+                                            passFinalCondition = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (var item in markGroup)
+                            {
+                                if (!finalList.ContainsKey(item.Key.ToUpper()))
+                                {
+                                    if (item.Value.Mark != null)
+                                    {
+                                        average += item.Value.Mark * item.Value.Weight;
+                                    }
+                                    else
+                                    {
+                                        average += 0;
+                                    }
+                                }
+                            }
+                            if (!capstoneSubjects.ContainsKey(course.SubjectCode)) //If not a capstone subject
+                            {
+                                if (finalList.Count == 0)
+                                {
+                                    passFinalCondition = true;
+                                }
+                                if (finalList.Count == 1)
+                                {
+                                    if (markGroup[finalList.Last().Key].Mark >= 4)
+                                    {
+                                        passFinalCondition = true;
+                                    }
+                                }
+                                if (finalList.Count > 1)
+                                {
+                                    double? averageFinal = 0;
+                                    foreach (var item in finalList)
+                                    {
+                                        averageFinal += markGroup[item.Key].Mark * markGroup[item.Key].Weight;
+                                    }
+                                    if (averageFinal / 100 >= 4)
+                                    {
+                                        passFinalCondition = true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                foreach (var item in groupMark)
+                                {
+                                    if (item.Key.ToUpper().Contains("FINAL"))
+                                    {
+                                        if (item.Value.Mark >= 4)
+                                        {
+                                            passFinalCondition = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (average == null)
+                        {
+                            average = 0;
+                        }
+                        var tempAverage = Math.Round(average.Value, 0, MidpointRounding.AwayFromZero) / 100;
+                        var result = Math.Round(tempAverage, 1, MidpointRounding.AwayFromZero);
+                        var oldAverageMark = averageList.Where(q => q.CourseId == course.Id && q.StudentId == student.Id && q.SubjectMarkComponentId == averageCompId).FirstOrDefault();
+                        if (oldAverageMark == null)
+                        {
+                            CapstoneProject.Mark averageMark = new CapstoneProject.Mark();
+                        averageMark.AverageMark = result;
+                        averageMark.CourseId = course.Id;
+                        averageMark.StudentId = student.Id;
+                        averageMark.SubjectMarkComponentId = averageCompId;
+                        averageMark.SemesterId = semesterId;
+                        averageMark.Status = "Fail";
+                        averageMark.IsActivated = true;
+                        averageMark.IsEnabled = true;
+                        if (result >= 5 && passFinalCondition == true)
+                        {
+                            averageMark.Status = "Passed";
+                        }
+                        context2.Marks.Add(averageMark);
+                        }
+                        else
+                        {
+                            if (result >= 5 && passFinalCondition == true)
+                            {
+                                oldAverageMark.Status = "Passed";
+                            }
+                            else
+                            {
+                                oldAverageMark.Status = "Fail";
+                            }
+                            oldAverageMark.AverageMark = result;
+                            oldAverageMark.IsActivated = true;
+                            oldAverageMark.IsEnabled = true;
+                            context.SaveChanges();
+                        }
+
+                        context2.SaveChanges();
+                    }
+
+                }
+            }
+            return Json(new { success = true, message = "Successful!" });
+        }
+
+        public ActionResult DownloadExcelAverageMark(int semesterId)
         {
             MemoryStream ms = new MemoryStream();
 
             using (var context = new CapstoneProjectEntities())
             {
                 var semester = context.RealSemesters.Find(semesterId);
-                var fileName = semester.Semester + " Marks";
+                var fileName = semester.Semester + " AverageMarks";
 
                 using (ExcelPackage package = new ExcelPackage(ms))
                 {
@@ -1052,14 +1416,10 @@ namespace CapstoneProject.Areas.Mark.Controllers
                     //pic.From.Row = 0;
                     //pic.SetSize(320, 240);
                     ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "No";
-                    ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "StudentRoll";
-                    ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "StudentName";
                     ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "Subject";
-                    ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "ComponentName";
-                    ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "OldComponentName";
-                    ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "Mark";
-                    ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "Percentage";
-
+                    ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "StudentRoll";
+                    ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "AverageMark";
+                    ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "Status";
 
                     var EndHeaderChar = --StartHeaderChar;
                     var EndHeaderNumber = StartHeaderNumber;
@@ -1074,17 +1434,14 @@ namespace CapstoneProject.Areas.Mark.Controllers
                     //StartHeaderNumber++;
                     #endregion
                     #region Set values for available fields
-                    var count = 1;
-                    var mark = context.Marks.Where(q => q.SemesterId == semesterId && q.Status == null).ToList()
+                    var count = 0;
+                    var mark = context.Marks.Where(q => q.SemesterId == semesterId && q.Status != null).ToList()
                         .Select(q => new IConvertible[]
                     {
+                        q.Subject_MarkComponent.SubjectId,
                        q.Student.RollNumber,
-                        q.Student.FullName,
-                       q.Subject_MarkComponent.SubjectId,
-                        q.Subject_MarkComponent.MarkComponent.Name,
-                        q.Subject_MarkComponent.MarkName,
                        q.AverageMark==null?"0":q.AverageMark.Value.ToString(),
-                       q.Subject_MarkComponent.PercentWeight==null?"0":q.Subject_MarkComponent.PercentWeight.Value.ToString(),
+                       q.Status,
                     });
                     foreach (var item in mark)
                     {
@@ -1093,9 +1450,6 @@ namespace CapstoneProject.Areas.Mark.Controllers
                         ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item[1];
                         ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item[2];
                         ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item[3];
-                        ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item[4];
-                        ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item[5];
-                        ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item[6];
                         StartHeaderChar = 'A';
                     }
                     fileName += ".xlsx";

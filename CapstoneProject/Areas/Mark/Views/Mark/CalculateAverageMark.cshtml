@@ -8,7 +8,7 @@
 <section class="content">
     <div class="box">
         <div class="b-header">
-            <h1>Danh sách thi</h1>
+            <h1>Tính điểm trung bình</h1>
             <hr>
         </div>
 
@@ -16,6 +16,17 @@
             <div class="row">
                 <div class="offset-8 col-md-4">
                     <div class="pull-right">
+                        <select class="select2" id="semester-selector"></select>
+                        <br />
+                        <select class="select2" id="subject-selector"></select>
+                        <button class="btn btn-primary" id="calculate-button" onclick="CalculateAverage()">Tính điểm trung bình</button>
+                        <br />
+                        <button id="btn-export-allstudentmark" class="btn btn-success" title="Export all mark of student by semester">
+                            <i class="fa fa-download"></i>Export Semester Average Mark Excel
+                        </button>
+                        <form class="hidden" action="@Url.Action("DownloadExcelAverageMark")" id="form-export-allstudentmark">
+                            <input id="" class="hidden" name="semesterId" value="">
+                        </form>
                         @*<button class="btn-success btn" id="download-template-btn"><i class="fa fa-download"></i> template</button>*@
 
                         @*<button class="btn-primary btn" id="import-mark-btn">chọn file</button>
@@ -33,10 +44,7 @@
             </div>
             <div>
                 <div class="offset-8 col-md-4">
-                    <select class="select2" id="semester-selector"></select>
-                    <br />
-                    <select class="select2" id="subject-selector"></select>
-                    <button class="btn btn-primary" id="calculate-button">Tính điểm trung bình</button>
+                   
                 </div>
                
             </div>
@@ -55,7 +63,7 @@
 
     function LoadSemesterSelect() {
         $.ajax({
-            type: "GET",
+            type: "POST",
             url: '@Url.Action("LoadSemesterSelect")',
             success: function (result) {
                 debugger
@@ -79,7 +87,7 @@
     function LoadSubjectSelect() {
         $("#subject-selector").select2({
             placeholder: "Tìm kiếm mon",
-            minimumInputLength: 2,
+            //minimumInputLength: 2,
         });
         $.ajax({
             type: "POST",
@@ -89,7 +97,7 @@
                 $("#subject-selector").empty().trigger('change');
                 $("#subject-selector").select2({
                     placeholder: "Tìm kiếm mon",
-                    minimumInputLength: 2,
+                    //minimumInputLength: 2,
                 });
                 for (var i = 0; i < result.result.length; i++) {
                     $('#subject-selector').append("<option value='" + result.result[i].Value + "'>" + result.result[i].Value + "</option>");
@@ -99,5 +107,27 @@
         });
     }
 
+    function CalculateAverage() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CalculateAverageMarkBySemesterAndSubject")',
+            data: {
+                semesterId: $('#semester-selector').val(),
+                subjectCode: $('#subject-selector').val(),
+            },
+            success: function (result) {
+                if (result.success) {
+                    alert('Successfully calculate!');
+                }
+                else {
+                    alert('Error while calculate!');
+                }
+            }
+        });
+    }
+    $('#btn-export-allstudentmark').on("click", function () {
+        $('#form-export-allstudentmark input[name="semesterId"]').val($('#semester-selector').val());
+        $('#form-export-allstudentmark').submit();
+    });
    
 </script>

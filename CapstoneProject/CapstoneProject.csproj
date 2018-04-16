@@ -2578,6 +2578,7 @@
     <Content Include="Content\Resources\plugins\toastr\toastr.scss" />
     <Content Include="Areas\Attendance\Views\Attendance\ImportExemptAttendance.cshtml" />
     <Content Include="Areas\Mark\Views\Mark\CalculateAverageMark.cshtml" />
+    <Content Include="Areas\Mark\Views\Mark\ExportAverageMark.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

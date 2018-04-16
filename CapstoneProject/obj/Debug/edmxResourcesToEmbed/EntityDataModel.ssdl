@@ -94,7 +94,6 @@
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar(max)" />
-    <Property Name="IsFinal" Type="bit" />
   </EntityType>
   <EntityType Name="Marks">
     <Key>

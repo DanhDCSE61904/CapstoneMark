@@ -250,7 +250,6 @@
     </Key>
     <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="IsFinal" Type="Boolean" />
     <NavigationProperty Name="Subject_MarkComponent" Relationship="CapstoneProjectModel.FK_Subject_MarkComponent_MarkComponent" FromRole="MarkComponent" ToRole="Subject_MarkComponent" />
   </EntityType>
   <EntityType Name="Mark">

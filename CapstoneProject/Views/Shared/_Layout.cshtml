@@ -1,16 +1,16 @@
 ﻿<!DOCTYPE html>
 
 @*<security:authentication var="imageUrl" property="principal.user.picture" />
-<security:authentication var="username" property="principal.user.fullname" />
-<security:authentication var="role" property="principal.user.role" />*@
+    <security:authentication var="username" property="principal.user.fullname" />
+    <security:authentication var="role" property="principal.user.role" />*@
 
 @*<c:if test="${empty username}">
-    <c:set var="username" value="Vô danh" />
-</c:if>
+        <c:set var="username" value="Vô danh" />
+    </c:if>
 
-<c:if test="${empty imageUrl}">
-    <c:set var="imageUrl" value="~/Content/Resources/plugins/dist/img/anonymous.jpg" />
-</c:if>*@
+    <c:if test="${empty imageUrl}">
+        <c:set var="imageUrl" value="~/Content/Resources/plugins/dist/img/anonymous.jpg" />
+    </c:if>*@
 
 <html>
 <head>
@@ -111,7 +111,7 @@
                             <ul class="dropdown-menu">
                                 <li class="user-header">
                                     @*<img src="${imageUrl}"
-                                         class="img-circle" alt="User Image">*@
+                                        class="img-circle" alt="User Image">*@
                                     <img src="~/Content/Resources/plugins/dist/img/anonymous.jpg" class="img-circle" alt="User Image" />
                                     <p>
                                         @*${username}*@ Username
@@ -165,51 +165,51 @@
 
                 <div class="sidebar-form">
                     @*<div class="input-group">
-                        <input id="menu-filter" type="text" class="form-control" placeholder="Search...">
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-flat"><i class="fa fa-search"></i></button>
-                        </span>
-                    </div>*@
+                            <input id="menu-filter" type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>*@
                 </div>
 
                 <!-- Sidebar Menu -->
                 <ul class="sidebar-menu">
-                    
+
                     @*<li class="header">HEADER</li>*@
                     <!-- Optionally, you can add icons to the links -->
                     @*<c:forEach var="items" items="${applicationScope['menuNoFunctionGroup']}">
-                        <li>
-                            <a href="${items.link}">
-                                <i class="fa fa-dashboard"></i>
-                                <span class="name">${items.functionName}</span>
-                            </a>
-                        </li>
-                    </c:forEach>
-                    <c:forEach var="groupName" items="${applicationScope['functionGroup']}">
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="glyphicon glyphicon-save"></i>
-                                <span>${groupName}</span>
-                                <i class="fa fa-angle-left pull-right"></i>
-                                <ul class="treeview-menu">
-                                    <c:forEach var="item" items="${applicationScope['menu']}">
-                                        <c:if test="${item.groupName.contains(groupName)}">
-                                            <li>
-                                                <a href="${item.link}">
-                                                    <div class="menu-child-wrapper">
-                                                        <div class="child-icon"><i class="fa fa-circle-o"></i></div>
-                                                        <div class="child-content col-md-11">
-                                                            <span class="name">${item.functionName}</span>
+                            <li>
+                                <a href="${items.link}">
+                                    <i class="fa fa-dashboard"></i>
+                                    <span class="name">${items.functionName}</span>
+                                </a>
+                            </li>
+                        </c:forEach>
+                        <c:forEach var="groupName" items="${applicationScope['functionGroup']}">
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="glyphicon glyphicon-save"></i>
+                                    <span>${groupName}</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                    <ul class="treeview-menu">
+                                        <c:forEach var="item" items="${applicationScope['menu']}">
+                                            <c:if test="${item.groupName.contains(groupName)}">
+                                                <li>
+                                                    <a href="${item.link}">
+                                                        <div class="menu-child-wrapper">
+                                                            <div class="child-icon"><i class="fa fa-circle-o"></i></div>
+                                                            <div class="child-content col-md-11">
+                                                                <span class="name">${item.functionName}</span>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                        </c:if>
-                                    </c:forEach>
-                                </ul>
-                            </a>
-                        </li>
-                    </c:forEach>*@
+                                                    </a>
+                                                </li>
+                                            </c:if>
+                                        </c:forEach>
+                                    </ul>
+                                </a>
+                            </li>
+                        </c:forEach>*@
                     <li class="treeview">
                         <a href="#">
                             <i class="glyphicon glyphicon-user"></i>
@@ -245,16 +245,16 @@
                             <span>Điểm</span>
                             <i class="fa fa-angle-left pull-right"></i>
                             <ul class="treeview-menu">
-                                        <li>
-                                            <a href="~/Mark/Mark/ImportMark">
-                                                <div class="menu-child-wrapper">
-                                                    <div class="child-icon"><i class="fa fa-circle-o"></i></div>
-                                                    <div class="child-content col-md-11">
-                                                        <span class="name">Nhập điểm FG</span>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </li>
+                                <li>
+                                    <a href="~/Mark/Mark/ImportMark">
+                                        <div class="menu-child-wrapper">
+                                            <div class="child-icon"><i class="fa fa-circle-o"></i></div>
+                                            <div class="child-content col-md-11">
+                                                <span class="name">Nhập điểm FG</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
                                 <li>
                                     <a href="~/Mark/Mark/ImportAverageVovinam">
                                         <div class="menu-child-wrapper">
@@ -266,7 +266,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="~/Mark/Mark/ImportFinal">
                                         <div class="menu-child-wrapper">
                                             <div class="child-icon"><i class="fa fa-circle-o"></i></div>
                                             <div class="child-content col-md-11">
@@ -275,6 +275,26 @@
                                         </div>
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="~/Mark/Mark/CalculateAverageMark">
+                                        <div class="menu-child-wrapper">
+                                            <div class="child-icon"><i class="fa fa-circle-o"></i></div>
+                                            <div class="child-content col-md-11">
+                                                <span class="name">Tính điểm trung bình</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                @*<li>
+                                    <a href="~/Mark/Mark/ExportAverageMark">
+                                        <div class="menu-child-wrapper">
+                                            <div class="child-icon"><i class="fa fa-circle-o"></i></div>
+                                            <div class="child-content col-md-11">
+                                                <span class="name">In điểm trung bình</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>*@
                             </ul>
 
                         </a>
@@ -342,25 +362,25 @@
         <p class="text-center">&#169;FPT University</p>
     </footer>
     <script>
-    var list;
+        var list;
 
-    $(document).ready(function () {
-        $(".select2-selection span").attr('title', '');
-    });
+        $(document).ready(function () {
+            $(".select2-selection span").attr('title', '');
+        });
 
-    var input = document.getElementById('menu-filter');
-    input.onkeyup = function () {
-        var filter = input.value.toLowerCase();
-        list = document.querySelectorAll('.sidebar-menu li');
-        for (var i = 0; i < list.length; i++) {
-            var name = list[i].getElementsByClassName('name')[0].innerHTML;
-            console.log(name);
-            if (name.toLowerCase().search(filter) != -1)
-                list[i].style.display = 'list-item';
-            else
-                list[i].style.display = 'none';
+        var input = document.getElementById('menu-filter');
+        input.onkeyup = function () {
+            var filter = input.value.toLowerCase();
+            list = document.querySelectorAll('.sidebar-menu li');
+            for (var i = 0; i < list.length; i++) {
+                var name = list[i].getElementsByClassName('name')[0].innerHTML;
+                console.log(name);
+                if (name.toLowerCase().search(filter) != -1)
+                    list[i].style.display = 'list-item';
+                else
+                    list[i].style.display = 'none';
+            }
         }
-    }
     </script>
 
 </body>

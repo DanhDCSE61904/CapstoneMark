@@ -38,7 +38,7 @@
                     <select class="select2" id="subject-selector"></select>
                     <button id="search-btn">Tìm</button>
                 </div>
-                <button id="btn-export-final-list" class="btn btn-success" title="Export all mark of student by semester">
+                <button id="btn-export-final-list" class="btn btn-success" title="Download excel students for final">
                     <i class="fa fa-download"></i>Export Semester Excel
                 </button>
                 <form class="hidden" action="@Url.Action("DownloadExcelStudentForFinal")" id="form-export-final-list">
@@ -107,7 +107,7 @@
     function LoadSubjectSelect() {
         $("#subject-selector").select2({
             placeholder: "Tìm kiếm mon",
-            minimumInputLength: 2,
+            //minimumInputLength: 2,
         });
         $.ajax({
             type: "POST",
@@ -117,7 +117,7 @@
                 $("#subject-selector").empty().trigger('change');
                 $("#subject-selector").select2({
                     placeholder: "Tìm kiếm mon",
-                    minimumInputLength: 2,
+                    //minimumInputLength: 2,
                 });
                 for (var i = 0; i < result.result.length; i++) {
                     $('#subject-selector').append("<option value='" + result.result[i].Value + "'>" + result.result[i].Value + "</option>");
