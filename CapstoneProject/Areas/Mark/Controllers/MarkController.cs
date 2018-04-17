@@ -269,14 +269,14 @@ namespace CapstoneProject.Areas.Mark.Controllers
                             {
                                 oldsubjectCompList = compList.Where(q => (q.SyllabusName.Contains("SU") && q.SyllabusName.Contains(containYear))).ToList();
                             }
-                            if (subjectCompList == null
-                            && oldsubjectCompList == null)
+                            if (subjectCompList.Count==0
+                            && oldsubjectCompList.Count==0)
                             {
                                 IConvertible[] item = new IConvertible[] { gradeFile.Login, mark.Class, mark.Subject, "Sai syllabus, xin nhập bằng excel hoặc sửa lại file FG đúng syllabus. Các lớp khác nhập thành công." };
                                 errorList.Add(item);
                                 continue;
                             }
-                            if (subjectCompList == null && oldsubjectCompList != null)
+                            if (subjectCompList.Count==0 && oldsubjectCompList.Count!=0)
                             {
                                 subjectCompList = oldsubjectCompList;
                             }
@@ -473,7 +473,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
                                 var studentList = markList.GroupBy(q => q.Student).Select(q => q.Key).ToList();
                                 Dictionary<String, Subject_MarkComponent> finalList = new Dictionary<string, Subject_MarkComponent>();
                                 Dictionary<int, Subject_MarkComponent> finalCols = new Dictionary<int, Subject_MarkComponent>();
-                                var markGroup = context.Marks.Where(q => q.CourseId == course.Id).GroupBy(q => q.Subject_MarkComponent).Select(q => q.Key).ToList();
+                                var markGroup = context.Marks.Where(q => q.CourseId == course.Id &&q.Subject_MarkComponent.MarkComponent.Name.ToUpper()!="AVERAGE").GroupBy(q => q.Subject_MarkComponent).Select(q => q.Key).ToList();
                                 foreach (var item in markGroup)
                                 {
                                     if (item.MarkName.ToUpper().Contains("RESIT"))

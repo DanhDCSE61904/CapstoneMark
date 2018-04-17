@@ -92,6 +92,18 @@
                     "aTargets": [0, 1, 2],
                     "sClass": "text-center",
                 },
+                {
+                    "aTargets": 0,
+                    "render": function (data, type, row, meta) {
+                        var data = row[0];
+                        if (data == ""||data ==null) {
+                            return "<b>Average</b>";
+                        }
+                        else {
+                            return row[0];
+                        }
+                    }
+                },
             ],
             "bAutoWidth": false,
             dom: 'Bfrtip',

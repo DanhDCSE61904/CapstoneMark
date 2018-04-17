@@ -109,13 +109,13 @@
                     "sClass": "text-center",
                 },
                 {
-                "aTargets": 2,
-                "data": "Detail",
-                "render": function (data, type, row, meta) {
-                    var data = row[2];
-                    return '<a href="StudentMarkDetail?courseId=' + data + '&rollNumber=' + $('#student-selector').val() + '">Details</a>';
-                }
+                    "aTargets": 2,
+                    "data": "Detail",
+                    "render": function (data, type, row, meta) {
+                        var data = row[2];
+                        return '<a href="StudentMarkDetail?courseId=' + data + '&rollNumber=' + $('#student-selector').val() + '">Details</a>';
                     }
+                }
             ],
             "bAutoWidth": false,
             dom: 'Bfrtip',

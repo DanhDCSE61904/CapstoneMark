@@ -177,6 +177,27 @@ namespace CapstoneProject.Areas.Students.Controllers
 
                 var subjectList = context.Subjects.ToDictionary(q => q.Id);
                 var markList = context.Marks.Where(q => q.SemesterId == semesterId).ToList();
+                Dictionary<string, string> foreignLanguageSubject = new Dictionary<string, string>();
+                var fileContent = new FileInfo(System.Web.Hosting.HostingEnvironment.MapPath("/PropertiesFiles/DS mon ngoai ngu.xlsx"));
+                
+                using (ExcelPackage package = new ExcelPackage(fileContent))
+                {
+                    ExcelWorkbook wb = package.Workbook;
+                    ExcelWorksheet ws = wb.Worksheets.First();
+                    var totalCol = ws.Dimension.Columns;
+                    var totalRow = ws.Dimension.Rows;
+                    var subjectCol = 2;
+                    var titleRow = 1;
+                    var firstRecordRow = 2;
+                    
+                    for (int i = firstRecordRow; i <= totalRow; i++)
+                    {
+                        if (!foreignLanguageSubject.ContainsKey(ws.Cells[i, subjectCol].Text.ToUpper()))
+                        {
+                            foreignLanguageSubject.Add(ws.Cells[i, subjectCol].Text.ToUpper(), ws.Cells[i, subjectCol + 1].Text);
+                        }
+                    }
+                }
                 Dictionary<string, StatisticFinal> statisticList = new Dictionary<string, StatisticFinal>();
 
                 List<LeftOverStudent> leftOverStudentList = new List<LeftOverStudent>();
@@ -190,6 +211,11 @@ namespace CapstoneProject.Areas.Students.Controllers
                     ExcelWorksheet firstWs = wb.Worksheets.Add("Thống kê");
                     foreach (var course in courseList)
                     {
+                        if (course.SubjectCode.ToUpper().Contains("VOV") || course.SubjectCode.ToUpper().Contains("LAB"))
+                        {
+                            continue;
+                        }
+                        
                         if (!statisticList.ContainsKey(course.SubjectCode))
                         {
                             StatisticFinal sta = new StatisticFinal();
@@ -273,31 +299,17 @@ namespace CapstoneProject.Areas.Students.Controllers
 
                                 foreach (var item in studentResult)
                                 {
-                                    leftOutCount--;
-                                    if (studentCount < 19)
+                                    if (foreignLanguageSubject.ContainsKey(course.SubjectCode))
                                     {
-                                        StartHeaderChar = 'A';
-                                        ws.Cells["" + (StartHeaderChar++) + (++StartHeaderNumber)].Value = count++;
-                                        ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item.RollNumber;
-                                        ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item.FullName;
-                                        studentCount++;
-
-                                        StartHeaderChar = 'A';
-                                    }
-                                    else
-                                    {
-                                        //Bo vao phong tong hop
-                                        if (leftOutCount < 8)
+                                        if (studentCount < 19)
                                         {
                                             StartHeaderChar = 'A';
-                                            StartHeaderNumber = 1;
-                                            LeftOverStudent stu = new LeftOverStudent();
-                                            stu.Subject = course.SubjectCode;
-                                            stu.RollNumber = item.RollNumber;
-                                            stu.FullName = item.FullName;
-                                            leftOverStudentList.Add(stu);
+                                            studentCount++;
+                                            ws.Cells["" + (StartHeaderChar++) + (++StartHeaderNumber)].Value = count++;
+                                            ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item.RollNumber;
+                                            ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item.FullName;
+                                            StartHeaderChar = 'A';
                                         }
-
                                         else
                                         {
                                             statisticList[course.SubjectCode].NumberOfRoom++;
@@ -323,13 +335,88 @@ namespace CapstoneProject.Areas.Students.Controllers
                                             EndHeaderNumber = StartHeaderNumber;
                                             StartHeaderChar = 'A';
                                             StartHeaderNumber = 1;
-                                            #endregion
                                             ws.Cells["" + (StartHeaderChar++) + (++StartHeaderNumber)].Value = count++;
                                             ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item.RollNumber;
                                             ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item.FullName;
+                                            #endregion
 
                                         }
+                                    }
+                                    if (studentResult.Count < 15)
+                                    {
+                                        StartHeaderChar = 'A';
+                                        StartHeaderNumber = 1;
+                                        LeftOverStudent stu = new LeftOverStudent();
+                                        stu.Subject = course.SubjectCode;
+                                        stu.RollNumber = item.RollNumber;
+                                        stu.FullName = item.FullName;
+                                        leftOverStudentList.Add(stu);
+                                        if (wb.Worksheets[course.SubjectCode + "_" + sheetCourseNum] != null)
+                                        {
+                                            statisticList[course.SubjectCode].NumberOfRoom = 0;
+                                            wb.Worksheets.Delete(course.SubjectCode + "_" + sheetCourseNum);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        leftOutCount--;
+                                        if (studentCount < 19)
+                                        {
+                                            StartHeaderChar = 'A';
+                                            ws.Cells["" + (StartHeaderChar++) + (++StartHeaderNumber)].Value = count++;
+                                            ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item.RollNumber;
+                                            ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item.FullName;
+                                            studentCount++;
 
+                                            StartHeaderChar = 'A';
+                                        }
+                                        else
+                                        {
+                                            //Bo vao phong tong hop
+                                            if (leftOutCount < 15)
+                                            {
+                                                StartHeaderChar = 'A';
+                                                StartHeaderNumber = 1;
+                                                LeftOverStudent stu = new LeftOverStudent();
+                                                stu.Subject = course.SubjectCode;
+                                                stu.RollNumber = item.RollNumber;
+                                                stu.FullName = item.FullName;
+                                                leftOverStudentList.Add(stu);
+                                            }
+
+                                            else
+                                            {
+                                                statisticList[course.SubjectCode].NumberOfRoom++;
+                                                studentCount = 0;
+                                                sheetCourseNum++;
+                                                ws = wb.Worksheets.Add(course.SubjectCode + "_" + sheetCourseNum);
+                                                StartHeaderChar = 'A';
+                                                StartHeaderNumber = 1;
+                                                count = 1;
+                                                #region Headers
+                                                //ws.Cells[0, 0].Style.WrapText = true;
+                                                //Image img = CaptstoneProject.Properties.Resources.img_logo_fe;
+                                                //ExcelPicture pic = ws.Drawings.AddPicture("FPTLogo", img);
+                                                //pic.From.Column = 0;
+                                                //pic.From.Row = 0;
+                                                //pic.SetSize(320, 240);
+                                                ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "No";
+                                                ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "StudentRoll";
+                                                ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "StudentName";
+
+
+                                                EndHeaderChar = --StartHeaderChar;
+                                                EndHeaderNumber = StartHeaderNumber;
+                                                StartHeaderChar = 'A';
+                                                StartHeaderNumber = 1;
+                                                #endregion
+                                                ws.Cells["" + (StartHeaderChar++) + (++StartHeaderNumber)].Value = count++;
+                                                ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item.RollNumber;
+                                                ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item.FullName;
+
+                                            }
+
+                                        }
                                     }
                                 }
 
@@ -343,7 +430,16 @@ namespace CapstoneProject.Areas.Students.Controllers
                                 #endregion
 
 
+
                             }
+                            else
+                            {
+                                statisticList.Remove(course.SubjectCode);
+                            }
+                        }
+                        else
+                        {
+                            statisticList.Remove(course.SubjectCode);
                         }
                         if (clear == 10)
                         {
@@ -450,7 +546,7 @@ namespace CapstoneProject.Areas.Students.Controllers
                     var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                     return this.File(ms, contentType, fileName);
                 }
-            
+
             }
         }
     }
