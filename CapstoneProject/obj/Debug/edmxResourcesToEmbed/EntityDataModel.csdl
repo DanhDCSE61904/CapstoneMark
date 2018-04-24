@@ -1,36 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="CapstoneProjectModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
   <EntityContainer Name="CapstoneProjectEntities" annotation:LazyLoadingEnabled="true">
-    <EntitySet Name="Attendances" EntityType="CapstoneProjectModel.Attendance" />
     <EntitySet Name="Courses" EntityType="CapstoneProjectModel.Course" />
     <EntitySet Name="Credentials" EntityType="CapstoneProjectModel.Credential" />
     <EntitySet Name="Credentials_Roles" EntityType="CapstoneProjectModel.Credentials_Roles" />
-    <EntitySet Name="Curricula" EntityType="CapstoneProjectModel.Curriculum" />
-    <EntitySet Name="DocTypes" EntityType="CapstoneProjectModel.DocType" />
-    <EntitySet Name="Documents" EntityType="CapstoneProjectModel.Document" />
-    <EntitySet Name="Document_Student" EntityType="CapstoneProjectModel.Document_Student" />
     <EntitySet Name="Dynamic_Menu" EntityType="CapstoneProjectModel.Dynamic_Menu" />
     <EntitySet Name="MarkComponents" EntityType="CapstoneProjectModel.MarkComponent" />
     <EntitySet Name="Marks" EntityType="CapstoneProjectModel.Mark" />
     <EntitySet Name="OldRollNumbers" EntityType="CapstoneProjectModel.OldRollNumber" />
     <EntitySet Name="Prequisites" EntityType="CapstoneProjectModel.Prequisite" />
-    <EntitySet Name="Programs" EntityType="CapstoneProjectModel.Program" />
     <EntitySet Name="RealSemesters" EntityType="CapstoneProjectModel.RealSemester" />
     <EntitySet Name="Roles" EntityType="CapstoneProjectModel.Role" />
     <EntitySet Name="RolesAuthorities" EntityType="CapstoneProjectModel.RolesAuthority" />
     <EntitySet Name="Students" EntityType="CapstoneProjectModel.Student" />
     <EntitySet Name="Student_Status" EntityType="CapstoneProjectModel.Student_Status" />
     <EntitySet Name="Subjects" EntityType="CapstoneProjectModel.Subject" />
-    <EntitySet Name="Subject_Curriculum" EntityType="CapstoneProjectModel.Subject_Curriculum" />
     <EntitySet Name="Subject_MarkComponent" EntityType="CapstoneProjectModel.Subject_MarkComponent" />
-    <AssociationSet Name="FK_Attendance_Course" Association="CapstoneProjectModel.FK_Attendance_Course">
-      <End Role="Course" EntitySet="Courses" />
-      <End Role="Attendance" EntitySet="Attendances" />
-    </AssociationSet>
-    <AssociationSet Name="FK_Attendance_Student" Association="CapstoneProjectModel.FK_Attendance_Student">
-      <End Role="Student" EntitySet="Students" />
-      <End Role="Attendance" EntitySet="Attendances" />
-    </AssociationSet>
     <AssociationSet Name="FK_Marks_Course1" Association="CapstoneProjectModel.FK_Marks_Course1">
       <End Role="Course" EntitySet="Courses" />
       <End Role="Mark" EntitySet="Marks" />
@@ -42,38 +27,6 @@
     <AssociationSet Name="FK_Credentials_Roles_Roles" Association="CapstoneProjectModel.FK_Credentials_Roles_Roles">
       <End Role="Role" EntitySet="Roles" />
       <End Role="Credentials_Roles" EntitySet="Credentials_Roles" />
-    </AssociationSet>
-    <AssociationSet Name="FK_Curriculum_Program" Association="CapstoneProjectModel.FK_Curriculum_Program">
-      <End Role="Program" EntitySet="Programs" />
-      <End Role="Curriculum" EntitySet="Curricula" />
-    </AssociationSet>
-    <AssociationSet Name="FK_Document_Student_Curriculum" Association="CapstoneProjectModel.FK_Document_Student_Curriculum">
-      <End Role="Curriculum" EntitySet="Curricula" />
-      <End Role="Document_Student" EntitySet="Document_Student" />
-    </AssociationSet>
-    <AssociationSet Name="FK_Subject_Curriculum_Curriculum" Association="CapstoneProjectModel.FK_Subject_Curriculum_Curriculum">
-      <End Role="Curriculum" EntitySet="Curricula" />
-      <End Role="Subject_Curriculum" EntitySet="Subject_Curriculum" />
-    </AssociationSet>
-    <AssociationSet Name="FK_Document_DocType" Association="CapstoneProjectModel.FK_Document_DocType">
-      <End Role="DocType" EntitySet="DocTypes" />
-      <End Role="Document" EntitySet="Documents" />
-    </AssociationSet>
-    <AssociationSet Name="FK_Document_Document" Association="CapstoneProjectModel.FK_Document_Document">
-      <End Role="Document" EntitySet="Documents" />
-      <End Role="Document1" EntitySet="Documents" />
-    </AssociationSet>
-    <AssociationSet Name="FK_Document_Student_Document" Association="CapstoneProjectModel.FK_Document_Student_Document">
-      <End Role="Document" EntitySet="Documents" />
-      <End Role="Document_Student" EntitySet="Document_Student" />
-    </AssociationSet>
-    <AssociationSet Name="FK_Document_Student_OldRollNumber" Association="CapstoneProjectModel.FK_Document_Student_OldRollNumber">
-      <End Role="OldRollNumber" EntitySet="OldRollNumbers" />
-      <End Role="Document_Student" EntitySet="Document_Student" />
-    </AssociationSet>
-    <AssociationSet Name="FK_Document_Student_Student" Association="CapstoneProjectModel.FK_Document_Student_Student">
-      <End Role="Student" EntitySet="Students" />
-      <End Role="Document_Student" EntitySet="Document_Student" />
     </AssociationSet>
     <AssociationSet Name="FK_RolesAuthority_Dynamic_Menu" Association="CapstoneProjectModel.FK_RolesAuthority_Dynamic_Menu">
       <End Role="Dynamic_Menu" EntitySet="Dynamic_Menu" />
@@ -95,10 +48,6 @@
       <End Role="Subject_MarkComponent" EntitySet="Subject_MarkComponent" />
       <End Role="Mark" EntitySet="Marks" />
     </AssociationSet>
-    <AssociationSet Name="FK_OldRollNumber_Program" Association="CapstoneProjectModel.FK_OldRollNumber_Program">
-      <End Role="Program" EntitySet="Programs" />
-      <End Role="OldRollNumber" EntitySet="OldRollNumbers" />
-    </AssociationSet>
     <AssociationSet Name="FK_OldRollNumber_Student" Association="CapstoneProjectModel.FK_OldRollNumber_Student">
       <End Role="Student" EntitySet="Students" />
       <End Role="OldRollNumber" EntitySet="OldRollNumbers" />
@@ -106,10 +55,6 @@
     <AssociationSet Name="FK_Prequisite_Subject" Association="CapstoneProjectModel.FK_Prequisite_Subject">
       <End Role="Subject" EntitySet="Subjects" />
       <End Role="Prequisite" EntitySet="Prequisites" />
-    </AssociationSet>
-    <AssociationSet Name="FK_Student_Program" Association="CapstoneProjectModel.FK_Student_Program">
-      <End Role="Program" EntitySet="Programs" />
-      <End Role="Student" EntitySet="Students" />
     </AssociationSet>
     <AssociationSet Name="FK_Student_Status_RealSemester" Association="CapstoneProjectModel.FK_Student_Status_RealSemester">
       <End Role="RealSemester" EntitySet="RealSemesters" />
@@ -123,10 +68,6 @@
       <End Role="Student" EntitySet="Students" />
       <End Role="Student_Status" EntitySet="Student_Status" />
     </AssociationSet>
-    <AssociationSet Name="FK_Subject_Curriculum_Subject" Association="CapstoneProjectModel.FK_Subject_Curriculum_Subject">
-      <End Role="Subject" EntitySet="Subjects" />
-      <End Role="Subject_Curriculum" EntitySet="Subject_Curriculum" />
-    </AssociationSet>
     <AssociationSet Name="FK_Subject_MarkComponent_Subject" Association="CapstoneProjectModel.FK_Subject_MarkComponent_Subject">
       <End Role="Subject" EntitySet="Subjects" />
       <End Role="Subject_MarkComponent" EntitySet="Subject_MarkComponent" />
@@ -135,21 +76,16 @@
       <End Role="Subject" EntitySet="Subjects" />
       <End Role="Subject1" EntitySet="Subjects" />
     </AssociationSet>
+    <EntitySet Name="Attendances" EntityType="CapstoneProjectModel.Attendance" />
+    <AssociationSet Name="FK_Attendance_Course" Association="CapstoneProjectModel.FK_Attendance_Course">
+      <End Role="Course" EntitySet="Courses" />
+      <End Role="Attendance" EntitySet="Attendances" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Attendance_Student" Association="CapstoneProjectModel.FK_Attendance_Student">
+      <End Role="Student" EntitySet="Students" />
+      <End Role="Attendance" EntitySet="Attendances" />
+    </AssociationSet>
   </EntityContainer>
-  <EntityType Name="Attendance">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="StudentId" Type="Int32" />
-    <Property Name="CourseId" Type="Int32" />
-    <Property Name="Taker" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="Status" Type="Boolean" />
-    <Property Name="RecordTime" Type="DateTime" Precision="3" />
-    <Property Name="TakeAttendance" Type="Boolean" />
-    <NavigationProperty Name="Course" Relationship="CapstoneProjectModel.FK_Attendance_Course" FromRole="Attendance" ToRole="Course" />
-    <NavigationProperty Name="Student" Relationship="CapstoneProjectModel.FK_Attendance_Student" FromRole="Attendance" ToRole="Student" />
-  </EntityType>
   <EntityType Name="Course">
     <Key>
       <PropertyRef Name="Id" />
@@ -157,8 +93,8 @@
     <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="Semester" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="SubjectCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <NavigationProperty Name="Attendances" Relationship="CapstoneProjectModel.FK_Attendance_Course" FromRole="Course" ToRole="Attendance" />
     <NavigationProperty Name="Marks" Relationship="CapstoneProjectModel.FK_Marks_Course1" FromRole="Course" ToRole="Mark" />
+    <NavigationProperty Name="Attendances" Relationship="CapstoneProjectModel.FK_Attendance_Course" FromRole="Course" ToRole="Attendance" />
   </EntityType>
   <EntityType Name="Credential">
     <Key>
@@ -183,54 +119,6 @@
     <Property Name="RolesId" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="Credential" Relationship="CapstoneProjectModel.FK_Credentials_Roles_Credentials" FromRole="Credentials_Roles" ToRole="Credential" />
     <NavigationProperty Name="Role" Relationship="CapstoneProjectModel.FK_Credentials_Roles_Roles" FromRole="Credentials_Roles" ToRole="Role" />
-  </EntityType>
-  <EntityType Name="Curriculum">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="ProgramId" Type="Int32" Nullable="false" />
-    <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-    <NavigationProperty Name="Program" Relationship="CapstoneProjectModel.FK_Curriculum_Program" FromRole="Curriculum" ToRole="Program" />
-    <NavigationProperty Name="Document_Student" Relationship="CapstoneProjectModel.FK_Document_Student_Curriculum" FromRole="Curriculum" ToRole="Document_Student" />
-    <NavigationProperty Name="Subject_Curriculum" Relationship="CapstoneProjectModel.FK_Subject_Curriculum_Curriculum" FromRole="Curriculum" ToRole="Subject_Curriculum" />
-  </EntityType>
-  <EntityType Name="DocType">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <NavigationProperty Name="Documents" Relationship="CapstoneProjectModel.FK_Document_DocType" FromRole="DocType" ToRole="Document" />
-  </EntityType>
-  <EntityType Name="Document">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="DocTypeId" Type="Int32" Nullable="false" />
-    <Property Name="DocParentId" Type="Int32" />
-    <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <NavigationProperty Name="DocType" Relationship="CapstoneProjectModel.FK_Document_DocType" FromRole="Document" ToRole="DocType" />
-    <NavigationProperty Name="Document1" Relationship="CapstoneProjectModel.FK_Document_Document" FromRole="Document" ToRole="Document1" />
-    <NavigationProperty Name="Document2" Relationship="CapstoneProjectModel.FK_Document_Document" FromRole="Document1" ToRole="Document" />
-    <NavigationProperty Name="Document_Student" Relationship="CapstoneProjectModel.FK_Document_Student_Document" FromRole="Document" ToRole="Document_Student" />
-  </EntityType>
-  <EntityType Name="Document_Student">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="DocumentId" Type="Int32" Nullable="false" />
-    <Property Name="StudentId" Type="Int32" />
-    <Property Name="OldStudentId" Type="Int32" />
-    <Property Name="CurriculumId" Type="Int32" />
-    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-    <NavigationProperty Name="Curriculum" Relationship="CapstoneProjectModel.FK_Document_Student_Curriculum" FromRole="Document_Student" ToRole="Curriculum" />
-    <NavigationProperty Name="Document" Relationship="CapstoneProjectModel.FK_Document_Student_Document" FromRole="Document_Student" ToRole="Document" />
-    <NavigationProperty Name="OldRollNumber" Relationship="CapstoneProjectModel.FK_Document_Student_OldRollNumber" FromRole="Document_Student" ToRole="OldRollNumber" />
-    <NavigationProperty Name="Student" Relationship="CapstoneProjectModel.FK_Document_Student_Student" FromRole="Document_Student" ToRole="Student" />
   </EntityType>
   <EntityType Name="Dynamic_Menu">
     <Key>
@@ -281,8 +169,6 @@
     <Property Name="StudentId" Type="Int32" />
     <Property Name="OldRollNumber1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="ChangedCurriculumDate" Type="DateTime" Precision="0" />
-    <NavigationProperty Name="Document_Student" Relationship="CapstoneProjectModel.FK_Document_Student_OldRollNumber" FromRole="OldRollNumber" ToRole="Document_Student" />
-    <NavigationProperty Name="Program" Relationship="CapstoneProjectModel.FK_OldRollNumber_Program" FromRole="OldRollNumber" ToRole="Program" />
     <NavigationProperty Name="Student" Relationship="CapstoneProjectModel.FK_OldRollNumber_Student" FromRole="OldRollNumber" ToRole="Student" />
   </EntityType>
   <EntityType Name="Prequisite">
@@ -296,22 +182,6 @@
     <Property Name="NewPrequisiteSubs" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="NewFailMark" Type="Int32" />
     <NavigationProperty Name="Subject" Relationship="CapstoneProjectModel.FK_Prequisite_Subject" FromRole="Prequisite" ToRole="Subject" />
-  </EntityType>
-  <EntityType Name="Program">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Name" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-    <Property Name="FullName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="OJT" Type="Int32" />
-    <Property Name="Capstone" Type="Int32" />
-    <Property Name="Graduate" Type="Int32" />
-    <Property Name="GraduateCredits" Type="Int32" />
-    <Property Name="SpecializedCredits" Type="Int32" />
-    <NavigationProperty Name="Curricula" Relationship="CapstoneProjectModel.FK_Curriculum_Program" FromRole="Program" ToRole="Curriculum" />
-    <NavigationProperty Name="OldRollNumbers" Relationship="CapstoneProjectModel.FK_OldRollNumber_Program" FromRole="Program" ToRole="OldRollNumber" />
-    <NavigationProperty Name="Students" Relationship="CapstoneProjectModel.FK_Student_Program" FromRole="Program" ToRole="Student" />
   </EntityType>
   <EntityType Name="RealSemester">
     <Key>
@@ -358,12 +228,10 @@
     <Property Name="PassCredits" Type="Int32" />
     <Property Name="PassFailCredits" Type="Int32" />
     <Property Name="PassFailAverageMark" Type="Double" />
-    <NavigationProperty Name="Attendances" Relationship="CapstoneProjectModel.FK_Attendance_Student" FromRole="Student" ToRole="Attendance" />
-    <NavigationProperty Name="Document_Student" Relationship="CapstoneProjectModel.FK_Document_Student_Student" FromRole="Student" ToRole="Document_Student" />
     <NavigationProperty Name="Marks" Relationship="CapstoneProjectModel.FK_Marks_Student1" FromRole="Student" ToRole="Mark" />
     <NavigationProperty Name="OldRollNumbers" Relationship="CapstoneProjectModel.FK_OldRollNumber_Student" FromRole="Student" ToRole="OldRollNumber" />
-    <NavigationProperty Name="Program" Relationship="CapstoneProjectModel.FK_Student_Program" FromRole="Student" ToRole="Program" />
     <NavigationProperty Name="Student_Status" Relationship="CapstoneProjectModel.FK_Student_Status_Student" FromRole="Student" ToRole="Student_Status" />
+    <NavigationProperty Name="Attendances" Relationship="CapstoneProjectModel.FK_Attendance_Student" FromRole="Student" ToRole="Attendance" />
   </EntityType>
   <EntityType Name="Student_Status">
     <Key>
@@ -388,24 +256,9 @@
     <Property Name="Type" Type="Int32" />
     <Property Name="NumberOfSlots" Type="Int32" />
     <NavigationProperty Name="Prequisite" Relationship="CapstoneProjectModel.FK_Prequisite_Subject" FromRole="Subject" ToRole="Prequisite" />
-    <NavigationProperty Name="Subject_Curriculum" Relationship="CapstoneProjectModel.FK_Subject_Curriculum_Subject" FromRole="Subject" ToRole="Subject_Curriculum" />
     <NavigationProperty Name="Subject_MarkComponent" Relationship="CapstoneProjectModel.FK_Subject_MarkComponent_Subject" FromRole="Subject" ToRole="Subject_MarkComponent" />
     <NavigationProperty Name="Subject1" Relationship="CapstoneProjectModel.Replacement_Subject" FromRole="Subject" ToRole="Subject1" />
     <NavigationProperty Name="Subjects" Relationship="CapstoneProjectModel.Replacement_Subject" FromRole="Subject1" ToRole="Subject" />
-  </EntityType>
-  <EntityType Name="Subject_Curriculum">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="SubjectId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="CurriculumId" Type="Int32" />
-    <Property Name="OrdinalNumber" Type="Int32" />
-    <Property Name="TermNumber" Type="Int32" />
-    <Property Name="SubjectCredits" Type="Int32" />
-    <Property Name="Required" Type="Boolean" />
-    <NavigationProperty Name="Curriculum" Relationship="CapstoneProjectModel.FK_Subject_Curriculum_Curriculum" FromRole="Subject_Curriculum" ToRole="Curriculum" />
-    <NavigationProperty Name="Subject" Relationship="CapstoneProjectModel.FK_Subject_Curriculum_Subject" FromRole="Subject_Curriculum" ToRole="Subject" />
   </EntityType>
   <EntityType Name="Subject_MarkComponent">
     <Key>
@@ -426,30 +279,6 @@
     <NavigationProperty Name="Marks" Relationship="CapstoneProjectModel.FK_Marks_Subject_MarkComponent" FromRole="Subject_MarkComponent" ToRole="Mark" />
     <NavigationProperty Name="Subject" Relationship="CapstoneProjectModel.FK_Subject_MarkComponent_Subject" FromRole="Subject_MarkComponent" ToRole="Subject" />
   </EntityType>
-  <Association Name="FK_Attendance_Course">
-    <End Type="CapstoneProjectModel.Course" Role="Course" Multiplicity="0..1" />
-    <End Type="CapstoneProjectModel.Attendance" Role="Attendance" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Course">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Attendance">
-        <PropertyRef Name="CourseId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_Attendance_Student">
-    <End Type="CapstoneProjectModel.Student" Role="Student" Multiplicity="0..1" />
-    <End Type="CapstoneProjectModel.Attendance" Role="Attendance" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Student">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Attendance">
-        <PropertyRef Name="StudentId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK_Marks_Course1">
     <End Type="CapstoneProjectModel.Course" Role="Course" Multiplicity="0..1" />
     <End Type="CapstoneProjectModel.Mark" Role="Mark" Multiplicity="*" />
@@ -483,102 +312,6 @@
       </Principal>
       <Dependent Role="Credentials_Roles">
         <PropertyRef Name="RolesId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_Curriculum_Program">
-    <End Type="CapstoneProjectModel.Program" Role="Program" Multiplicity="1" />
-    <End Type="CapstoneProjectModel.Curriculum" Role="Curriculum" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Program">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Curriculum">
-        <PropertyRef Name="ProgramId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_Document_Student_Curriculum">
-    <End Type="CapstoneProjectModel.Curriculum" Role="Curriculum" Multiplicity="0..1" />
-    <End Type="CapstoneProjectModel.Document_Student" Role="Document_Student" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Curriculum">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Document_Student">
-        <PropertyRef Name="CurriculumId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_Subject_Curriculum_Curriculum">
-    <End Type="CapstoneProjectModel.Curriculum" Role="Curriculum" Multiplicity="0..1" />
-    <End Type="CapstoneProjectModel.Subject_Curriculum" Role="Subject_Curriculum" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Curriculum">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Subject_Curriculum">
-        <PropertyRef Name="CurriculumId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_Document_DocType">
-    <End Type="CapstoneProjectModel.DocType" Role="DocType" Multiplicity="1" />
-    <End Type="CapstoneProjectModel.Document" Role="Document" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="DocType">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Document">
-        <PropertyRef Name="DocTypeId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_Document_Document">
-    <End Type="CapstoneProjectModel.Document" Role="Document" Multiplicity="0..1" />
-    <End Type="CapstoneProjectModel.Document" Role="Document1" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Document">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Document1">
-        <PropertyRef Name="DocParentId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_Document_Student_Document">
-    <End Type="CapstoneProjectModel.Document" Role="Document" Multiplicity="1" />
-    <End Type="CapstoneProjectModel.Document_Student" Role="Document_Student" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Document">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Document_Student">
-        <PropertyRef Name="DocumentId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_Document_Student_OldRollNumber">
-    <End Type="CapstoneProjectModel.OldRollNumber" Role="OldRollNumber" Multiplicity="0..1" />
-    <End Type="CapstoneProjectModel.Document_Student" Role="Document_Student" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="OldRollNumber">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Document_Student">
-        <PropertyRef Name="OldStudentId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_Document_Student_Student">
-    <End Type="CapstoneProjectModel.Student" Role="Student" Multiplicity="0..1" />
-    <End Type="CapstoneProjectModel.Document_Student" Role="Document_Student" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Student">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Document_Student">
-        <PropertyRef Name="StudentId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -642,18 +375,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_OldRollNumber_Program">
-    <End Type="CapstoneProjectModel.Program" Role="Program" Multiplicity="0..1" />
-    <End Type="CapstoneProjectModel.OldRollNumber" Role="OldRollNumber" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Program">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="OldRollNumber">
-        <PropertyRef Name="ProgramId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK_OldRollNumber_Student">
     <End Type="CapstoneProjectModel.Student" Role="Student" Multiplicity="0..1" />
     <End Type="CapstoneProjectModel.OldRollNumber" Role="OldRollNumber" Multiplicity="*" />
@@ -675,18 +396,6 @@
       </Principal>
       <Dependent Role="Prequisite">
         <PropertyRef Name="SubjectId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_Student_Program">
-    <End Type="CapstoneProjectModel.Program" Role="Program" Multiplicity="0..1" />
-    <End Type="CapstoneProjectModel.Student" Role="Student" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Program">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Student">
-        <PropertyRef Name="ProgramId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -726,18 +435,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_Subject_Curriculum_Subject">
-    <End Type="CapstoneProjectModel.Subject" Role="Subject" Multiplicity="0..1" />
-    <End Type="CapstoneProjectModel.Subject_Curriculum" Role="Subject_Curriculum" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Subject">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Subject_Curriculum">
-        <PropertyRef Name="SubjectId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK_Subject_MarkComponent_Subject">
     <End Type="CapstoneProjectModel.Subject" Role="Subject" Multiplicity="0..1" />
     <End Type="CapstoneProjectModel.Subject_MarkComponent" Role="Subject_MarkComponent" Multiplicity="*" />
@@ -753,5 +450,42 @@
   <Association Name="Replacement_Subject">
     <End Type="CapstoneProjectModel.Subject" Role="Subject" Multiplicity="*" />
     <End Type="CapstoneProjectModel.Subject" Role="Subject1" Multiplicity="*" />
+  </Association>
+  <EntityType Name="Attendance">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="StudentId" Type="Int32" />
+    <Property Name="CourseId" Type="Int32" />
+    <Property Name="Taker" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="Boolean" />
+    <Property Name="RecordTime" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Course" Relationship="CapstoneProjectModel.FK_Attendance_Course" FromRole="Attendance" ToRole="Course" />
+    <NavigationProperty Name="Student" Relationship="CapstoneProjectModel.FK_Attendance_Student" FromRole="Attendance" ToRole="Student" />
+  </EntityType>
+  <Association Name="FK_Attendance_Course">
+    <End Type="CapstoneProjectModel.Course" Role="Course" Multiplicity="0..1" />
+    <End Type="CapstoneProjectModel.Attendance" Role="Attendance" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Course">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Attendance">
+        <PropertyRef Name="CourseId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Attendance_Student">
+    <End Type="CapstoneProjectModel.Student" Role="Student" Multiplicity="0..1" />
+    <End Type="CapstoneProjectModel.Attendance" Role="Attendance" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Student">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Attendance">
+        <PropertyRef Name="StudentId" />
+      </Dependent>
+    </ReferentialConstraint>
   </Association>
 </Schema>

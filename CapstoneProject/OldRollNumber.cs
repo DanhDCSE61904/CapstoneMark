@@ -14,21 +14,12 @@ namespace CapstoneProject
     
     public partial class OldRollNumber
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public OldRollNumber()
-        {
-            this.Document_Student = new HashSet<Document_Student>();
-        }
-    
         public int Id { get; set; }
         public Nullable<int> ProgramId { get; set; }
         public Nullable<int> StudentId { get; set; }
         public string OldRollNumber1 { get; set; }
         public Nullable<System.DateTime> ChangedCurriculumDate { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Document_Student> Document_Student { get; set; }
-        public virtual Program Program { get; set; }
         public virtual Student Student { get; set; }
     }
 }

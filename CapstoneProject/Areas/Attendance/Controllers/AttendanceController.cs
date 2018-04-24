@@ -111,6 +111,7 @@ namespace CapstoneProject.Areas.Attendance.Controllers
 
                                             if (!wtf.ContainsKey(cellStudentRoll))
                                             {
+                                                //Thieu student
                                                 Student stu = new Student();
                                                 stu.RollNumber = cellStudentRoll;
                                                 wtf.Add(cellStudentRoll, stu);

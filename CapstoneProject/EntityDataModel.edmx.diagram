@@ -5,56 +5,39 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="e08f38d57b84422097a5f5e9d590453a" Name="Diagram1" ZoomLevel="82">
-        <EntityTypeShape EntityType="CapstoneProjectModel.Attendance" Width="1.5" PointX="8.25" PointY="9.25" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.Course" Width="1.5" PointX="6" PointY="6.75" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.Credential" Width="1.5" PointX="8.75" PointY="0.75" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.Credentials_Roles" Width="1.5" PointX="11" PointY="1.25" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.Curriculum" Width="1.5" PointX="3" PointY="10.375" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.DocType" Width="1.5" PointX="0.75" PointY="19.375" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.Document" Width="1.5" PointX="3" PointY="18.875" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.Document_Student" Width="1.5" PointX="5.25" PointY="13.75" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.Dynamic_Menu" Width="1.5" PointX="8.75" PointY="23.125" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.MarkComponent" Width="1.5" PointX="3.75" PointY="23.5" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.Mark" Width="1.5" PointX="8.25" PointY="13.75" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.OldRollNumber" Width="1.5" PointX="8.25" PointY="19" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.Prequisite" Width="1.5" PointX="5.25" PointY="3.375" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.Program" Width="1.5" PointX="0.75" PointY="12.625" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.RealSemester" Width="1.5" PointX="6" PointY="26.875" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.Role" Width="1.5" PointX="8.75" PointY="4.5" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.RolesAuthority" Width="1.5" PointX="11" PointY="4.25" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.Student" Width="1.5" PointX="3" PointY="13.375" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.Student_Status" Width="1.5" PointX="5.25" PointY="17.5" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.Subject" Width="1.5" PointX="3" PointY="6" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.Subject_Curriculum" Width="1.5" PointX="5.25" PointY="10.125" />
-        <EntityTypeShape EntityType="CapstoneProjectModel.Subject_MarkComponent" Width="1.5" PointX="6" PointY="22.5" />
-        <AssociationConnector Association="CapstoneProjectModel.FK_Attendance_Course" />
-        <AssociationConnector Association="CapstoneProjectModel.FK_Attendance_Student" />
+        <EntityTypeShape EntityType="CapstoneProjectModel.Course" Width="1.5" PointX="3" PointY="20.75" />
+        <EntityTypeShape EntityType="CapstoneProjectModel.Credential" Width="1.5" PointX="7.75" PointY="7.375" />
+        <EntityTypeShape EntityType="CapstoneProjectModel.Credentials_Roles" Width="1.5" PointX="10" PointY="1" />
+        <EntityTypeShape EntityType="CapstoneProjectModel.Dynamic_Menu" Width="1.5" PointX="7.75" PointY="0.75" />
+        <EntityTypeShape EntityType="CapstoneProjectModel.MarkComponent" Width="1.5" PointX="0.75" PointY="1.375" />
+        <EntityTypeShape EntityType="CapstoneProjectModel.Mark" Width="1.5" PointX="5.25" PointY="4.25" />
+        <EntityTypeShape EntityType="CapstoneProjectModel.OldRollNumber" Width="1.5" PointX="5.25" PointY="23.375" />
+        <EntityTypeShape EntityType="CapstoneProjectModel.Prequisite" Width="1.5" PointX="3" PointY="9.5" />
+        <EntityTypeShape EntityType="CapstoneProjectModel.RealSemester" Width="1.5" PointX="3" PointY="12.875" />
+        <EntityTypeShape EntityType="CapstoneProjectModel.Role" Width="1.5" PointX="7.75" PointY="4.125" />
+        <EntityTypeShape EntityType="CapstoneProjectModel.RolesAuthority" Width="1.5" PointX="10" PointY="4" />
+        <EntityTypeShape EntityType="CapstoneProjectModel.Student" Width="1.5" PointX="3" PointY="15.625" />
+        <EntityTypeShape EntityType="CapstoneProjectModel.Student_Status" Width="1.5" PointX="5.25" PointY="15.25" />
+        <EntityTypeShape EntityType="CapstoneProjectModel.Subject" Width="1.5" PointX="0.75" PointY="4.75" />
+        <EntityTypeShape EntityType="CapstoneProjectModel.Subject_MarkComponent" Width="1.5" PointX="3" PointY="4.375" />
         <AssociationConnector Association="CapstoneProjectModel.FK_Marks_Course1" />
         <AssociationConnector Association="CapstoneProjectModel.FK_Credentials_Roles_Credentials" />
         <AssociationConnector Association="CapstoneProjectModel.FK_Credentials_Roles_Roles" />
-        <AssociationConnector Association="CapstoneProjectModel.FK_Curriculum_Program" />
-        <AssociationConnector Association="CapstoneProjectModel.FK_Document_Student_Curriculum" />
-        <AssociationConnector Association="CapstoneProjectModel.FK_Subject_Curriculum_Curriculum" />
-        <AssociationConnector Association="CapstoneProjectModel.FK_Document_DocType" />
-        <AssociationConnector Association="CapstoneProjectModel.FK_Document_Document" />
-        <AssociationConnector Association="CapstoneProjectModel.FK_Document_Student_Document" />
-        <AssociationConnector Association="CapstoneProjectModel.FK_Document_Student_OldRollNumber" />
-        <AssociationConnector Association="CapstoneProjectModel.FK_Document_Student_Student" />
         <AssociationConnector Association="CapstoneProjectModel.FK_RolesAuthority_Dynamic_Menu" />
         <AssociationConnector Association="CapstoneProjectModel.FK_Subject_MarkComponent_MarkComponent" />
         <AssociationConnector Association="CapstoneProjectModel.FK_Marks_RealSemester" />
         <AssociationConnector Association="CapstoneProjectModel.FK_Marks_Student1" />
         <AssociationConnector Association="CapstoneProjectModel.FK_Marks_Subject_MarkComponent" />
-        <AssociationConnector Association="CapstoneProjectModel.FK_OldRollNumber_Program" />
         <AssociationConnector Association="CapstoneProjectModel.FK_OldRollNumber_Student" />
         <AssociationConnector Association="CapstoneProjectModel.FK_Prequisite_Subject" />
-        <AssociationConnector Association="CapstoneProjectModel.FK_Student_Program" />
         <AssociationConnector Association="CapstoneProjectModel.FK_Student_Status_RealSemester" />
         <AssociationConnector Association="CapstoneProjectModel.FK_RolesAuthority_Roles" />
         <AssociationConnector Association="CapstoneProjectModel.FK_Student_Status_Student" />
-        <AssociationConnector Association="CapstoneProjectModel.FK_Subject_Curriculum_Subject" />
         <AssociationConnector Association="CapstoneProjectModel.FK_Subject_MarkComponent_Subject" />
         <AssociationConnector Association="CapstoneProjectModel.Replacement_Subject" />
+        <EntityTypeShape EntityType="CapstoneProjectModel.Attendance" Width="1.5" PointX="5.25" PointY="18.875" />
+        <AssociationConnector Association="CapstoneProjectModel.FK_Attendance_Course" />
+        <AssociationConnector Association="CapstoneProjectModel.FK_Attendance_Student" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

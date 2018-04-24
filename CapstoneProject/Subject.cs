@@ -17,7 +17,6 @@ namespace CapstoneProject
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Subject()
         {
-            this.Subject_Curriculum = new HashSet<Subject_Curriculum>();
             this.Subject_MarkComponent = new HashSet<Subject_MarkComponent>();
             this.Subject1 = new HashSet<Subject>();
             this.Subjects = new HashSet<Subject>();
@@ -31,8 +30,6 @@ namespace CapstoneProject
         public Nullable<int> NumberOfSlots { get; set; }
     
         public virtual Prequisite Prequisite { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Subject_Curriculum> Subject_Curriculum { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Subject_MarkComponent> Subject_MarkComponent { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

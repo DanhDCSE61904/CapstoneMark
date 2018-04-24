@@ -25,27 +25,21 @@ namespace CapstoneProject
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Attendance> Attendances { get; set; }
         public virtual DbSet<Course> Courses { get; set; }
         public virtual DbSet<Credential> Credentials { get; set; }
         public virtual DbSet<Credentials_Roles> Credentials_Roles { get; set; }
-        public virtual DbSet<Curriculum> Curricula { get; set; }
-        public virtual DbSet<DocType> DocTypes { get; set; }
-        public virtual DbSet<Document> Documents { get; set; }
-        public virtual DbSet<Document_Student> Document_Student { get; set; }
         public virtual DbSet<Dynamic_Menu> Dynamic_Menu { get; set; }
         public virtual DbSet<MarkComponent> MarkComponents { get; set; }
         public virtual DbSet<Mark> Marks { get; set; }
         public virtual DbSet<OldRollNumber> OldRollNumbers { get; set; }
         public virtual DbSet<Prequisite> Prequisites { get; set; }
-        public virtual DbSet<Program> Programs { get; set; }
         public virtual DbSet<RealSemester> RealSemesters { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<RolesAuthority> RolesAuthorities { get; set; }
         public virtual DbSet<Student> Students { get; set; }
         public virtual DbSet<Student_Status> Student_Status { get; set; }
         public virtual DbSet<Subject> Subjects { get; set; }
-        public virtual DbSet<Subject_Curriculum> Subject_Curriculum { get; set; }
         public virtual DbSet<Subject_MarkComponent> Subject_MarkComponent { get; set; }
+        public virtual DbSet<Attendance> Attendances { get; set; }
     }
 }

@@ -242,18 +242,6 @@
     <Compile Include="Credentials_Roles.cs">
       <DependentUpon>EntityDataModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Curriculum.cs">
-      <DependentUpon>EntityDataModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DocType.cs">
-      <DependentUpon>EntityDataModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Document.cs">
-      <DependentUpon>EntityDataModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Document_Student.cs">
-      <DependentUpon>EntityDataModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Dynamic_Menu.cs">
       <DependentUpon>EntityDataModel.tt</DependentUpon>
     </Compile>
@@ -292,9 +280,6 @@
     <Compile Include="Prequisite.cs">
       <DependentUpon>EntityDataModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs">
-      <DependentUpon>EntityDataModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RealSemester.cs">
       <DependentUpon>EntityDataModel.tt</DependentUpon>
@@ -313,9 +298,6 @@
       <DependentUpon>EntityDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Subject.cs">
-      <DependentUpon>EntityDataModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Subject_Curriculum.cs">
       <DependentUpon>EntityDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Subject_MarkComponent.cs">
