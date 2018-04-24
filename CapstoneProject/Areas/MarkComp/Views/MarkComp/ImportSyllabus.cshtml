@@ -115,6 +115,7 @@
                             toastr.error(result.message);
                             $('#upload-progress-bar').html("Fail to upload!");
                             $('#upload-progress-bar').addClass('progress-bar-danger');
+                            $('#cancel-file').removeClass("hidden");
                         }
                     },
                     error: function (xhr, status, p3, p4) {
@@ -122,6 +123,7 @@
                         toastr.error(err);
                         $('#upload-progress-bar').html("Fail to upload!");
                         $('#upload-progress-bar').addClass('progress-bar-danger');
+                        $('#cancel-file').removeClass("hidden");
                     }
                 });
             }

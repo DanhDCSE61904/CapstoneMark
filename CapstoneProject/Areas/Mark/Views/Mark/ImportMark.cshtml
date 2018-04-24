@@ -102,6 +102,10 @@
                 for (var i = 0; i < result.result.length; i++) {
                     $('#semester-selector').append("<option value='" + result.result[i].SemesterId + "'>" + result.result[i].Semester + "</option>");
                 }
+                $("#semester-selector").select2({
+                    placeholder: "Tìm kiếm ki",
+                    minimumInputLength: 2,
+                });
                 //LoadTable();
             }
         });
@@ -124,6 +128,10 @@
         //    //     table._fnajaxupdate();
         //    table.ajax.reload();
         //}
+        if ($.fn.dataTable.isDataTable('#error-table')) {
+            $('#error-table').DataTable().destroy();
+        }
+
 
         $('#error-table').DataTable({
             searchDelay: 1000,
@@ -296,6 +304,7 @@
         //    toastr.error('Max upload size is 20MB!');
         //}
         //else{
+        $('#submit-button').attr("disabled", "disabled");
         var data = new FormData();
         for (var i = 0; i < $("#upload-file")[0].files.length; i++) {
             data.append("file" + i, $("#upload-file")[0].files[i]);
@@ -334,16 +343,21 @@
                     $('#upload-progress-bar').html("Completed!");
                     $('#upload-progress-bar').addClass('progress-bar-success');
                     $('#cancel-file').click();
-                    if (result.errorList != null) {
+                    //if (result.error==true) {
                         $('#upload-progress-bar').html(result.message);
-                        LoadErrorTable(result.errorList);
-                    }
+                        LoadErrorTable(result.resultList);
+                    //}
+                    //else {
+                    //    $('#upload-progress-bar').html(result.message);
+                    //    LoadErrorTable(result.resultList);
+                    //}
                     //window.location.reload();
 
                 } else {
                     toastr.error(result.message);
                     $('#upload-progress-bar').html("Fail to upload!");
                     $('#upload-progress-bar').addClass('progress-bar-danger');
+                    $('#cancel-file').removeClass("hidden");
                 }
             },
             error: function (xhr, status, p3, p4) {
@@ -351,8 +365,10 @@
                 toastr.error(err);
                 $('#upload-progress-bar').html("Fail to upload!");
                 $('#upload-progress-bar').addClass('progress-bar-danger');
-            }
+                $('#cancel-file').removeClass("hidden");
+            },
         });
+        $('#submit-button').removeAttr("disabled");
         //}
     });
 </script>

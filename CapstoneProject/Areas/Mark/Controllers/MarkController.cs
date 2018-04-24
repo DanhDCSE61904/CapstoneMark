@@ -209,20 +209,22 @@ namespace CapstoneProject.Areas.Mark.Controllers
         {
             int a = Request.Files.Count;
             //FileStream fileStream = new FileStream(@"C:\Users\USER\Desktop\SO DIEM FALL 2017\SO DIEM FALL 2017\10T\FA17__10T_VanTTN.fg", FileMode.Open);
-            List<IConvertible[]> errorList = new List<IConvertible[]>();
+            List<IConvertible[]> resultList = new List<IConvertible[]>();
+            var error = false;
             for (int i = 0; i < a; i++)
             {
                 try
                 {
                     var context = new CapstoneProjectEntities();
-
-                    var semester = context.RealSemesters.Find(semesterId);
-                    var courseList = context.Courses.Where(q => q.Semester.Equals(semester.Semester.ToUpper())).ToList();
-                    var markListWithoutAverage = context.Marks.Where(q => !q.Subject_MarkComponent.MarkComponent.Name.Equals("AVERAGE") && q.SemesterId == semesterId).ToList();
                     string extension = System.IO.Path.GetExtension(Request.Files[i].FileName);
+
 
                     if (extension.Equals(".fg"))
                     {
+                        var semester = context.RealSemesters.Find(semesterId);
+                    var courseList = context.Courses.Where(q => q.Semester.Equals(semester.Semester.ToUpper())).ToList();
+                    var markListWithoutAverage = context.Marks.Where(q => !q.Subject_MarkComponent.MarkComponent.Name.Equals("AVERAGE") && q.SemesterId == semesterId).ToList();
+                    
                         var gradeFile = (TeacherGrade)new BinaryFormatter
                         {
                             AssemblyFormat = FormatterAssemblyStyle.Simple
@@ -242,6 +244,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
                                 //context.Courses.Add(newCourse);
                                 //context.SaveChanges();
                             }
+                            var numberOfStudentWithNoMark = 0;
                             Dictionary<String, Subject_MarkComponent> finalAndResitList = new Dictionary<string, Subject_MarkComponent>();
                             var markGroup = markListWithoutAverage.Where(q => q.CourseId == course.Id).GroupBy(q => q.Subject_MarkComponent).Select(q => q.Key).ToList();
                             foreach (var item in markGroup)
@@ -285,8 +288,9 @@ namespace CapstoneProject.Areas.Mark.Controllers
                             if (subjectCompList.Count == 0
                             && oldsubjectCompList.Count == 0)
                             {
-                                IConvertible[] item = new IConvertible[] { gradeFile.Login, mark.Class, mark.Subject, "Sai syllabus, xin nhập bằng excel hoặc sửa lại file FG đúng syllabus. Các lớp khác nhập thành công." };
-                                errorList.Add(item);
+                                IConvertible[] item = new IConvertible[] { gradeFile.Login, mark.Class, mark.Subject, "Sai syllabus, xin nhập bằng excel hoặc sửa lại file FG đúng syllabus." };
+                                resultList.Add(item);
+                                error = true;
                                 continue;
                             }
                             if (subjectCompList.Count == 0 && oldsubjectCompList.Count != 0)
@@ -322,8 +326,9 @@ namespace CapstoneProject.Areas.Mark.Controllers
                             }
                             if (skip == true)
                             {
-                                IConvertible[] item = new IConvertible[] { gradeFile.Login, mark.Class, mark.Subject, "Sai syllabus, xin nhập bằng excel hoặc sửa lại file FG đúng syllabus. Các lớp khác nhập thành công." };
-                                errorList.Add(item);
+                                IConvertible[] item = new IConvertible[] { gradeFile.Login, mark.Class, mark.Subject, "Sai syllabus, xin nhập bằng excel hoặc sửa lại file FG đúng syllabus." };
+                                resultList.Add(item);
+                                error = true;
                                 continue;
                             }
 
@@ -375,6 +380,10 @@ namespace CapstoneProject.Areas.Mark.Controllers
                                     //    }
                                     //}
                                     //}
+                                    if (student.Grades.Count == 0)
+                                    {
+                                        numberOfStudentWithNoMark++;
+                                    }
                                     foreach (var grade in student.Grades)
                                     {
                                         //if (item.Value.Times > 1)
@@ -427,25 +436,25 @@ namespace CapstoneProject.Areas.Mark.Controllers
                                         {
                                             Debug.WriteLine("Sub_Comp:" + mark.Subject + "_" + grade.Component + "_" + student.Roll);
                                         }
-
-
-                                    }
-                                    foreach (var final in finalAndResitList)
-                                    {
-                                        if (markListWithoutAverage.Where(q => q.CourseId == course.Id && q.StudentId == studentId && q.SubjectMarkComponentId == final.Value.Id).FirstOrDefault() == null)
+                                        foreach (var final in finalAndResitList)
                                         {
-                                            CapstoneProject.Mark finalMark = new CapstoneProject.Mark();
-                                            finalMark.IsActivated = true;
-                                            finalMark.IsEnabled = true;
-                                            finalMark.SemesterId = semesterId;
-                                            finalMark.StudentId = studentId;
-                                            finalMark.CourseId = course.Id;
-                                            finalMark.SubjectMarkComponentId = final.Value.Id;
-                                            finalMark.AverageMark = null;
-                                            context2.Marks.Add(finalMark);
-                                            context2.SaveChanges();
+                                            if (markListWithoutAverage.Where(q => q.CourseId == course.Id && q.StudentId == studentId && q.SubjectMarkComponentId == final.Value.Id).FirstOrDefault() == null)
+                                            {
+                                                CapstoneProject.Mark finalMark = new CapstoneProject.Mark();
+                                                finalMark.IsActivated = true;
+                                                finalMark.IsEnabled = true;
+                                                finalMark.SemesterId = semesterId;
+                                                finalMark.StudentId = studentId;
+                                                finalMark.CourseId = course.Id;
+                                                finalMark.SubjectMarkComponentId = final.Value.Id;
+                                                finalMark.AverageMark = null;
+                                                context2.Marks.Add(finalMark);
+                                                context2.SaveChanges();
+                                            }
                                         }
+
                                     }
+                                   
                                 }
                                 catch (Exception ex)
                                 {
@@ -457,13 +466,26 @@ namespace CapstoneProject.Areas.Mark.Controllers
 
 
                             //context.Dispose();
+                            if (numberOfStudentWithNoMark == mark.Students.Count)
+                            {
+                                IConvertible[] missing = new IConvertible[] { gradeFile.Login, mark.Class, mark.Subject, "None of students have any mark!" };
+                                resultList.Add(missing);
+                            }
+                            else
+                            {
+                                IConvertible[] good = new IConvertible[] { gradeFile.Login, mark.Class, mark.Subject, "Successful import!" };
+                                resultList.Add(good);
+                            }
                         }
                         //GC.Collect();
                         context.SaveChanges();
 
 
                     }
-
+                    else
+                    {
+                        return Json(new { success = false, message = "Errors in uploaded file. Please recheck" });
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -471,13 +493,13 @@ namespace CapstoneProject.Areas.Mark.Controllers
                 }
 
             }
-            if (errorList.Count == 0)
+            if (error == false)
             {
-                return Json(new { success = true, message = "Successful!" });
+                return Json(new { success = true, message = "Successful!", resultList = resultList, error = false });
             }
             else
             {
-                return Json(new { success = true, message = "Some classes doesn't match the syllabus", errorList = errorList });
+                return Json(new { success = true, message = "Some error happened!", resultList = resultList, error = true });
             }
         }
 
@@ -1182,6 +1204,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
                     var studentMarks = markList.Where(q => q.StudentId == student.Id).ToList();
                     var averageComp = subjectAverageComp.Where(q => q.SubjectId.ToUpper().Equals(course.SubjectCode.ToUpper())).FirstOrDefault();
                     int averageCompId = 0;
+                    var failGroupMark = false;
                     if (averageComp == null)
                     {
                         Subject_MarkComponent smc = new Subject_MarkComponent();
@@ -1243,6 +1266,10 @@ namespace CapstoneProject.Areas.Mark.Controllers
                             if (!finalList.ContainsKey(group.Key))
                             {
                                 group.Value.Mark = group.Value.Mark / group.Value.NumberOfTest;
+                                if(group.Value.Mark == 0)
+                                {
+                                    failGroupMark = true;
+                                }
                             }
                         }
                         //Tinh xong cac thanh phan
@@ -1395,7 +1422,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
                             averageMark.Status = "Fail";
                             averageMark.IsActivated = true;
                             averageMark.IsEnabled = true;
-                            if (result >= 5 && passFinalCondition == true)
+                            if (result >= 5 && passFinalCondition == true &&failGroupMark==false)
                             {
                                 averageMark.Status = "Passed";
                             }
@@ -1403,7 +1430,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
                         }
                         else
                         {
-                            if (result >= 5 && passFinalCondition == true)
+                            if (result >= 5 && passFinalCondition == true && failGroupMark ==false)
                             {
                                 oldAverageMark.Status = "Passed";
                             }
@@ -1447,7 +1474,7 @@ namespace CapstoneProject.Areas.Mark.Controllers
                     //pic.From.Column = 0;
                     //pic.From.Row = 0;
                     //pic.SetSize(320, 240);
-                    ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "No";
+                    //ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "No";
                     ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "Subject";
                     ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "StudentRoll";
                     ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = "AverageMark";
@@ -1477,8 +1504,8 @@ namespace CapstoneProject.Areas.Mark.Controllers
                     });
                     foreach (var item in mark)
                     {
-                        ws.Cells["" + (StartHeaderChar++) + (++StartHeaderNumber)].Value = count++;
-                        ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item[0];
+                        //ws.Cells["" + (StartHeaderChar++) + (++StartHeaderNumber)].Value = count++;
+                        ws.Cells["" + (StartHeaderChar++) + (++StartHeaderNumber)].Value = item[0];
                         ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item[1];
                         ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item[2];
                         ws.Cells["" + (StartHeaderChar++) + (StartHeaderNumber)].Value = item[3];

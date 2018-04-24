@@ -176,7 +176,7 @@ namespace CapstoneProject.Areas.Students.Controllers
                 var studentList = attendanceList.GroupBy(q => q.Student).Select(q => q.FirstOrDefault().Student).ToList();
 
                 var subjectList = context.Subjects.ToDictionary(q => q.Id);
-                var markList = context.Marks.Where(q => q.SemesterId == semesterId).ToList();
+                var markExemptList = context.Marks.Where(q => q.SemesterId == semesterId && q.IsExempt!=null).ToList();
                 Dictionary<string, string> foreignLanguageSubject = new Dictionary<string, string>();
                 var fileContent = new FileInfo(System.Web.Hosting.HostingEnvironment.MapPath("/PropertiesFiles/DS mon ngoai ngu.xlsx"));
 
@@ -239,7 +239,7 @@ namespace CapstoneProject.Areas.Students.Controllers
                                 Console.WriteLine();
                             }
                             var studentResult = new List<Student>();
-                            var exemptList = markList.Where(q => q.IsExempt == true && q.CourseId == course.Id).GroupBy(q => q.Student).Select(q => q.Key).ToDictionary(q => q.RollNumber);
+                            var exemptList = markExemptList.Where(q => q.IsExempt == true && q.CourseId == course.Id).GroupBy(q => q.Student).Select(q => q.Key).ToDictionary(q => q.RollNumber);
                             foreach (var exemptStudent in exemptList)
                             {
                                 studentResult.Add(exemptStudent.Value);

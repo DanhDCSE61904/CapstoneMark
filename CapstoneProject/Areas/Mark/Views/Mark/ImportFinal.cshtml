@@ -84,6 +84,10 @@
                 for (var i = 0; i < result.result.length; i++) {
                     $('#semester-selector').append("<option value='" + result.result[i].SemesterId + "'>" + result.result[i].Semester + "</option>");
                 }
+                $("#semester-selector").select2({
+                    placeholder: "Tìm kiếm ky",
+                    minimumInputLength: 2,
+                });
                 LoadTable();
             }
         });
@@ -182,6 +186,7 @@
                     toastr.error(result.message);
                     $('#upload-progress-bar').html("Fail to upload!");
                     $('#upload-progress-bar').addClass('progress-bar-danger');
+                    $('#cancel-file').removeClass("hidden");
                 }
             },
             error: function (xhr, status, p3, p4) {
@@ -189,6 +194,7 @@
                 toastr.error(err);
                 $('#upload-progress-bar').html("Fail to upload!");
                 $('#upload-progress-bar').addClass('progress-bar-danger');
+                $('#cancel-file').removeClass("hidden");
             }
         });
         //}
