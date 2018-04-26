@@ -503,7 +503,6 @@ namespace CapstoneProject.Areas.Mark.Controllers
             }
         }
 
-
         public ActionResult UploadFinal(int semesterId, int isResit)
         {
             try

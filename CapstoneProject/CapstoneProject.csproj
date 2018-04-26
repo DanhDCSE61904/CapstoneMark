@@ -2562,6 +2562,7 @@
     <Content Include="Areas\Mark\Views\Mark\CalculateAverageMark.cshtml" />
     <Content Include="Areas\Mark\Views\Mark\ExportAverageMark.cshtml" />
     <Content Include="PropertiesFiles\DS mon ngoai ngu.xlsx" />
+    <Content Include="Areas\Students\Views\Students\SchedulingForFinal.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

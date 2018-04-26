@@ -39,9 +39,15 @@
                     <button id="search-btn">Tìm</button>
                 </div>
                 <button id="btn-export-final-list" class="btn btn-success" title="Download excel students for final">
-                    <i class="fa fa-download"></i>Export Semester Excel
+                    <i class="fa fa-download"></i> Xuất danh sách phòng thi
                 </button>
                 <form class="hidden" action="@Url.Action("DownloadExcelStudentForFinal")" id="form-export-final-list">
+                    <input id="" class="hidden" name="semesterId" value="">
+                </form>
+                <button id="btn-export-final-list-2" class="btn btn-success" title="Download excel students and subject for final">
+                    <i class="fa fa-download"></i> Xuất danh sách sinh viên và môn thi
+                </button>
+                <form class="hidden" action="@Url.Action("SimpleDownloadExcelStudentForFinal")" id="form-export-final-list-2">
                     <input id="" class="hidden" name="semesterId" value="">
                 </form>
             </div>
@@ -80,7 +86,10 @@
         $('#form-export-final-list input[name="semesterId"]').val($('#semester-selector').val());
         $('#form-export-final-list').submit();
     });
-
+    $('#btn-export-final-list-2').on("click", function () {
+        $('#form-export-final-list-2 input[name="semesterId"]').val($('#semester-selector').val());
+        $('#form-export-final-list-2').submit();
+    });
     function LoadSemesterSelect() {
         $.ajax({
             type: "GET",
