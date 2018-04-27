@@ -1,0 +1,407 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="/Resources/plugins/dist/css/upload-page.css">
+<section class="content">
+    <div class="box">
+        <div class="b-header">
+            <h1>Sửa lịch thi</h1>
+            <hr>
+        </div>
+
+        <div class="b-body">
+            <div class="row">
+                <div class="offset-8 col-md-12">
+                    <div class="">
+                        @*<button class="btn-success btn" id="download-template-btn"><i class="fa fa-download"></i> template</button>*@
+                        @*<button class="btn-primary btn" id="calculate-btn">Calculate</button>*@
+                        @using (Html.BeginForm("ExportModifyExcel", "Students", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            <input type="text" id="change-list-input" class="hidden" name="changeList" />
+                            <div class="col-md-5">
+                                <label>Chọn file danh sách sinh viên và môn thi của sinh viên: </label>
+                                <br />
+                                <button type="button" class="btn-primary btn" id="import-file-btn">Chọn file</button>
+                                <input id="upload-file" class="hidden" type="file" name="student-file" />
+                                <p class="hidden" id="file-info">File: <span></span></p>
+                                <button type="button" class="btn btn-danger hidden" id="cancel-file">Cancel</button>
+                            </div>
+                            <div class="col-md-2"><button type="button" class="btn btn-primary hidden" id="submit-button">Import</button></div>
+                            <div class="col-md-5">
+                                <label>Chọn file lịch thi: </label>
+                                <br />
+                                <button type="button" class="btn-primary btn" id="import-file-btn-2">Chọn file</button>
+                                <input id="upload-file-2" class="hidden" type="file" name="schedule-file" />
+                                <p class="hidden" id="file-info-2">File: <span></span></p>
+                                <button type="button" class="btn btn-danger hidden" id="cancel-file-2">Cancel</button>
+
+                                <br />
+
+                            </div>
+                            <input type="submit" class="hidden" id="submit-btn" />
+                        }
+
+                        @*<button class="btn-primary btn" id="import-file-btn">Chọn file</button>
+                            <button class="btn btn-primary hidden" id="submit-button">Import</button>
+                            <input id="upload-file" class="hidden" type="file" name="upload-file" />*@
+
+                        <div class="progress" style="display:none">
+                            <div id="upload-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                 aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                            </div>
+                        </div>
+                        @*<div class="col-md-3" style="padding:0; width: 200px;">
+                                <input type="text" id="date-string" readonly style="height:42px; cursor:auto">
+                            </div>*@
+                    </div>
+                </div>
+
+                <div class="hidden" id="edit-container">
+                    <div class="col-md-6">
+                        <label>Từ: </label>
+                        <select id="day-list-1"></select>
+                        <select id="slot-list-1"></select>
+                        <div style="margin-left:5px">
+                            <br />
+                            <label>Môn thi: </label>
+                            <div class='radio-group' id="subject-list-container-1">
+                            </div>
+                        </div>
+                        <br />
+                        <input style="width:100px" type="button" class="btn btn-block btn-success" id="btn-change" onclick="CheckDaysAndSlots()" value="Change" />
+                        @*<button id="btn-export-allstudentmark" class="btn btn-success" title="Export all mark of student by semester">
+                                <i class="fa fa-download"></i>Export Semester Excel
+                            </button>*@
+                        @*<form class="hidden" action="@Url.Action("DownloadExcelMark")" id="form-export-allstudentmark">
+                                <input id="" class="hidden" name="semesterId" value="">
+                            </form>*@
+                    </div>
+                    <div class="col-md-6">
+                        <label>Sang: </label>
+                        <select id="day-list-2"></select>
+                        <select id="slot-list-2"></select>
+                        @*<div>
+                                <div class='radio-group' id="subject-list-container-2">
+                                </div>
+                            </div>*@
+                        <div id="change-made">
+
+                        </div>
+                        <br />
+                        <input type="button" style="width:80px" class="btn btn-block btn-danger hidden" id="clear-change-btn" value="Xóa tất cả" onclick="ClearChangeList()" />
+                        <input type="button" style="width:125px" class="btn btn-success hidden" id="export-btn" onclick="ExportNewExcel()" value="Xuất lịch thi mới" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function () {
+
+    });
+    var changeList = "";
+
+    $('#import-file-btn').click(function () {
+        $('#upload-file').trigger("click");
+    });
+
+    $('#upload-file').on("change", function () {
+        var fileName = this.files[0].name;
+        $("#filename").html(fileName);
+
+        if (fileName != null) {
+            $('#import-file-btn').addClass("hidden");
+            if ($('#upload-file-2').val() != "") {
+                $('#submit-button').removeClass("hidden");
+            }
+            $('#cancel-file').removeClass("hidden");
+            $('#file-info').removeClass("hidden");
+            $('#file-info span').html(fileName);
+        } else {
+            $('#import-file-btn').removeClass("hidden");
+            $('#submit-button').addClass("hidden");
+            $('#cancel-file').addClass("hidden");
+            $('#file-info').addClass("hidden");
+        }
+    });
+
+    $('#cancel-file').click(function () {
+        $('#upload-file').val("");
+        $('#import-file-btn').removeClass("hidden");
+        $('#submit-button').addClass("hidden");
+        $('#cancel-file').addClass("hidden");
+        $('#file-info').addClass("hidden");
+    });
+
+    $('#import-file-btn-2').click(function () {
+        $('#upload-file-2').trigger("click");
+    });
+
+    $('#upload-file-2').on("change", function () {
+        var fileName2 = this.files[0].name;
+        $("#filename-2").html(fileName2);
+
+        if (fileName2 != null) {
+            $('#import-file-btn-2').addClass("hidden");
+            if ($('#upload-file').val() != "") {
+                $('#submit-button').removeClass("hidden");
+            }
+            $('#cancel-file-2').removeClass("hidden");
+            $('#file-info-2').removeClass("hidden");
+            $('#file-info-2 span').html(fileName2);
+        } else {
+            $('#import-file-btn-2').removeClass("hidden");
+            $('#submit-button').addClass("hidden");
+            $('#cancel-file-2').addClass("hidden");
+            $('#file-info-2').addClass("hidden");
+        }
+    });
+
+    $('#cancel-file-2').click(function () {
+        $('#upload-file-2').val("");
+        $('#import-file-btn-2').removeClass("hidden");
+        $('#submit-button').addClass("hidden");
+        $('#cancel-file-2').addClass("hidden");
+        $('#file-info-2').addClass("hidden");
+    });
+
+    $('#submit-button').on("click", function () {
+        $('#upload-progress-bar').removeClass('progress-bar-success');
+        //var files = $("#upload-file");
+
+        //if (file.size > 20971520) {
+        //    toastr.error('Max upload size is 20MB!');
+        //}
+        //else{
+        var data = new FormData();
+        for (var i = 0; i < $("#upload-file")[0].files.length; i++) {
+            data.append("student-file", $("#upload-file")[0].files[i]);
+        }
+        for (var i = 0; i < $("#upload-file-2")[0].files.length; i++) {
+            data.append("schedule-file", $("#upload-file-2")[0].files[i]);
+        }
+        $(".progress").show();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetFilesToEditFinal")',
+            contentType: false,
+            processData: false,
+            data: data,
+            xhr: function () {
+                var settingXhr = $.ajaxSettings.xhr();
+                if (settingXhr.upload) {
+                    // For handling the progress of the upload
+                    settingXhr.upload.addEventListener('progress', function (e) {
+                        if (e.lengthComputable) {
+                            $('#cancel-file').addClass("hidden");
+                            $('#cancel-file-2').addClass("hidden");
+                            //$('#upload-progress-bar').removeClass('progress-bar-danger');
+                            //var percent = Math.ceil(e.loaded / e.total * 100);
+                            //$('#upload-progress-bar').attr('aria-valuenow', percent).css('width', percent + '%');
+                            //$('#upload-progress-bar').attr('aria-valuemax', 100);
+                            //$('#upload-progress-bar').html(percent + "%");
+                            //if (percent == 100) {
+                            //    $('#upload-progress-bar').html("Processing...");
+                            //}
+                        }
+                    }, false);
+                }
+                return settingXhr;
+            },
+            success: function (result) {
+                if (result.success == true) {
+                    $('#submit-button').addClass("hidden");
+                    $('#edit-container').removeClass("hidden");
+                    for (var i = 0; i < result.dayList.length; i++) {
+                        $("#day-list-1").append("<option value='" + result.dayList[i] + "'>" + result.dayList[i] + "</option>");
+                        $("#day-list-2").append("<option value='" + result.dayList[i] + "'>" + result.dayList[i] + "</option>");
+                    }
+                    for (var i = 0; i < result.slotList.length; i++) {
+                        $("#slot-list-1").append("<option value='" + result.slotList[i] + "'>" + result.slotList[i] + "</option>");
+                        $("#slot-list-2").append("<option value='" + result.slotList[i] + "'>" + result.slotList[i] + "</option>");
+                    }
+                    $("#day-list-1").select2({
+                    });
+                    $("#day-list-2").select2({
+                    });
+                    $("#slot-list-1").select2({
+                    });
+                    $("#slot-list-2").select2({
+                    });
+
+                    LoadSubject();
+
+                }
+                else {
+
+                }
+            },
+            error: function (xhr, status, p3, p4) {
+                var err = "Error " + " " + status + " " + p3 + " " + p4;
+                toastr.error(err);
+                $('#upload-progress-bar').html("Fail to upload!");
+                $('#upload-progress-bar').addClass('progress-bar-danger');
+                $('#cancel-file').removeClass("hidden");
+                $('#cancel-file-2').removeClass("hidden");
+            }
+        });
+        //}
+    });
+
+    function LoadSubject() {
+        var dayChoose = $("#day-list-1").val();
+        var slotChoose = $("#slot-list-1").val();
+        var data = new FormData();
+        for (var i = 0; i < $("#upload-file")[0].files.length; i++) {
+            data.append("student-file", $("#upload-file")[0].files[i]);
+        }
+        for (var i = 0; i < $("#upload-file-2")[0].files.length; i++) {
+            data.append("schedule-file", $("#upload-file-2")[0].files[i]);
+        }
+        data.append("dayChoose", dayChoose);
+        data.append("slotChoose", slotChoose);
+        data.append("changeList", changeList);
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetSubjectsToChange")',
+            contentType: false,
+            processData: false,
+            data: data,
+            success: function (result) {
+                if (result.success == true) {
+                    $("#subject-list-container-1").html("");
+                    for (var i = 0; i < result.subList.length; i++) {
+                        if (i == 0) {
+                            $("#subject-list-container-1").append("<input type='radio' name='subject-radio' checked value=" + result.subList[i] + ">" + result.subList[i] + "<br/>");
+                        }
+                        else {
+                            $("#subject-list-container-1").append("<input type='radio' name='subject-radio' value=" + result.subList[i] + ">" + result.subList[i] + "<br/>");
+                        }
+                    }
+
+                }
+                else {
+
+                }
+            },
+        });
+    }
+
+    $("#day-list-1").on("change", function () {
+        LoadSubject();
+    });
+    $("#slot-list-1").on("change", function () {
+        LoadSubject();
+    });
+    function CheckDaysAndSlots() {
+        var data = new FormData();
+        for (var i = 0; i < $("#upload-file")[0].files.length; i++) {
+            data.append("student-file", $("#upload-file")[0].files[i]);
+        }
+        for (var i = 0; i < $("#upload-file-2")[0].files.length; i++) {
+            data.append("schedule-file", $("#upload-file-2")[0].files[i]);
+        }
+        data.append("changeList", changeList);
+        data.append("dayChange", $("#day-list-2").val());
+        data.append("slotChange", $("#slot-list-2").val());
+        data.append("subjectChoose", $("input[name='subject-radio']:checked").val());
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("DaysSlotsAvailableToChange")',
+            contentType: false,
+            processData: false,
+            data: data,
+            success: function (result) {
+                if (result.success == true) {
+                    if (result.changeAvailable == true) {
+                        if (changeList == "") {
+                            changeList += $("#day-list-2").val() + "-" + $("#slot-list-2").val() + "-" + $("input[name='subject-radio']:checked").val();
+                        }
+                        else {
+                            var already = false;
+                            var change = changeList.split(",");
+                            for (var i = 0; i < change.length; i++) {
+                                if (change[i] == $("#day-list-2").val() + "-" + $("#slot-list-2").val() + "-" + $("input[name='subject-radio']:checked").val()) {
+                                    alert("Đã có thay đổi này!");
+                                    already = true;
+                                    break;
+                                }
+                                var detail = change[i].split("-");
+                                var day = detail[0];
+                                var slot = detail[1];
+                                var subject = detail[2];
+                                if (subject == $("input[name='subject-radio']:checked").val()) {
+                                    changeList = "";
+                                    for (var k = 0; k < change.length; k++) {
+                                        if (i != k) {
+                                            if (changeList == "") {
+                                                changeList += change[k];
+                                            }
+                                            else {
+                                                changeList += "," + change[k];
+                                            }
+                                        }
+                                    }
+                                    if (changeList == "") {
+                                        changeList += $("#day-list-2").val() + "-" + $("#slot-list-2").val() + "-" + $("input[name='subject-radio']:checked").val();
+                                    }
+                                    else {
+                                        changeList += "," + $("#day-list-2").val() + "-" + $("#slot-list-2").val() + "-" + $("input[name='subject-radio']:checked").val();
+                                    }
+                                    already = true;
+                                }
+                            }
+                            if (already == false) {
+                                changeList += "," + $("#day-list-2").val() + "-" + $("#slot-list-2").val() + "-" + $("input[name='subject-radio']:checked").val();
+                            }
+                        }
+
+                        ReloadChangeList();
+
+                    }
+                    else {
+                        alert("Không thay đổi được!");
+                    }
+
+                }
+                else {
+                    alert("Error!");
+                }
+            },
+        });
+    }
+    function ReloadChangeList() {
+        $("#change-made").html("");
+        var change = changeList.split(",");
+        for (var i = 0; i < change.length; i++) {
+            var detail = change[i].split("-");
+            var day = detail[0];
+            var slot = detail[1];
+            var subject = detail[2];
+            $("#change-made").append("<br/><lable>Chuyển môn " + subject + " sang ngày: " + day + " vào ca: " + slot + "</lable>");
+        }
+        if (changeList != "") {
+            $("#clear-change-btn").removeClass("hidden");
+            $("#export-btn").removeClass("hidden");
+        }
+        else {
+            $("#clear-change-btn").addClass("hidden");
+            $("#export-btn").addClass("hidden");
+        }
+        LoadSubject();
+    }
+    function ClearChangeList() {
+        changeList = "";
+        $("#change-made").html("");
+        $("#clear-change-btn").addClass("hidden");
+        $("#export-btn").addClass("hidden");
+        LoadSubject();
+    }
+
+    function ExportNewExcel() {
+        $("#change-list-input").val(changeList);
+        $("#submit-btn").trigger("click");
+    }
+</script>

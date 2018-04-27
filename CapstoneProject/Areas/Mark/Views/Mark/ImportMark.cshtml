@@ -343,14 +343,15 @@
                     $('#upload-progress-bar').html("Completed!");
                     $('#upload-progress-bar').addClass('progress-bar-success');
                     $('#cancel-file').click();
-                    //if (result.error==true) {
+                    if (result.error==true) {
                         $('#upload-progress-bar').html(result.message);
                         LoadErrorTable(result.resultList);
-                    //}
-                    //else {
-                    //    $('#upload-progress-bar').html(result.message);
-                    //    LoadErrorTable(result.resultList);
-                    //}
+                        $('#upload-progress-bar').addClass('progress-bar-danger');
+                    }
+                    else {
+                        $('#upload-progress-bar').html(result.message);
+                        LoadErrorTable(result.resultList);
+                    }
                     //window.location.reload();
 
                 } else {
