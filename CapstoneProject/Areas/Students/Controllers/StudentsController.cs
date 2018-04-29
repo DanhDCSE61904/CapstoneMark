@@ -691,6 +691,163 @@ namespace CapstoneProject.Areas.Students.Controllers
             }
         }
 
+        public ProcessedScheduleFile SlotScheldule(Dictionary<string, List<string>> dayList,
+        Dictionary<string, Dictionary<string, Dictionary<string, int>>> dayListWithSlots, Dictionary<string, int> subjectWithStudentCount, List<StudentSorted> studentList)
+        {
+            var slotsConfict = false;
+            var numberOfDay = dayList.Keys.Count();
+            var numberOfSlots = dayListWithSlots["DAY 1"].Keys.Count();
+            Dictionary<string, List<string>> dayListModified = new Dictionary<string, List<string>>();
+            try
+            {
+                for (int i = 1; i <= numberOfDay; i++)
+                {
+                    var subjectPerSlots = Math.Ceiling((double)dayList["DAY " + i].Count() / (double)numberOfSlots);
+                    //int studentsPerSlots = 0;
+                    int studentInDay = 0;
+                    foreach (var item in dayList["DAY " + i])
+                    {
+                        studentInDay += subjectWithStudentCount[item];
+                    }
+                    //studentsPerSlots = studentInDay / numberOfSlots;
+                    var numOfSubInSlots = 0;
+                    var m = 1;
+                    foreach (var item in dayList["DAY " + i])
+                    {
+                        var contained = false;
+                        Dictionary<int, int> slotCantUsed = new Dictionary<int, int>();
+                        if (m > numberOfSlots)
+                        {
+                            m = 1;
+                        }
+                        for (int k = 1; k <= numberOfSlots; k++)
+                        {
+                            if (dayListWithSlots["DAY " + i]["SLOT " + k].ContainsKey(item))
+                            {
+                                contained = true;
+                            }
+                        }
+                        if (contained == false)
+                        {
+                            //if (numOfSubInSlots >= subjectPerSlots)
+                            //{
+                            //    numOfSubInSlots = 1;
+                            //    m++;
+                            //}
+                            //else
+                            //{
+                            //    numOfSubInSlots++;
+                            //}
+                            //Kiem tra slot co the su dung
+                            foreach (var stu in studentList)
+                            {
+                                if (stu.RollNumber.Equals("SE62779") && (item.Equals("JPD121") || item.Equals("CHN132")))
+                                {
+                                    Console.WriteLine("");
+                                }
+                                var studyThisSubject = false;
+                                foreach (var subStu in stu.Subjects)
+                                {
+                                    if (subStu.Equals(item))
+                                    {
+                                        studyThisSubject = true;
+                                    }
+                                }
+                                if (studyThisSubject)
+                                {
+                                    foreach (var subStu in stu.Subjects)
+                                    {
+                                        for (int n = 1; n <= numberOfSlots; n++)
+                                        {
+                                            if (dayListWithSlots["DAY " + i]["SLOT " + n].ContainsKey(subStu))
+                                            {
+                                                if (!slotCantUsed.ContainsKey(n))
+                                                {
+                                                    slotCantUsed.Add(n, n);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (slotCantUsed.Count != numberOfSlots)
+                            {
+                                List<Slot> slotList = new List<Slot>();
+                                foreach (var slot in dayListWithSlots["DAY " + i])
+                                {
+                                    var numberStu = 0;
+                                    foreach (var subject in slot.Value)
+                                    {
+                                        numberStu += subjectWithStudentCount[subject.Key];
+                                    }
+                                    Slot s = new Slot();
+                                    s.SlotNumber = int.Parse(slot.Key.Replace("SLOT ", ""));
+                                    s.NumberOfStudent = numberStu;
+                                    slotList.Add(s);
+                                }
+                                var slotList2 = slotList.OrderBy(q => q.NumberOfStudent).ToList();
+
+                                foreach (var slot in slotList)
+                                {
+                                    foreach (var s in slotCantUsed)
+                                    {
+                                        if (slot.SlotNumber == s.Key)
+                                        {
+                                            slotList2.Remove(slot);
+                                        }
+                                    }
+                                }
+                                int num = subjectWithStudentCount[item];
+                                dayListWithSlots["DAY " + i]["SLOT " + (slotList2[0].SlotNumber)].Add(item, num);
+                            }
+                            else
+                            {
+
+                                foreach (var day in dayList)
+                                {
+                                    List<string> subjectList = new List<string>();
+                                    foreach (var subject in dayList[day.Key])
+                                    {
+                                        if (!subject.Equals(item))
+                                        {
+                                            subjectList.Add(subject);
+                                        }
+                                    }
+                                    dayListModified.Add(day.Key, subjectList);
+                                }
+                                var dayToTransfer = i + 1;
+                                if (i == numberOfDay)
+                                {
+                                    dayToTransfer = 1;
+                                }
+                                dayListModified["DAY " + dayToTransfer].Add(item);
+                                slotsConfict = true;
+                                break;
+                            }
+                        }
+                        if (slotsConfict == true) { break; }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine();
+            }
+            ProcessedScheduleFile file = new ProcessedScheduleFile();
+            file.confict = slotsConfict;
+            if (slotsConfict == true)
+            {
+                file.dayList = dayListModified;
+            }
+            else
+            {
+                file.dayList = dayList;
+                file.dayListWithSlots = dayListWithSlots;
+            }
+            return file;
+        }
+
         public ActionResult SchelduleDayAndSlotsForFinal(int numberOfDay, int numberOfSlots)
         {
             try
@@ -826,180 +983,32 @@ namespace CapstoneProject.Areas.Students.Controllers
 
 
                                 //Xep ca thi
-                                for (int i = 1; i <= numberOfDay; i++)
+                                var error = false;
+                                var numberOfTimes = 0;
+                                ProcessedScheduleFile result = null;
+                                
+                                result = SlotScheldule(dayList, dayListWithSlots, subjectWithStudentCount, studentList);
+                                do
                                 {
-                                    var subjectPerSlots = Math.Ceiling((double)dayList["DAY " + i].Count() / (double)numberOfSlots);
-                                    //int studentsPerSlots = 0;
-                                    int studentInDay = 0;
-                                    foreach (var item in dayList["DAY " + i])
+                                    if (result.confict == true)
                                     {
-                                        studentInDay += subjectWithStudentCount[item];
+                                        result = SlotScheldule(result.dayList, dayListWithSlots, subjectWithStudentCount, studentList);
+                                        error = true;
+                                        numberOfTimes++;
                                     }
-                                    //studentsPerSlots = studentInDay / numberOfSlots;
-                                    var numOfSubInSlots = 0;
-                                    var m = 1;
-                                    foreach (var item in dayList["DAY " + i])
+                                    else
                                     {
-                                        var contained = false;
-                                        List<int> slotCantUsed = new List<int>();
-                                        if (m > numberOfSlots)
-                                        {
-                                            m = 1;
-                                        }
-                                        for (int k = 1; k <= numberOfSlots; k++)
-                                        {
-                                            if (dayListWithSlots["DAY " + i]["SLOT " + k].ContainsKey(item))
-                                            {
-                                                contained = true;
-                                            }
-                                        }
-                                        if (contained == false)
-                                        {
-                                            if (numOfSubInSlots >= subjectPerSlots)
-                                            {
-                                                numOfSubInSlots = 1;
-                                                m++;
-                                            }
-                                            else
-                                            {
-                                                numOfSubInSlots++;
-                                            }
-                                            foreach (var stu in studentList)
-                                            {
-                                                int alreadyInSlot = 0;
-                                                for (int k = 1; k <= numberOfSlots; k++)
-                                                {
-                                                    if (dayListWithSlots["DAY " + i]["SLOT " + k].ContainsKey(item))
-                                                    {
-                                                        alreadyInSlot = k;
-                                                    }
-                                                }
-                                                var subThatDay = 0;
-                                                if (stu.Subjects.Contains(item))
-                                                {
-                                                    foreach (var sub in stu.Subjects)
-                                                    {
-                                                        if (dayListWithSlots["DAY " + i]["SLOT " + m].ContainsKey(sub))
-                                                        {
-                                                            subThatDay = subThatDay + 1;
-                                                        }
-                                                    }
-                                                    if (subThatDay <= 1)
-                                                    {
-                                                        int num = subjectWithStudentCount[item];
-                                                        var listed = false;
-                                                        for (int k = 1; k <= numberOfSlots; k++)
-                                                        {
-                                                            if (dayListWithSlots["DAY " + i]["SLOT " + k].ContainsKey(item))
-                                                            {
-                                                                listed = true;
-                                                            }
-                                                        }
-                                                        if (listed == false)
-                                                        {
-                                                            List<Slot> slotList = new List<Slot>();
-                                                            foreach (var slot in dayListWithSlots["DAY " + i])
-                                                            {
-                                                                var numberStu = 0;
-                                                                foreach (var subject in slot.Value)
-                                                                {
-                                                                    numberStu += subjectWithStudentCount[subject.Key];
-                                                                }
-                                                                Slot s = new Slot();
-                                                                s.SlotNumber = int.Parse(slot.Key.Replace("SLOT ", ""));
-                                                                s.NumberOfStudent = numberStu;
-                                                                slotList.Add(s);
-                                                            }
-
-                                                            var slotList2 = slotList.OrderBy(q => q.NumberOfStudent).ToList();
-                                                            foreach (var slot in slotList)
-                                                            {
-                                                                foreach (var s in slotCantUsed)
-                                                                {
-                                                                    if (slot.SlotNumber == s)
-                                                                    {
-                                                                        slotList2.Remove(slot);
-                                                                    }
-                                                                }
-                                                            }
-                                                            dayListWithSlots["DAY " + i]["SLOT " + slotList2[0].SlotNumber].Add(item, num);
-                                                            //m = slotList[0].SlotNumber;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        //if (m < numberOfSlots)
-                                                        //{
-                                                        //dayListWithSlots["DAY " + i]["SLOT " + m].Remove(item);
-                                                        int num = subjectWithStudentCount[item];
-                                                        slotCantUsed.Add(m);
-
-                                                        List<Slot> slotList = new List<Slot>();
-                                                        foreach (var slot in dayListWithSlots["DAY " + i])
-                                                        {
-                                                            var numberStu = 0;
-                                                            foreach (var subject in slot.Value)
-                                                            {
-                                                                numberStu += subjectWithStudentCount[subject.Key];
-                                                            }
-                                                            Slot s = new Slot();
-                                                            s.SlotNumber = int.Parse(slot.Key.Replace("SLOT ", ""));
-                                                            s.NumberOfStudent = numberStu;
-                                                            slotList.Add(s);
-                                                        }
-                                                        var slotList2 = slotList.OrderBy(q => q.NumberOfStudent).ToList();
-
-                                                        foreach (var slot in slotList)
-                                                        {
-                                                            foreach (var s in slotCantUsed)
-                                                            {
-                                                                if (slot.SlotNumber == s)
-                                                                {
-                                                                    slotList2.Remove(slot);
-                                                                }
-                                                            }
-                                                        }
-
-                                                        if (slotList2[0].SlotNumber == m)
-                                                        {
-                                                            if (!dayListWithSlots["DAY " + i]["SLOT " + (slotList2[1].SlotNumber)].ContainsKey(item))
-                                                            {
-                                                                if (alreadyInSlot != 0)
-                                                                {
-                                                                    dayListWithSlots["DAY " + i]["SLOT " + alreadyInSlot].Remove(item);
-                                                                }
-                                                                dayListWithSlots["DAY " + i]["SLOT " + (slotList2[1].SlotNumber)].Add(item, num);
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            if (!dayListWithSlots["DAY " + i]["SLOT " + (slotList2[0].SlotNumber)].ContainsKey(item))
-                                                            {
-                                                                if (alreadyInSlot != 0)
-                                                                {
-                                                                    dayListWithSlots["DAY " + i]["SLOT " + alreadyInSlot].Remove(item);
-                                                                }
-                                                                dayListWithSlots["DAY " + i]["SLOT " + (slotList2[0].SlotNumber)].Add(item, num);
-                                                            }
-                                                        }
-
-                                                        //}
-                                                        //else
-                                                        //{
-                                                        //    dayListWithSlots["DAY " + i]["SLOT " + m].Remove(item);
-                                                        //    int num = subjectWithStudentCount[item];
-                                                        //    if (!dayListWithSlots["DAY " + i]["SLOT " + (m - 1)].ContainsKey(item))
-                                                        //    {
-                                                        //        dayListWithSlots["DAY " + i]["SLOT " + (m - 1)].Add(item, num);
-                                                        //    }
-                                                        //}
-                                                    }
-
-                                                }
-                                            }
-                                        }
+                                        error = false;
                                     }
                                 }
+                                while (error == true);
+                                if (result.confict == true)
+                                {
+                                    Console.WriteLine("RIP");
+                                }
+                                dayList = result.dayList;
+                                dayListWithSlots = result.dayListWithSlots;
+
 
                                 //In file excel
                                 MemoryStream ms = new MemoryStream();
@@ -1307,11 +1316,11 @@ namespace CapstoneProject.Areas.Students.Controllers
         public ProcessedScheduleFile ApplyChangeToList(Dictionary<string, List<string>> dayList,
         Dictionary<string, Dictionary<string, Dictionary<string, int>>> dayListWithSlots, Dictionary<string, int> subjectWithStudentCount, string changeList)
         {
-            Dictionary<string, List<string>> dayListModified =  new Dictionary<string, List<string>>();
+            Dictionary<string, List<string>> dayListModified = new Dictionary<string, List<string>>();
             Dictionary<string, Dictionary<string, Dictionary<string, int>>> dayListWithSlotsModified = new Dictionary<string, Dictionary<string, Dictionary<string, int>>>();
             if (changeList != "")
             {
-                foreach(var day in dayList)
+                foreach (var day in dayList)
                 {
                     List<string> subjectList = new List<string>();
                     foreach (var subject in dayList[day.Key])
@@ -1380,7 +1389,7 @@ namespace CapstoneProject.Areas.Students.Controllers
                 for (int i = 0; i < change.Length; i++)
                 {
                     var detail = change[i].Split('-');
-                    var dayModify =detail[0];
+                    var dayModify = detail[0];
                     var slotModify = detail[1];
                     var subjectModify = detail[2];
 
@@ -1604,7 +1613,7 @@ namespace CapstoneProject.Areas.Students.Controllers
 
                     return this.File(ms, contentType, fileName);
                 }
-                
+
             }
             return null;
         }
@@ -1655,5 +1664,6 @@ namespace CapstoneProject.Areas.Students.Controllers
     {
         public Dictionary<string, List<string>> dayList { get; set; }
         public Dictionary<string, Dictionary<string, Dictionary<string, int>>> dayListWithSlots { get; set; }
+        public bool confict { get; set; }
     }
 }
