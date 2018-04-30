@@ -20,7 +20,7 @@
                         {
                             <input type="text" id="change-list-input" class="hidden" name="changeList" />
                             <div class="col-md-5">
-                                <label>Chọn file danh sách sinh viên và môn thi của sinh viên: </label>
+                                <label>Chọn danh sách sinh viên và môn thi của sinh viên: </label>
                                 <br />
                                 <button type="button" class="btn-primary btn" id="import-file-btn">Chọn file</button>
                                 <input id="upload-file" class="hidden" type="file" name="student-file" />
@@ -29,7 +29,7 @@
                             </div>
                             <div class="col-md-2"><button type="button" class="btn btn-primary hidden" id="submit-button">Import</button></div>
                             <div class="col-md-5">
-                                <label>Chọn file lịch thi: </label>
+                                <label>Chọn lịch thi: </label>
                                 <br />
                                 <button type="button" class="btn-primary btn" id="import-file-btn-2">Chọn file</button>
                                 <input id="upload-file-2" class="hidden" type="file" name="schedule-file" />
@@ -62,14 +62,17 @@
                         <label>Từ: </label>
                         <select id="day-list-1"></select>
                         <select id="slot-list-1"></select>
+
                         <div style="margin-left:5px">
                             <br />
-                            <label>Môn thi: </label>
-                            <div class='radio-group' id="subject-list-container-1">
+                            <label class="pull-left">Môn thi: </label>
+                            <div class='radio-group col-md-4' id="subject-list-container-1">
+                            </div>
+                            <div class='radio-group col-md-4' id="subject-list-container-2">
                             </div>
                         </div>
                         <br />
-                        
+
                         @*<button id="btn-export-allstudentmark" class="btn btn-success" title="Export all mark of student by semester">
                                 <i class="fa fa-download"></i>Export Semester Excel
                             </button>*@
@@ -78,10 +81,8 @@
                             </form>*@
                     </div>
                     <div class="col-md-2" style="text-align:-webkit-center">
-                        <br />
-                        <p style="color:red" id="error-display"></p>
-                        <br />
-                        <input style="width:100px" type="button" class="btn btn-block btn-success" id="btn-change" onclick="CheckDaysAndSlots()" value="Thay đổi" />
+                        <p class="error-none" id="error-display"><i class="fa fa-arrow-right"></i></p>
+                        <input style="width:100px" type="button" class="btn btn-block btn-success" id="btn-change" onclick="CheckDaysAndSlots()" value="Chuyển" />
                         <br />
                         <input type="button" style="width:100px" class="btn btn-block btn-danger hidden" id="clear-change-btn" value="Xóa thay đổi" onclick="ClearChangeList()" />
                         <br />
@@ -98,16 +99,25 @@
                         <div>
                             <br />
                             <label>Các thay đổi: </label>
-                            <textarea class="form-control" disabled rows="5" style="resize:none" id="change-made"></textarea>
+                            <div id="change-made" style="background-color: #ecebe9;height:120px; width: 100%;overflow-y: scroll;font-size:12px"></div>
                         </div>
                         <br />
-                        
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+<style>
+    .error-none {
+        color: forestgreen;
+    }
+
+    .error-error {
+        color: red;
+    }
+</style>
 <script>
     $(document).ready(function () {
 
@@ -283,15 +293,20 @@
             success: function (result) {
                 if (result.success == true) {
                     $("#subject-list-container-1").html("");
+                    $("#subject-list-container-2").html("");
                     for (var i = 0; i < result.subList.length; i++) {
-                        if (i == 0) {
-                            $("#subject-list-container-1").append("<input type='radio' name='subject-radio' checked value=" + result.subList[i] + ">" + result.subList[i] + "<br/>");
+                        if (i <= 6) {
+                            if (i == 0) {
+                                $("#subject-list-container-1").append("<input type='radio' name='subject-radio' checked value=" + result.subList[i] + ">" + result.subList[i] + "<br/>");
+                            }
+                            else {
+                                $("#subject-list-container-1").append("<input type='radio' name='subject-radio' value=" + result.subList[i] + ">" + result.subList[i] + "<br/>");
+                            }
                         }
                         else {
-                            $("#subject-list-container-1").append("<input type='radio' name='subject-radio' value=" + result.subList[i] + ">" + result.subList[i] + "<br/>");
+                            $("#subject-list-container-2").append("<input type='radio' name='subject-radio' value=" + result.subList[i] + ">" + result.subList[i] + "<br/>");
                         }
                     }
-
                 }
                 else {
 
@@ -302,25 +317,42 @@
 
     $("#day-list-1").on("change", function () {
         LoadSubject();
-        $("#error-display").html("");
+        $("#error-display").html("<i class='fa fa-arrow-right'></i>");
+        $("#error-display").addClass("error-none");
+        $("#error-display").removeClass("error-error");
     });
+
     $("#slot-list-1").on("change", function () {
         LoadSubject();
-        $("#error-display").html("");
+        $("#error-display").html("<i class='fa fa-arrow-right'></i>");
+        $("#error-display").addClass("error-none");
+        $("#error-display").removeClass("error-error");
     });
+
     $("#day-list-2").on("change", function () {
         LoadSubject();
-        $("#error-display").html("");
+        $("#error-display").html("<i class='fa fa-arrow-right'></i>");
+        $("#error-display").addClass("error-none");
+        $("#error-display").removeClass("error-error");
     });
+
     $("#slot-list-2").on("change", function () {
         LoadSubject();
-        $("#error-display").html("");
+        $$("#error-display").html("<i class='fa fa-arrow-right'></i>");
+        $("#error-display").addClass("error-none");
+        $("#error-display").removeClass("error-error");
     });
+
     $("input[name='subject-radio']").on("click", function () {
-        $("#error-display").html("");
+        $("#error-display").html("<i class='fa fa-arrow-right'></i>");
+        $("#error-display").addClass("error-none");
+        $("#error-display").removeClass("error-error");
     });
+
     function CheckDaysAndSlots() {
-        $("#error-display").html("");
+        $("#error-display").html("<i class='fa fa-arrow-right'></i>");
+        $("#error-display").addClass("error-none");
+        $("#error-display").removeClass("error-error");
         var data = new FormData();
         for (var i = 0; i < $("#upload-file")[0].files.length; i++) {
             data.append("student-file", $("#upload-file")[0].files[i]);
@@ -350,6 +382,8 @@
                             for (var i = 0; i < change.length; i++) {
                                 if (change[i] == $("#day-list-2").val() + "-" + $("#slot-list-2").val() + "-" + $("input[name='subject-radio']:checked").val()) {
                                     $("#error-display").html("Đã có thay đổi này!");
+                                    $("#error-display").removeClass("error-none");
+                                    $("#error-display").addClass("error-error");
                                     already = true;
                                     break;
                                 }
@@ -387,29 +421,33 @@
 
                     }
                     else {
-                        $("#error-display").html("Không thay đổi được!");
+                        $("#error-display").html("Không chuyển được!");
+                        $("#error-display").removeClass("error-none");
+                        $("#error-display").addClass("error-error");
                     }
 
                 }
                 else {
                     $("#error-display").html("Error!");
+                    $("#error-display").removeClass("error-none");
+                    $("#error-display").addClass("error-error");
                 }
             },
         });
     }
     function ReloadChangeList() {
-        $("#change-made").val("");
+        $("#change-made").html("");
         var change = changeList.split(",");
         var string = "";
-        for (var i = 0; i < change.length; i++) {
-            var detail = change[i].split("-");
-            var day = detail[0];
-            var slot = detail[1];
-            var subject = detail[2];
-            string += ("Chuyển môn " + subject + " sang ngày: " + day + " vào ca: " + slot + "\n");
-        }
-        $("#change-made").val(string);
         if (changeList != "") {
+            for (var i = 0; i < change.length; i++) {
+                var detail = change[i].split("-");
+                var day = detail[0];
+                var slot = detail[1];
+                var subject = detail[2];
+                string += ("Chuyển môn " + subject + " sang ngày: " + day + " vào ca: " + slot + "  <a onClick='RemoveChange(" + JSON.stringify(subject) + ")'>Xóa</a><br/>");
+            }
+            $("#change-made").html(string);
             $("#clear-change-btn").removeClass("hidden");
             $("#export-btn").removeClass("hidden");
         }
@@ -419,13 +457,39 @@
         }
         LoadSubject();
     }
+
     function ClearChangeList() {
         changeList = "";
-        $("#change-made").val("");
+        $("#change-made").html("");
         $("#clear-change-btn").addClass("hidden");
         $("#export-btn").addClass("hidden");
         LoadSubject();
-        $("#error-display").html("");
+        $("#error-display").html("<i class='fa fa-arrow-right'></i>");
+        $("#error-display").addClass("error-none");
+        $("#error-display").removeClass("error-error");
+    }
+
+    function RemoveChange(sub) {
+        var newChangelist = "";
+        var change = changeList.split(",");
+        if (changeList != "") {
+            for (var i = 0; i < change.length; i++) {
+                var detail = change[i].split("-");
+                var day = detail[0];
+                var slot = detail[1];
+                var subject = detail[2];
+                if (subject != sub) {
+                    if (newChangelist == "") {
+                        newChangelist += day + "-" + slot + "-" + subject;
+                    }
+                    else {
+                        newChangelist += "," + day + "-" + slot + "-" + subject;
+                    }
+                }
+            }
+        }
+        changeList = newChangelist;
+        ReloadChangeList();
     }
 
     function ExportNewExcel() {
