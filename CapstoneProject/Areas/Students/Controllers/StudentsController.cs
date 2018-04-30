@@ -741,10 +741,6 @@ namespace CapstoneProject.Areas.Students.Controllers
                             //Kiem tra slot co the su dung
                             foreach (var stu in studentList)
                             {
-                                if (stu.RollNumber.Equals("SE62779") && (item.Equals("JPD121") || item.Equals("CHN132")))
-                                {
-                                    Console.WriteLine("");
-                                }
                                 var studyThisSubject = false;
                                 foreach (var subStu in stu.Subjects)
                                 {
