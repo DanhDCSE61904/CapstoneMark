@@ -19,6 +19,8 @@
                         <select class="select2" id="semester-selector"></select>
                         <br />
                         <select class="select2" id="subject-selector"></select>
+                        <br />
+                        <input type="checkbox" checked id="check-attendance-chk" /> <label>Kiểm tra điểm danh</label><br />
                         <button class="btn btn-primary" id="calculate-button" onclick="CalculateAverage()">Tính điểm trung bình</button>
                         <br />
                         <button id="btn-export-allstudentmark" class="btn btn-success" title="Export all mark of student by semester">
@@ -44,9 +46,9 @@
             </div>
             <div>
                 <div class="offset-8 col-md-4">
-                   
+
                 </div>
-               
+
             </div>
 
         </div>
@@ -66,7 +68,6 @@
             type: "POST",
             url: '@Url.Action("LoadSemesterSelect")',
             success: function (result) {
-                debugger
                 for (var i = 0; i < result.result.length; i++) {
                     $('#semester-selector').append("<option value='" + result.result[i].SemesterId + "'>" + result.result[i].Semester + "</option>");
                 }
@@ -92,7 +93,7 @@
         $.ajax({
             type: "POST",
             url: '@Url.Action("LoadSubjectSelectBySemesters")',
-            data: {semesterId:$('#semester-selector').val()},
+            data: { semesterId: $('#semester-selector').val() },
             success: function (result) {
                 $("#subject-selector").empty().trigger('change');
                 $("#subject-selector").select2({
@@ -114,6 +115,7 @@
             data: {
                 semesterId: $('#semester-selector').val(),
                 subjectCode: $('#subject-selector').val(),
+                checkAttendanceChk: $('#check-attendance-chk').is(':checked'),
             },
             success: function (result) {
                 if (result.success) {
@@ -129,5 +131,5 @@
         $('#form-export-allstudentmark input[name="semesterId"]').val($('#semester-selector').val());
         $('#form-export-allstudentmark').submit();
     });
-   
+
 </script>

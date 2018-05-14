@@ -33,8 +33,10 @@
             </div>
             <div>
                 <div class="offset-8 col-md-4">
+                    <label>Ki</label>
                     <select class="select2" id="semester-selector"></select>
                     <br />
+                    <label>Môn</label>
                     <select class="select2" id="subject-selector"></select>
                     <button class="btn btn-default" id="search-btn">Tìm</button>
                 </div>
@@ -95,7 +97,6 @@
             type: "GET",
             url: '@Url.Action("LoadSemesterSelect")',
             success: function (result) {
-                debugger
                 for (var i = 0; i < result.result.length; i++) {
                     $('#semester-selector').append("<option value='" + result.result[i].SemesterId + "'>" + result.result[i].Semester + "</option>");
                 }

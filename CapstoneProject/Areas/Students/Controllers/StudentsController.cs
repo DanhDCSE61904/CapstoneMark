@@ -51,7 +51,7 @@ namespace CapstoneProject.Areas.Students.Controllers
             using (var context = new CapstoneProjectEntities())
             {
                 var semester = context.RealSemesters.Find(semesterId).Semester;
-                var subjectList = context.Courses.Where(q => q.Semester.Equals(semester) && !q.SubjectCode.ToUpper().Contains("LAB") && !q.SubjectCode.ToUpper().Contains("VOV")).Select(q => new SelectorViewModel
+                var subjectList = context.Courses.Where(q => q.Semester.Equals(semester) && !q.SubjectCode.ToUpper().Contains("LAB") && !q.SubjectCode.ToUpper().Contains("VOV") && !q.SubjectCode.ToUpper().Contains("PRO001")).Select(q => new SelectorViewModel
                 {
                     Value = q.SubjectCode,
                 }).ToList();
@@ -222,7 +222,7 @@ namespace CapstoneProject.Areas.Students.Controllers
                     ExcelWorksheet firstWs = wb.Worksheets.Add("Thống kê");
                     foreach (var course in courseList)
                     {
-                        if (course.SubjectCode.ToUpper().Contains("VOV") || course.SubjectCode.ToUpper().Contains("LAB"))
+                        if (course.SubjectCode.ToUpper().Contains("VOV") || course.SubjectCode.ToUpper().Contains("LAB")||course.SubjectCode.ToUpper().Contains("PRO001"))
                         {
                             continue;
                         }
@@ -619,7 +619,7 @@ namespace CapstoneProject.Areas.Students.Controllers
                     var markExemptList = context.Marks.Where(q => q.SemesterId == semesterId && q.IsExempt != null).ToList();
                     foreach (var stu in studentList)
                     {
-                        var exemptList = markExemptList.Where(q => q.IsExempt == true && q.StudentId == stu.Id && !q.Course.SubjectCode.ToUpper().Contains("LAB") && !q.Course.SubjectCode.ToUpper().Contains("VOV")).GroupBy(q => q.Course).Select(q => q.Key).ToDictionary(q => q.SubjectCode);
+                        var exemptList = markExemptList.Where(q => q.IsExempt == true && q.StudentId == stu.Id && !q.Course.SubjectCode.ToUpper().Contains("LAB") && !q.Course.SubjectCode.ToUpper().Contains("VOV")&& !q.Course.SubjectCode.ToUpper().Contains("PRO001")).GroupBy(q => q.Course).Select(q => q.Key).ToDictionary(q => q.SubjectCode);
                         var courseResult = new List<Course>();
                         foreach (var exemptCourse in exemptList)
                         {
@@ -628,7 +628,7 @@ namespace CapstoneProject.Areas.Students.Controllers
                         var attendanceStudentList = attendanceList.Where(q => q.StudentId == stu.Id).ToList();
                         if (attendanceStudentList.Count != 0)
                         {
-                            var courseStudy = attendanceStudentList.Where(q => !q.Course.SubjectCode.ToUpper().Contains("LAB") && !q.Course.SubjectCode.ToUpper().Contains("VOV")).GroupBy(q => q.Course).Select(q => q.FirstOrDefault().Course).ToList();
+                            var courseStudy = attendanceStudentList.Where(q => !q.Course.SubjectCode.ToUpper().Contains("LAB") && !q.Course.SubjectCode.ToUpper().Contains("VOV") && !q.Course.SubjectCode.ToUpper().Contains("PRO001")).GroupBy(q => q.Course).Select(q => q.FirstOrDefault().Course).ToList();
                             foreach (var course in courseStudy)
                             {
                                 var subjectSlots = subjectList.Values.Where(q => q.Id.ToUpper().Equals(course.SubjectCode.ToUpper())).FirstOrDefault();

@@ -1186,8 +1186,13 @@ namespace CapstoneProject.Areas.Mark.Controllers
             return Json(new { success = true, message = "Successful!" });
         }
 
-        public ActionResult CalculateAverageMarkBySemesterAndSubject(int semesterId, string subjectCode)
+        public ActionResult CalculateAverageMarkBySemesterAndSubject(int semesterId, string subjectCode, string checkAttendanceChk)
         {
+            var checkAttendance=false;
+            if (checkAttendanceChk.Equals("true"))
+            {
+                checkAttendance = true;
+            }
             using (var context = new CapstoneProjectEntities())
             {
                 var semester = context.RealSemesters.Find(semesterId);
@@ -1197,8 +1202,26 @@ namespace CapstoneProject.Areas.Mark.Controllers
                 var subjectAverageComp = context.Subject_MarkComponent.Where(q => q.MarkComponent.Name.ToUpper().Equals("AVERAGE")).ToList();
                 var capstoneSubjects = context.Subjects.Where(q => q.Type == 2).ToDictionary(q => q.Id);
                 var averageList = context.Marks.Where(q => q.SemesterId == semesterId && q.Subject_MarkComponent.MarkComponent.Name.Equals("AVERAGE")).ToList();
+                int? slots = 0;
+                List<CapstoneProject.Attendance> attendanceList = new List<CapstoneProject.Attendance>();
+                Dictionary<string, Student> exemptList = new Dictionary<string, Student>();
+                if (checkAttendance == true)
+                {
+                    var subjectSlots = context.Subjects.Where(q => q.Id.ToUpper().Equals(course.SubjectCode.ToUpper())).FirstOrDefault();
+                    if (subjectSlots != null)
+                    {
+                        slots = subjectSlots.NumberOfSlots;
+                    }
+                    else
+                    {
+                        Console.WriteLine();
+                    }
+                    attendanceList = context.Attendances.Where(q => q.CourseId == course.Id).ToList();
+                    exemptList = context.Marks.Where(q => q.IsExempt == true && q.CourseId == course.Id).GroupBy(q => q.Student).Select(q => q.Key).ToDictionary(q => q.RollNumber);
+                }
                 foreach (var student in studentList)
                 {
+                    var passAttendance = false;
                     var retake = false;
                     var studentMarks = markList.Where(q => q.StudentId == student.Id).ToList();
                     var averageComp = subjectAverageComp.Where(q => q.SubjectId.ToUpper().Equals(course.SubjectCode.ToUpper())).FirstOrDefault();
@@ -1421,22 +1444,90 @@ namespace CapstoneProject.Areas.Mark.Controllers
                             averageMark.Status = "Fail";
                             averageMark.IsActivated = true;
                             averageMark.IsEnabled = true;
-                            if (result >= 5 && passFinalCondition == true &&failGroupMark==false)
+                            if (checkAttendance == true)
                             {
-                                averageMark.Status = "Passed";
+                                if (exemptList.ContainsKey(student.RollNumber))
+                                {
+                                    //Pass
+                                    passAttendance = true;
+                                }
+                                else
+                                {
+                                    var attendance = attendanceList.Where(q => q.StudentId == student.Id && q.Status == true).Count();
+                                    if (attendance != 0)
+                                    {
+                                        double rate = double.Parse(attendance.ToString()) / double.Parse(slots.Value.ToString());
+                                        if (rate >= 0.8 && !exemptList.ContainsKey((student.RollNumber)))
+                                        {
+                                            //Pass
+                                            passAttendance = true;
+                                        }
+                                    }
+                                }
+                            }
+                            if (checkAttendance == false)
+                            {
+                                if (result >= 5 && passFinalCondition == true && failGroupMark == false)
+                                {
+                                    averageMark.Status = "Passed";
+                                }
+                            }
+                            else
+                            {
+                                if (result >= 5 && passFinalCondition == true && failGroupMark == false && passAttendance==true)
+                                {
+                                    averageMark.Status = "Passed";
+                                }
                             }
                             context2.Marks.Add(averageMark);
                         }
                         else
                         {
-                            if (result >= 5 && passFinalCondition == true && failGroupMark ==false)
+
+                            if (checkAttendance == true)
                             {
-                                oldAverageMark.Status = "Passed";
+                                if (exemptList.ContainsKey(student.RollNumber))
+                                {
+                                    //Pass
+                                    passAttendance = true;
+                                }
+                                else
+                                {
+                                    var attendance = attendanceList.Where(q => q.StudentId == student.Id && q.Status == true).Count();
+                                    if (attendance != 0)
+                                    {
+                                        double rate = double.Parse(attendance.ToString()) / double.Parse(slots.Value.ToString());
+                                        if (rate >= 0.8 && !exemptList.ContainsKey((student.RollNumber)))
+                                        {
+                                            //Pass
+                                            passAttendance = true;
+                                        }
+                                    }
+                                }
+                            }
+                            if (checkAttendance == false)
+                            {
+                                if (result >= 5 && passFinalCondition == true && failGroupMark == false)
+                                {
+                                    oldAverageMark.Status = "Passed";
+                                }
+                                else
+                                {
+                                    oldAverageMark.Status = "Fail";
+                                }
                             }
                             else
                             {
-                                oldAverageMark.Status = "Fail";
+                                if (result >= 5 && passFinalCondition == true && failGroupMark == false && passAttendance == true)
+                                {
+                                    oldAverageMark.Status = "Passed";
+                                }
+                                else
+                                {
+                                    oldAverageMark.Status = "Fail";
+                                }
                             }
+                           
                             oldAverageMark.AverageMark = result;
                             oldAverageMark.IsActivated = true;
                             oldAverageMark.IsEnabled = true;

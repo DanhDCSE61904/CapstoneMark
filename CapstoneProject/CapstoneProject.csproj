@@ -307,6 +307,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Image\Logo.png" />
     <Content Include="Content\Resources\plugins\bootstrap-slider\bootstrap-slider.js" />
     <Content Include="Content\Resources\plugins\bootstrap-slider\slider.css" />
     <Content Include="Content\Resources\plugins\bootstrap-switch\css\bootstrap2\bootstrap-switch.css" />
